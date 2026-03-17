@@ -85,4 +85,7 @@ Questionnarie2011 <- DiabetesQ2011 |>
 
 ```
 
-test: Person #2 is in :)
+```{r}
+meanLabTotalChol <- mean(Lab2011$LBXTC, na.rm = TRUE )
+meanLabTotalChol
+```
