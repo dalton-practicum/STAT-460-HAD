@@ -29,35 +29,34 @@ library(haven);library(tidyverse);library(tidyverse)
 #### Importing
 ```{r}
 # Demographics
-Demographics2011 <- read_xpt("../Data 2011-12/DEMO_G.xpt") 
+Demographics2011 <- read_xpt("Data 2011-12/DEMO_G.xpt") 
 # Examination
-BloodPressure2011 <- read_xpt("../Data 2011-12/BPX_G.xpt")
-BodyMeasurements2011 <- read_xpt("../Data 2011-12/BMX_G.xpt")
+BloodPressure2011 <- read_xpt("Data 2011-12/BPX_G.xpt")
+BodyMeasurements2011 <- read_xpt("Data 2011-12/BMX_G.xpt")
 # Lab
-TotalChol2011 <- read_xpt("../Data 2011-12/TCHOL_G.xpt")
-HDL_Chol2011 <- read_xpt("../Data 2011-12/HDL_G.xpt")
-LDL_Tri_Chol2011 <-read_xpt("../Data 2011-12/TRIGLY_G.xpt")
-Metals2011 <-read_xpt("../Data 2011-12/UHM_G.xpt")
-PFAs2011 <-read_xpt("../Data 2011-12/PFC_G.xpt")
-Hormones2011 <- read_xpt("../Data 2011-12/TST_G.xpt")
+TotalChol2011 <- read_xpt("Data 2011-12/TCHOL_G.xpt")
+HDL_Chol2011 <- read_xpt("Data 2011-12/HDL_G.xpt")
+LDL_Tri_Chol2011 <-read_xpt("Data 2011-12/TRIGLY_G.xpt")
+Metals2011 <-read_xpt("Data 2011-12/UHM_G.xpt")
+PFAs2011 <-read_xpt("Data 2011-12/PFC_G.xpt")
+Hormones2011 <- read_xpt("Data 2011-12/TST_G.xpt")
 
 # Questionnaire 
-DiabetesQ2011 <- read_xpt("../Data 2011-12/DIQ_G.xpt")
-IncomeQ2011 <- read_xpt("../Data 2011-12/INQ_G.xpt")
-MedicalCondnsQ2011 <- read_xpt("../Data 2011-12/MCQ_G.xpt")
-MentalHealthQ2011 <- read_xpt("../Data 2011-12/DPQ_G.xpt")
-PestisideQ2011 <- read_xpt("../Data 2011-12/PUQMEC_G.xpt")
-PhysicalActQ2011 <- read_xpt("../Data 2011-12/PAQ_G.xpt")
-PrescriptionMedsQ2011 <- read_xpt("../Data 2011-12/RXQ_RX_G.xpt")
-SleepDisordersQ2011 <- read_xpt("../Data 2011-12/SLQ_G.xpt")
-SmokingQ2011 <- read_xpt("../Data 2011-12/SMQ_G.xpt")
-WeightHistoryQ2011 <- read_xpt("../Data 2011-12/WHQ_G.xpt")
-YouthWeightHistoryQ2011 <- read_xpt("../Data 2011-12/WHQMEC_G.xpt")
+DiabetesQ2011 <- read_xpt("Data 2011-12/DIQ_G.xpt")
+IncomeQ2011 <- read_xpt("Data 2011-12/INQ_G.xpt")
+MedicalCondnsQ2011 <- read_xpt("Data 2011-12/MCQ_G.xpt")
+MentalHealthQ2011 <- read_xpt("Data 2011-12/DPQ_G.xpt")
+PestisideQ2011 <- read_xpt("Data 2011-12/PUQMEC_G.xpt")
+PhysicalActQ2011 <- read_xpt("Data 2011-12/PAQ_G.xpt")
+PrescriptionMedsQ2011 <- read_xpt("Data 2011-12/RXQ_RX_G.xpt")
+SleepDisordersQ2011 <- read_xpt("Data 2011-12/SLQ_G.xpt")
+SmokingQ2011 <- read_xpt("Data 2011-12/SMQ_G.xpt")
+WeightHistoryQ2011 <- read_xpt("Data 2011-12/WHQ_G.xpt")
+YouthWeightHistoryQ2011 <- read_xpt("Data 2011-12/WHQMEC_G.xpt")
 
 ```
 
 #### Merging
-Insert written answer here.
 ```{r}
 # Examination
 Examination2011 <- BodyMeasurements2011 |>
@@ -85,96 +84,4 @@ Questionnarie2011 <- DiabetesQ2011 |>
   full_join(YouthWeightHistoryQ2011, by = c("SEQN" = "SEQN"))
 
 ```
-#### Part (d)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (e)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (f)
-Insert written answer here.
-```{r}
-# Insert code here
-```
 
-
-### EXERCISE 1.02
-#### Part (a)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (b)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (c)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (d)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (e)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (f)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-
-### EXERCISE 1.03
-#### Part (a)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (b)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (c)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (d)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-
-
-### EXERCISE 1.04
-#### Part (a)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (b)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (c)
-Insert written answer here.
-```{r}
-# Insert code here
-```
-#### Part (d)
-Insert written answer here.
-```{r}
-# Insert code here
-```
