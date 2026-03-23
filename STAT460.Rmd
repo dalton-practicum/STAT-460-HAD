@@ -176,7 +176,7 @@ YouthWeightHistoryQP2017 <- read_xpt("Data PP2017-20/P_WHQMEC.xpt")
 
 # Examination
 BloodPressure2011 <- BloodPressure2011 |>
-  select("PEASCST1", "PEASCTM1", "BPXCHR", "BPQ150A", "BPQ150B", "BPQ150C", "BPQ150D", "BPXPLS", "BPXPULS", "BPXPTY",  "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4", "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
+  select("SEQN", "PEASCST1", "PEASCTM1", "BPXCHR", "BPQ150A", "BPQ150B", "BPQ150C", "BPQ150D", "BPXPLS", "BPXPULS", "BPXPTY",  "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4", "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 BodyMeasurements2011 <- BodyMeasurements2011 |>
   select("BMXWT",  "BMXBMI",  "BMXHT",  "BMXWAIST", "BMXSAD1", "BMXSAD2", "BMXSAD3", "BMXSAD4")
 ```
