@@ -113,4 +113,11 @@ Questionnarie2011 <- DiabetesQ2011 |>
 
 ```
 
+<<<<<<< HEAD
 
+=======
+```{r}
+meanLabTotalChol <- mean(Lab2011$LBXTC, na.rm = TRUE )
+meanLabTotalChol
+```
+>>>>>>> 5ac0bc8572beaae8a9c4eaa56fa871a51a2c2a78
