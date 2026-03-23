@@ -173,12 +173,188 @@ YouthWeightHistoryQP2017 <- read_xpt("Data PP2017-20/P_WHQMEC.xpt")
 #### Cleaning (this is so fun)
 ```{r}
 # Demographics - TBD
+Demographics2011 <- Demographics2011 |>
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+Demographics2013 <- Demographics2013 |>
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+Demographics2015 <- Demographics2015 |>
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+Demographics2017 <- Demographics2017 |>
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+Demographics2021 <- Demographics2021 |>
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+DemographicsPP2017 <- DemographicsPP2017 |>
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
 
 # Examination
 BloodPressure2011 <- BloodPressure2011 |>
   select("SEQN", "PEASCST1", "PEASCTM1", "BPXCHR", "BPQ150A", "BPQ150B", "BPQ150C", "BPQ150D", "BPXPLS", "BPXPULS", "BPXPTY",  "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4", "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
+BloodPressure2013 <- BloodPressure2013 |>
+  select("SEQN", "PEASCST1", "PEASCTM1", "BPXCHR", "BPXPLS", "BPXPULS", "BPXPTY",  "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4", "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
+BloodPressure2015 <- BloodPressure2015 |>
+  select("SEQN", "BPXCHR", "BPXPULS", "BPXSY1","BPXSY2","BPXSY3", "BPXSY4", "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
+BloodPressure2017 <- BloodPressure2017 |>
+  select("SEQN", "BPXCHR", "BPXPULS", "BPXSY1","BPXSY2","BPXSY3", "BPXSY4", "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
+BloodPressure2021 <- BloodPressure2021 |>
+  select("SEQN", "BPXOSY1", "BPXOSY2", "BPXOSY3", "BPXODI1", "BPXODI2",  "BPXODI3", "BPXOPLS1", "BPXOPLS2", "BPXOPLS3")
+BloodPressureP2017 <- BloodPressureP2017 |>
+  select("SEQN", "BPXOSY1", "BPXOSY2",  "BPXOSY3", "BPXODI1", "BPXODI2", "BPXODI3", "BPXOPLS1", "BPXOPLS2", "BPXOPLS3")
+
 BodyMeasurements2011 <- BodyMeasurements2011 |>
-  select("BMXWT",  "BMXBMI",  "BMXHT",  "BMXWAIST", "BMXSAD1", "BMXSAD2", "BMXSAD3", "BMXSAD4")
+  select("SEQN", "BMXWT",  "BMXBMI",  "BMXHT",  "BMXWAIST", "BMXSAD1", "BMXSAD2", "BMXSAD3", "BMXSAD4")
+BodyMeasurements2013 <- BodyMeasurements2013 |>
+  select("SEQN","BMXWT",  "BMXBMI",  "BMXHT",  "BMXWAIST", "BMXSAD1", "BMXSAD2", "BMXSAD3", "BMXSAD4")
+BodyMeasurements2015 <- BodyMeasurements2015 |>
+  select("SEQN","BMXWT",  "BMXBMI",  "BMXHT",  "BMXWAIST", "BMXSAD1", "BMXSAD2", "BMXSAD3", "BMXSAD4")
+BodyMeasurements2017 <- BodyMeasurements2017 |>
+  select("SEQN","BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
+BodyMeasurements2021 <- BodyMeasurements2021 |>
+  select("SEQN","BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
+BodyMeasurementsP2017 <- BodyMeasurementsP2017 |>
+  select("SEQN","BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
+
+# Lab
+
+
+# Questionnaire 
+DiabetesQ2011 <- DiabetesQ2011 |>
+  select("SEQN")
+DiabetesQ2013 <- DiabetesQ2013 |>
+  select("SEQN")
+DiabetesQ2015 <- DiabetesQ2015 |>
+  select("SEQN")
+DiabetesQ2017 <- DiabetesQ2017 |>
+  select("SEQN")
+DiabetesQ2021 <- DiabetesQ2021 |>
+  select("SEQN")
+DiabetesQP2017 <- DiabetesQP2017 |>
+  select("SEQN")
+
+IncomeQ2011 <- IncomeQ2011 |>
+  select("SEQN")
+IncomeQ2013 <- IncomeQ2013 |>
+  select("SEQN")
+IncomeQ2015 <- IncomeQ2015 |>
+  select("SEQN")
+IncomeQ2017 <- IncomeQ2017 |>
+  select("SEQN")
+IncomeQ2021 <- IncomeQ2021 |>
+  select("SEQN")
+IncomeQP2017 <- IncomeQP2017 |>
+  select("SEQN")
+
+MedicalCondnsQ2011 <- MedicalCondnsQ2011 |>
+  select("SEQN")
+MedicalCondnsQ2013 <- MedicalCondnsQ2013 |>
+  select("SEQN")
+MedicalCondnsQ2015 <- MedicalCondnsQ2015 |>
+  select("SEQN")
+MedicalCondnsQ2017 <- MedicalCondnsQ2017 |>
+  select("SEQN")
+MedicalCondnsQ2021 <- MedicalCondnsQ2021 |>
+  select("SEQN")
+MedicalCondnsQP2017 <- MedicalCondnsQP2017 |>
+  select("SEQN")
+
+MentalHealthQ2011 <- MentalHealthQ2011 |>
+  select("SEQN")
+MentalHealthQ2013 <- MentalHealthQ2013 |>
+  select("SEQN")
+MentalHealthQ2015 <- MentalHealthQ2015 |>
+  select("SEQN")
+MentalHealthQ2017 <- MentalHealthQ2017 |>
+  select("SEQN")
+MentalHealthQ2021 <- MentalHealthQ2021 |>
+  select("SEQN")
+MentalHealthQP2017 <- MentalHealthQP2017 |>
+  select("SEQN")
+
+PestisideQ2011 <- PestisideQ2011 |>
+  select("SEQN")
+PestisideQ2013 <- PestisideQ2013 |>
+  select("SEQN")
+PestisideQ2015 <- PestisideQ2015 |>
+  select("SEQN")
+PestisideQ2017 <- PestisideQ2017 |>
+  select("SEQN")
+PestisideQ2021 <- PestisideQ2021 |>
+  select("SEQN")
+PestisideQP2017 <- PestisideQP2017 |>
+  select("SEQN")
+
+PhysicalActQ2011 <- PhysicalActQ2011 |>
+  select("SEQN")
+PhysicalActQ2013 <- PhysicalActQ2013 |>
+  select("SEQN")
+PhysicalActQ2015 <- PhysicalActQ2015 |>
+  select("SEQN")
+PhysicalActQ2017 <- PhysicalActQ2017 |>
+  select("SEQN")
+PhysicalActQ2021 <- PhysicalActQ2021 |>
+  select("SEQN")
+PhysicalActQP2017 <- PhysicalActQP2017 |>
+  select("SEQN")
+
+PrescriptionMedsQ2011 <- PrescriptionMedsQ2011 |>
+  select("SEQN")
+PrescriptionMedsQ2013 <- PrescriptionMedsQ2013 |>
+  select("SEQN")
+PrescriptionMedsQ2015 <- PrescriptionMedsQ2015 |>
+  select("SEQN")
+PrescriptionMedsQ2017 <- PrescriptionMedsQ2017 |>
+  select("SEQN")
+PrescriptionMedsQ2021 <- PrescriptionMedsQ2021 |>
+  select("SEQN")
+PrescriptionMedsQP2017 <- PrescriptionMedsQP2017 |>
+  select("SEQN")
+
+SleepDisordersQ2011 <- SleepDisordersQ2011 |>
+  select("SEQN")
+SleepDisordersQ2013 <- SleepDisordersQ2013 |>
+  select("SEQN")
+SleepDisordersQ2015 <- SleepDisordersQ2015 |>
+  select("SEQN")
+SleepDisordersQ2017 <- SleepDisordersQ2017 |>
+  select("SEQN")
+SleepDisordersQ2021 <- SleepDisordersQ2021 |>
+  select("SEQN")
+SleepDisordersQP2017 <- SleepDisordersQP2017 |>
+  select("SEQN")
+
+SmokingQ2011 <- SmokingQ2011 |>
+  select("SEQN")
+SmokingQ2013 <- SmokingQ2013 |>
+  select("SEQN")
+SmokingQ2015 <- SmokingQ2015 |>
+  select("SEQN")
+SmokingQ2017 <- SmokingQ2017 |>
+  select("SEQN")
+SmokingQ2021 <- SmokingQ2021 |>
+  select("SEQN")
+SmokingQP2017 <- SmokingQP2017 |>
+  select("SEQN")
+
+WeightHistoryQ2011 <- WeightHistoryQ2011 |>
+  select("SEQN")
+WeightHistoryQ2013 <- WeightHistoryQ2013 |>
+  select("SEQN")
+WeightHistoryQ2015 <- WeightHistoryQ2015 |>
+  select("SEQN")
+WeightHistoryQ2017 <- WeightHistoryQ2017 |>
+  select("SEQN")
+WeightHistoryQ2021 <- WeightHistoryQ2021 |>
+  select("SEQN")
+WeightHistoryQP2017 <- WeightHistoryQP2017 |>
+  select("SEQN")
+
+YouthWeightHistoryQ2011 <- YouthWeightHistoryQ2011 |>
+  select("SEQN")
+YouthWeightHistoryQ2015 <- YouthWeightHistoryQ2015 |>
+  select("SEQN")
+YouthWeightHistoryQ2017 <- YouthWeightHistoryQ2017 |>
+  select("SEQN")
+YouthWeightHistoryQP2017 <- YouthWeightHistoryQP2017 |>
+  select("SEQN")
 ```
 
 #### Merging
