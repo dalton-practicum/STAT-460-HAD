@@ -24,17 +24,35 @@ library(psych); library(GPArotation); library(lavaan);library(here)
 library(haven);library(tidyverse);library(tidyverse)
 ```
 
-### 2011-12 Data Exploration
+### Data Cleaning
 
 #### Importing
 ```{r}
 # Demographics
 Demographics2011 <- read_xpt("Data 2011-12/DEMO_G.xpt") 
+Demographics2013 <- read_xpt("Data 2013-14/DEMO_H.xpt") 
+Demographics2015 <- read_xpt("Data 2015-16/DEMO_I.xpt")
+Demographics2017 <- read_xpt("Data 2017-18/DEMO_J.xpt") 
+Demographics2021 <- read_xpt("Data Aug2021-Aug2022/DEMO_L.xpt")
+DemographicsPP2017 <- read_xpt("Data PP2017-20/P_DEMO.xpt")
+
 # Examination
 BloodPressure2011 <- read_xpt("Data 2011-12/BPX_G.xpt")
+BloodPressure2013 <- read_xpt("Data 2013-14/BPX_H.xpt")
+BloodPressure2015 <- read_xpt("Data 2015-16/BPX_I.xpt")
+BloodPressure2017 <- read_xpt("Data 2017-18/BPX_J.xpt")
+BloodPressure2021 <- read_xpt("Data Aug2021-Aug2022/BPX_L.xpt")
+BloodPressureP2017 <- read_xpt("Data PP2017-20/P_BPX.xpt")
 BodyMeasurements2011 <- read_xpt("Data 2011-12/BMX_G.xpt")
+BodyMeasurements2013 <- read_xpt("Data 2013-14/BMX_H.xpt")
+BodyMeasurements2015 <- read_xpt("Data 2015-16/BMX_I.xpt")
+BodyMeasurements2017 <- read_xpt("Data 2017-18/BMX_J.xpt")
+BodyMeasurements2021 <- read_xpt("Data Aug2021-Aug2022/BMX_L.xpt")
+BodyMeasurementsP2017 <- read_xpt("Data PP2017-20/P_BMX.xpt")
+
 # Lab
 TotalChol2011 <- read_xpt("Data 2011-12/TCHOL_G.xpt")
+
 HDL_Chol2011 <- read_xpt("Data 2011-12/HDL_G.xpt")
 LDL_Tri_Chol2011 <-read_xpt("Data 2011-12/TRIGLY_G.xpt")
 Metals2011 <-read_xpt("Data 2011-12/UHM_G.xpt")
@@ -53,7 +71,17 @@ SleepDisordersQ2011 <- read_xpt("Data 2011-12/SLQ_G.xpt")
 SmokingQ2011 <- read_xpt("Data 2011-12/SMQ_G.xpt")
 WeightHistoryQ2011 <- read_xpt("Data 2011-12/WHQ_G.xpt")
 YouthWeightHistoryQ2011 <- read_xpt("Data 2011-12/WHQMEC_G.xpt")
+```
 
+#### Cleaning (this is so fun)
+```{r}
+# Demographics - TBD
+
+# Examination
+BloodPressure2011 <- BloodPressure2011 |>
+  select("PEASCST1", "PEASCTM1", "BPXCHR", "BPQ150A", "BPQ150B", "BPQ150C", "BPQ150D", "BPXPLS", "BPXPULS", "BPXPTY",  "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4", "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
+BodyMeasurements2011 <- BodyMeasurements2011 |>
+  select("BMXWT",  "BMXBMI",  "BMXHT",  "BMXWAIST", "BMXSAD1", "BMXSAD2", "BMXSAD3", "BMXSAD4")
 ```
 
 #### Merging
@@ -84,4 +112,5 @@ Questionnarie2011 <- DiabetesQ2011 |>
   full_join(YouthWeightHistoryQ2011, by = c("SEQN" = "SEQN"))
 
 ```
+
 
