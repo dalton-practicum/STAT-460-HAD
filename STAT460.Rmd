@@ -1,9 +1,8 @@
 ---
 title: "Exploratory Data Analysis"
-subtitle: "Dalton & Madilin Super Document"
 author: "Beast"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     theme: flatly
     toc: true
@@ -11,6 +10,9 @@ output:
     toc_float:
       collapsed: false
       smooth_scroll: false
+  pdf_document:
+    toc: true
+subtitle: Dalton & Madilin Super Document
 mainfont: TimesNewRoman
 sansfont: TimesNewRoman
 monofont: TimesNewRoman
@@ -91,7 +93,7 @@ Metals2021 <-read_xpt("Data Aug2021-Aug2022/PBCD_L.xpt")
 MetalsP2017 <-read_xpt("Data PP2017-20/P_UM.xpt")
 
 PFAs2011 <-read_xpt("Data 2011-12/PFC_G.xpt")
-PFAs2013 <-read_xpt("Data 2013-14/SSPFAC_H.xpt")
+PFAs2013 <-read_xpt("Data 2013-14/SSPFSU_H.xpt")
 PFAs2015 <-read_xpt("Data 2015-16/PFAS_I.xpt")
 PFAs2017 <-read_xpt("Data 2017-18/PFAS_J.xpt")
 PFAsP2017 <-read_xpt("Data PP2017-20/P_PFAS.xpt")
@@ -224,56 +226,100 @@ BodyMeasurementsP2017 <- BodyMeasurementsP2017 |>
   select("SEQN","BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
 
 # Lab
-TotalChol2011 <- TotalChol2011
-TotalChol2013 <- TotalChol2013
-TotalChol2015 <- TotalChol2015
-TotalChol2017 <- TotalChol2017
-TotalChol2021 <- TotalChol2021
-TotalCholP2017 <- TotalCholP2017
+#TotalChol2011 <- TotalChol2011 |>
+#  select("SEQN")
+#TotalChol2013 <- TotalChol2013 |>
+#  select("SEQN")
+#TotalChol2015 <- TotalChol2015 |>
+#  select("SEQN")
+#TotalChol2017 <- TotalChol2017 |>
+#  select("SEQN")
+#TotalChol2021 <- TotalChol2021 |>
+#  select("SEQN")
+#TotalCholP2017 <- TotalCholP2017 |>
+#  select("SEQN")
 
-HDL_Chol2011 <- HDL_Chol2011 
-HDL_Chol2013 <- HDL_Chol2013
-HDL_Chol2015 <- HDL_Chol2015
-HDL_Chol2017 <- HDL_Chol2017
-HDL_Chol2021 <- HDL_Chol2021
-HDL_CholP2017 <- HDL_CholP2017
+#HDL_Chol2011 <- HDL_Chol2011|>
+#  select("SEQN")
+#HDL_Chol2013 <- HDL_Chol2013 |>
+#  select("SEQN")
+#HDL_Chol2015 <- HDL_Chol2015 |>
+#  select("SEQN")
+#HDL_Chol2017 <- HDL_Chol2017 |>
+#  select("SEQN")
+#HDL_Chol2021 <- HDL_Chol2021 |>
+#  select("SEQN")
+#HDL_CholP2017 <- HDL_CholP2017 |>
+#  select("SEQN")
 
-LDL_Tri_Chol2011 <- LDL_Tri_Chol2011
-LDL_Tri_Chol2013 <- LDL_Tri_Chol2013
-LDL_Tri_Chol2015 <- LDL_Tri_Chol2015
-LDL_Tri_Chol2017 <- LDL_Tri_Chol2017
-LDL_Tri_Chol2021 <- LDL_Tri_Chol2021
-LDL_Tri_CholP2017 <- LDL_Tri_CholP2017
+#LDL_Tri_Chol2011 <- LDL_Tri_Chol2011 |>
+#  select("SEQN")
+#LDL_Tri_Chol2013 <- LDL_Tri_Chol2013 |>
+#  select("SEQN")
+#LDL_Tri_Chol2015 <- LDL_Tri_Chol2015 |>
+#  select("SEQN")
+#LDL_Tri_Chol2017 <- LDL_Tri_Chol2017 |>
+#  select("SEQN")
+#LDL_Tri_Chol2021 <- LDL_Tri_Chol2021 |>
+#  select("SEQN")
+#LDL_Tri_CholP2017 <- LDL_Tri_CholP2017 |>
+#  select("SEQN")
 
-GLYP2013 <- GLYP2013
-GLYP2015 <- GLYP2015
-GLYP2017 <- GLYP2017
+#GLYP2013 <- GLYP2013 |>
+#  select("SEQN")
+#GLYP2015 <- GLYP2015 |>
+#  select("SEQN")
+#GLYP2017 <- GLYP2017 |>
+#  select("SEQN")
 
-Insulin2013 <- Insulin2013
-Insulin2015 <- Insulin2015
-Insulin2017 <- Insulin2017
-Insulin2021 <- Insulin2021
-InsulinP2017 <- InsulinP2017
+Insulin2013 <- Insulin2013 |>
+  select("SEQN", "LBXIN", "LBDINSI", "PHAFSTMN")
+Insulin2015 <- Insulin2015 |>
+  select("SEQN", "LBXIN", "LBDINSI", "PHAFSTMN")
+Insulin2017 <- Insulin2017 |>
+  select("SEQN", "LBXIN", "LBDINSI")
+Insulin2021 <- Insulin2021 |>
+  select("SEQN", "LBXIN", "LBDINSI")
+#InsulinP2017 <- InsulinP2017 |>
+#  select("SEQN")
 
-Metals2011 <- Metals2011
-Metals2013 <- Metals2013 
-Metals2015 <- Metals2015
-Metals2017 <- Metals2017
-Metals2021 <- Metals2021
-MetalsP2017 <- MetalsP2017
+#Metals2011 <- Metals2011 |>
+#  select("SEQN")
+#Metals2013 <- Metals2013 |>
+#  select("SEQN")
+#Metals2015 <- Metals2015 |>
+#  select("SEQN")
+#Metals2017 <- Metals2017 |>
+#  select("SEQN")
+#Metals2021 <- Metals2021 |>
+#  select("SEQN")
+#MetalsP2017 <- MetalsP2017 |>
+#  select("SEQN")
 
-PFAs2011 <- PFAs2011
-PFAs2013 <- PFAs2013
-PFAs2015 <- PFAs2015
-PFAs2017 <- PFAs2017
-PFAsP2017 <- PFAsP2017
+PFAs2011 <- PFAs2011 |>
+  select("SEQN", "LBXPFOS", "LBXPFOA", "LBXPFHS","LBXPFNA")
+PFAs2013 <- PFAs2013 |>
+  select("SEQN", "SSNFOS", "SSMFOS", "SSNFOA", "SSBFOA", "SSPFNA", "SSPFHS")
+PFAs2015 <- PFAs2015 |>
+  select("SEQN", "LBXNFOS","LBXMFOS", "LBXNFOA","LBXBFOA", "LBXPFHS", "LBXPFNA")
+PFAs2017 <- PFAs2017 |>
+  select("SEQN", "LBXNFOS", "LBXMFOS", "LBXNFOA", "LBXBFOA", "LBXPFHS", "LBXPFNA")
+PFAsP2017 <- PFAsP2017 |>
+  select("SEQN", "LBXNFOS", "LBXMFOS", "LBXNFOA", "LBXBFOA", "LBXPFHS", "LBXPFNA")
 
-Hormones2011 <- Hormones2011
-Hormones2013 <- Hormones2013
-Hormones2015 <- Hormones2015
-Hormones2017 <- Hormones2017
-Hormones2021 <- Hormones2021
-HormonesP2017 <- HormonesP2017
+#Hormones2011 <- Hormones2011 |>
+#  select("SEQN")
+#Hormones2013 <- Hormones2013 |>
+#  select("SEQN")
+#Hormones2015 <- Hormones2015 |>
+#  select("SEQN")
+
+Hormones2017 <- Hormones2017 |>
+  select("SEQN", "SSTEST", "SSTSHBG", "SSTLUH")
+Hormones2021 <- Hormones2021 |>
+  select("SEQN", "LBXEST", "LBXSHBG", "LBXLUH" , "LBXTST")
+HormonesP2017 <- HormonesP2017 |>
+  select("SEQN", "LBXEST", "LBXSHBG", "LBXLUH")
 
 # Questionnaire 
 DiabetesQ2011 <- DiabetesQ2011 |>
