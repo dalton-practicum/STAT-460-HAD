@@ -73,6 +73,16 @@ LDL_Tri_Chol2017 <-read_xpt("Data 2017-18/TRIGLY_J.xpt")
 LDL_Tri_Chol2021 <-read_xpt("Data Aug2021-Aug2022/TRIGLY_L.xpt")
 LDL_Tri_CholP2017 <-read_xpt("Data PP2017-20/P_TRIGLY.xpt")
 
+GLYP2013 <- read_xpt("Data 2013-14/SSGLYP_H.xpt")
+GLYP2015 <- read_xpt("Data 2015-16/SSGLYP_I.xpt")
+GLYP2017 <- read_xpt("Data 2017-18/SSGLYP_J.xpt")
+
+Insulin2013 <- read_xpt("Data 2013-14/INS_H.xpt")
+Insulin2015 <- read_xpt("Data 2015-16/INS_I.xpt")
+Insulin2017 <- read_xpt("Data 2017-18/INS_J.xpt")
+Insulin2021 <- read_xpt("Data Aug2021-Aug2022/INS_L.xpt")
+InsulinP2017 <- read_xpt("Data PP2017-20/P_INS.xpt")
+
 Metals2011 <-read_xpt("Data 2011-12/UHM_G.xpt")
 Metals2013 <-read_xpt("Data 2013-14/UM_H.xpt")
 Metals2015 <-read_xpt("Data 2015-16/UM_I.xpt")
@@ -172,7 +182,7 @@ YouthWeightHistoryQP2017 <- read_xpt("Data PP2017-20/P_WHQMEC.xpt")
 
 #### Cleaning (this is so fun)
 ```{r}
-# Demographics - TBD
+# Demographics
 Demographics2011 <- Demographics2011 |>
   select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
 Demographics2013 <- Demographics2013 |>
@@ -214,7 +224,56 @@ BodyMeasurementsP2017 <- BodyMeasurementsP2017 |>
   select("SEQN","BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
 
 # Lab
+TotalChol2011 <- TotalChol2011
+TotalChol2013 <- TotalChol2013
+TotalChol2015 <- TotalChol2015
+TotalChol2017 <- TotalChol2017
+TotalChol2021 <- TotalChol2021
+TotalCholP2017 <- TotalCholP2017
 
+HDL_Chol2011 <- HDL_Chol2011 
+HDL_Chol2013 <- HDL_Chol2013
+HDL_Chol2015 <- HDL_Chol2015
+HDL_Chol2017 <- HDL_Chol2017
+HDL_Chol2021 <- HDL_Chol2021
+HDL_CholP2017 <- HDL_CholP2017
+
+LDL_Tri_Chol2011 <- LDL_Tri_Chol2011
+LDL_Tri_Chol2013 <- LDL_Tri_Chol2013
+LDL_Tri_Chol2015 <- LDL_Tri_Chol2015
+LDL_Tri_Chol2017 <- LDL_Tri_Chol2017
+LDL_Tri_Chol2021 <- LDL_Tri_Chol2021
+LDL_Tri_CholP2017 <- LDL_Tri_CholP2017
+
+GLYP2013 <- GLYP2013
+GLYP2015 <- GLYP2015
+GLYP2017 <- GLYP2017
+
+Insulin2013 <- Insulin2013
+Insulin2015 <- Insulin2015
+Insulin2017 <- Insulin2017
+Insulin2021 <- Insulin2021
+InsulinP2017 <- InsulinP2017
+
+Metals2011 <- Metals2011
+Metals2013 <- Metals2013 
+Metals2015 <- Metals2015
+Metals2017 <- Metals2017
+Metals2021 <- Metals2021
+MetalsP2017 <- MetalsP2017
+
+PFAs2011 <- PFAs2011
+PFAs2013 <- PFAs2013
+PFAs2015 <- PFAs2015
+PFAs2017 <- PFAs2017
+PFAsP2017 <- PFAsP2017
+
+Hormones2011 <- Hormones2011
+Hormones2013 <- Hormones2013
+Hormones2015 <- Hormones2015
+Hormones2017 <- Hormones2017
+Hormones2021 <- Hormones2021
+HormonesP2017 <- HormonesP2017
 
 # Questionnaire 
 DiabetesQ2011 <- DiabetesQ2011 |>
@@ -257,17 +316,17 @@ MedicalCondnsQP2017 <- MedicalCondnsQP2017 |>
   select("SEQN")
 
 MentalHealthQ2011 <- MentalHealthQ2011 |>
-  select("SEQN")
+  select("SEQN", "DPQ010", "DPQ020", "DPQ030", "DPQ040","DPQ050", "DPQ060", "DPQ070", "DPQ080", "DPQ090", "DPQ100")
 MentalHealthQ2013 <- MentalHealthQ2013 |>
-  select("SEQN")
+  select("SEQN", "DPQ010", "DPQ020", "DPQ030", "DPQ040","DPQ050", "DPQ060", "DPQ070", "DPQ080", "DPQ090", "DPQ100")
 MentalHealthQ2015 <- MentalHealthQ2015 |>
-  select("SEQN")
+  select("SEQN", "DPQ010", "DPQ020", "DPQ030", "DPQ040","DPQ050", "DPQ060", "DPQ070", "DPQ080", "DPQ090", "DPQ100")
 MentalHealthQ2017 <- MentalHealthQ2017 |>
-  select("SEQN")
+  select("SEQN", "DPQ010", "DPQ020", "DPQ030", "DPQ040","DPQ050", "DPQ060", "DPQ070", "DPQ080", "DPQ090", "DPQ100")
 MentalHealthQ2021 <- MentalHealthQ2021 |>
-  select("SEQN")
+  select("SEQN", "DPQ010", "DPQ020", "DPQ030", "DPQ040","DPQ050", "DPQ060", "DPQ070", "DPQ080", "DPQ090", "DPQ100")
 MentalHealthQP2017 <- MentalHealthQP2017 |>
-  select("SEQN")
+  select("SEQN", "DPQ010", "DPQ020", "DPQ030", "DPQ040","DPQ050", "DPQ060", "DPQ070", "DPQ080", "DPQ090", "DPQ100")
 
 PestisideQ2011 <- PestisideQ2011 |>
   select("SEQN")
@@ -309,17 +368,17 @@ PrescriptionMedsQP2017 <- PrescriptionMedsQP2017 |>
   select("SEQN")
 
 SleepDisordersQ2011 <- SleepDisordersQ2011 |>
-  select("SEQN")
+  select("SEQN", "SLD010H", "SLQ050", "SLQ060")
 SleepDisordersQ2013 <- SleepDisordersQ2013 |>
-  select("SEQN")
+  select("SEQN", "SLD010H", "SLQ050", "SLQ060")
 SleepDisordersQ2015 <- SleepDisordersQ2015 |>
-  select("SEQN")
+  select("SEQN", "SLD012", "SLQ040", "SLQ050", "SLQ120", "SLQ030")
 SleepDisordersQ2017 <- SleepDisordersQ2017 |>
-  select("SEQN")
+  select("SEQN", "SLD012", "SLD013","SLQ030","SLQ040","SLQ050","SLQ120")
 SleepDisordersQ2021 <- SleepDisordersQ2021 |>
-  select("SEQN")
+  select("SEQN", "SLD012", "SLQ320", "SLD013")
 SleepDisordersQP2017 <- SleepDisordersQP2017 |>
-  select("SEQN")
+  select("SEQN", "SLD012", "SLQ320", "SLD013", "SLQ030","SLQ040","SLQ050","SLQ120")
 
 SmokingQ2011 <- SmokingQ2011 |>
   select("SEQN")
