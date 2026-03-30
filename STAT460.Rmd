@@ -616,6 +616,16 @@ NHANESP2017 <- DemographicsPP2017 |>
   full_join(ExaminationP2017, by = c("SEQN" = "SEQN")) |>
   full_join(LabP2017, by = c("SEQN" = "SEQN")) |>
   full_join(QuestionnarieP2017, by = c("SEQN" = "SEQN"))
+
+write_xpt(NHANES2011, "NHANES2011.xpt")
+write_xpt(NHANES2013, "NHANES2013.xpt")
+write_xpt(NHANES2015, "NHANES2015.xpt")
+write_xpt(NHANES2017, "NHANES2017.xpt")
+write_xpt(NHANES2021, "NHANES2021.xpt")
+write_xpt(NHANESP2017, "NHANESP2017.xpt")
+
+
 ```
+
 
 >>>>>>> 5ac0bc8572beaae8a9c4eaa56fa871a51a2c2a78
