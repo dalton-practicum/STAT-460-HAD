@@ -335,17 +335,17 @@ DiabetesQP2017 <- DiabetesQP2017 |>
   select("SEQN", "DIQ010", "DIQ160")
 
 IncomeQ2011 <- IncomeQ2011 |>
-  select("SEQN")
+  select("SEQN", "INQ020", "INQ012", "INQ030", "INQ060")
 IncomeQ2013 <- IncomeQ2013 |>
-  select("SEQN")
+  select("SEQN", "INQ020", "INQ012", "INQ030", "INQ060")
 IncomeQ2015 <- IncomeQ2015 |>
-  select("SEQN")
+  select("SEQN", "INQ020", "INQ012", "INQ030", "INQ060")
 IncomeQ2017 <- IncomeQ2017 |>
-  select("SEQN")
+  select("SEQN", "INQ020", "INQ012", "INQ030", "INQ060")
 IncomeQ2021 <- IncomeQ2021 |>
-  select("SEQN")
+  select("SEQN", "INDFMMPI", "INDFMMPC")
 IncomeQP2017 <- IncomeQP2017 |>
-  select("SEQN")
+  select("SEQN", "INDFMMPI", "INDFMMPC")
 
 MedicalCondnsQ2011 <- MedicalCondnsQ2011 |>
   select("SEQN", "MCQ010", "MCQ053", "MCQ160A", "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", "MCQ160M", "MCQ160L", "MCQ220","MCQ230A", "MCQ230B", "MCQ230C", "MCQ230D")
@@ -467,6 +467,21 @@ YouthWeightHistoryQP2017 <- YouthWeightHistoryQP2017 |>
 Examination2011 <- BodyMeasurements2011 |>
   full_join(BloodPressure2011, by = c("SEQN" = "SEQN"))
 
+Examination2013 <- BodyMeasurements2013 |>
+  full_join(BloodPressure2013, by = c("SEQN" = "SEQN"))
+
+Examination2015 <- BodyMeasurements2015 |>
+  full_join(BloodPressure2015, by = c("SEQN" = "SEQN"))
+
+Examination2017 <- BodyMeasurements2017 |>
+  full_join(BloodPressure2017, by = c("SEQN" = "SEQN"))
+
+Examination2021 <- BodyMeasurements2021 |>
+  full_join(BloodPressure2021, by = c("SEQN" = "SEQN"))
+
+ExaminationP2017 <- BodyMeasurementsP2017 |>
+  full_join(BloodPressureP2017, by = c("SEQN" = "SEQN"))
+
 # Lab
 Lab2011 <- TotalChol2011 |>
   full_join(HDL_Chol2011, by = c("SEQN" = "SEQN")) |>
@@ -474,6 +489,42 @@ Lab2011 <- TotalChol2011 |>
   full_join(Metals2011, by = c("SEQN" = "SEQN")) |>
   full_join(PFAs2011, by = c("SEQN" = "SEQN")) |>
   full_join(Hormones2011, by = c("SEQN" = "SEQN"))
+
+Lab2013 <- TotalChol2013 |>
+  full_join(HDL_Chol2013, by = c("SEQN" = "SEQN")) |>
+  full_join(LDL_Tri_Chol2013, by = c("SEQN" = "SEQN")) |>
+  full_join(GLYP2013, by = c("SEQN" = "SEQN")) |>
+  full_join(Insulin2013, by = c("SEQN" = "SEQN")) |>
+  full_join(PFAs2013, by = c("SEQN" = "SEQN")) |>
+  full_join(Hormones2013, by = c("SEQN" = "SEQN"))
+
+Lab2015 <- TotalChol2015 |>
+  full_join(HDL_Chol2015, by = c("SEQN" = "SEQN")) |>
+  full_join(LDL_Tri_Chol2015, by = c("SEQN" = "SEQN")) |>
+  full_join(GLYP2015, by = c("SEQN" = "SEQN")) |>
+  full_join(Insulin2015, by = c("SEQN" = "SEQN")) |>
+  full_join(PFAs2015, by = c("SEQN" = "SEQN")) |>
+  full_join(Hormones2015, by = c("SEQN" = "SEQN"))
+
+Lab2017 <- TotalChol2017 |>
+  full_join(HDL_Chol2017, by = c("SEQN" = "SEQN")) |>
+  full_join(LDL_Tri_Chol2017, by = c("SEQN" = "SEQN")) |>
+  full_join(GLYP2017, by = c("SEQN" = "SEQN")) |>
+  full_join(Insulin2017, by = c("SEQN" = "SEQN")) |>
+  full_join(PFAs2017, by = c("SEQN" = "SEQN")) |>
+  full_join(Hormones2017, by = c("SEQN" = "SEQN"))
+
+Lab2021 <- TotalChol2021 |>
+  full_join(HDL_Chol2021, by = c("SEQN" = "SEQN")) |>
+  full_join(LDL_Tri_Chol2021, by = c("SEQN" = "SEQN")) |>
+  full_join(Insulin2021, by = c("SEQN" = "SEQN")) |>
+  full_join(Hormones2021, by = c("SEQN" = "SEQN"))
+
+LabP2017 <- TotalCholP2017 |>
+  full_join(HDL_CholP2017, by = c("SEQN" = "SEQN")) |>
+  full_join(LDL_Tri_CholP2017, by = c("SEQN" = "SEQN")) |>
+  full_join(InsulinP2017, by = c("SEQN" = "SEQN")) |>
+  full_join(HormonesP2017, by = c("SEQN" = "SEQN"))
 
 # Questionnaire
 Questionnarie2011 <- DiabetesQ2011 |>
@@ -485,9 +536,19 @@ Questionnarie2011 <- DiabetesQ2011 |>
   full_join(PrescriptionMedsQ2011, by = c("SEQN" = "SEQN")) |>
   full_join(SleepDisordersQ2011, by = c("SEQN" = "SEQN")) |>
   full_join(SmokingQ2011, by = c("SEQN" = "SEQN")) |>
-  full_join(WeightHistoryQ2011, by = c("SEQN" = "SEQN")) |>
+  full_join(WeightHistoryQ2011, by = c("SEQN" = "SEQN"))
   full_join(YouthWeightHistoryQ2011, by = c("SEQN" = "SEQN"))
 
+Questionnarie2011 <- DiabetesQ2011 |>
+  full_join(IncomeQ2011, by = c("SEQN" = "SEQN")) |>
+  full_join(MedicalCondnsQ2011, by = c("SEQN" = "SEQN")) |>
+  full_join(MentalHealthQ2011, by = c("SEQN" = "SEQN")) |>
+  full_join(PestisideQ2011, by = c("SEQN" = "SEQN")) |>
+  full_join(PhysicalActQ2011, by = c("SEQN" = "SEQN")) |>
+  full_join(PrescriptionMedsQ2011, by = c("SEQN" = "SEQN")) |>
+  full_join(SleepDisordersQ2011, by = c("SEQN" = "SEQN")) |>
+  full_join(SmokingQ2011, by = c("SEQN" = "SEQN")) |>
+  full_join(WeightHistoryQ2011, by = c("SEQN" = "SEQN"))
 ```
 
 <<<<<<< HEAD
