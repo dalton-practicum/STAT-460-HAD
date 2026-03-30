@@ -322,17 +322,17 @@ HormonesP2017 <- HormonesP2017 |>
 
 # Questionnaire 
 DiabetesQ2011 <- DiabetesQ2011 |>
-  select("SEQN")
+  select("SEQN", "DIQ010", "DIQ160")
 DiabetesQ2013 <- DiabetesQ2013 |>
-  select("SEQN")
+  select("SEQN", "DIQ010", "DIQ160")
 DiabetesQ2015 <- DiabetesQ2015 |>
-  select("SEQN")
+  select("SEQN", "DIQ010", "DIQ160")
 DiabetesQ2017 <- DiabetesQ2017 |>
-  select("SEQN")
+  select("SEQN", "DIQ010", "DIQ160")
 DiabetesQ2021 <- DiabetesQ2021 |>
-  select("SEQN")
+  select("SEQN", "DIQ010", "DIQ160")
 DiabetesQP2017 <- DiabetesQP2017 |>
-  select("SEQN")
+  select("SEQN", "DIQ010", "DIQ160")
 
 IncomeQ2011 <- IncomeQ2011 |>
   select("SEQN")
@@ -348,17 +348,17 @@ IncomeQP2017 <- IncomeQP2017 |>
   select("SEQN")
 
 MedicalCondnsQ2011 <- MedicalCondnsQ2011 |>
-  select("SEQN")
+  select("SEQN", "MCQ010", "MCQ053", "MCQ160A", "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", "MCQ160M", "MCQ160L", "MCQ220","MCQ230A", "MCQ230B", "MCQ230C", "MCQ230D")
 MedicalCondnsQ2013 <- MedicalCondnsQ2013 |>
-  select("SEQN")
+  select("SEQN", "MCQ010", "AGQ030", "MCQ053", "MCQ070", "MCQ082", "MCQ084", "MCQ084", "MCQ160A", "MCQ160N", "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", "MCQ160G", "MCQ160M", "MCQ160K", "MCQ170K", "MCQ160L", "MCQ160O", "MCQ203", "MCQ220", "MCQ230A", "MCQ230B", "MCQ230C", "MCQ365A", "MCQ365B", "MCQ365C", "MCQ365D")
 MedicalCondnsQ2015 <- MedicalCondnsQ2015 |>
-  select("SEQN")
+  select("SEQN", "MCQ010", "AGQ030", "MCQ053", "MCQ160A", "MCQ160N", "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", "MCQ160G", "MCQ160M", "MCQ160K", "MCQ160L", "MCQ160O", "MCQ220", "MCQ230A", "MCQ230B", "MCQ230C", "MCQ230D", "MCQ365A", "MCQ365B", "MCQ365C", "MCQ365D")
 MedicalCondnsQ2017 <- MedicalCondnsQ2017 |>
-  select("SEQN")
+  select("SEQN", "MCQ010", "AGQ030", "MCQ053", "MCQ160A", "MCQ160N", "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", "MCQ160M", "MCQ160G", "MCQ160K", "MCQ160O", "MCQ160L", "MCQ500", "MCQ550", "MCQ203", "MCQ220", "MCQ230A", "MCQ230B", "MCQ230C","MCQ366A", "MCQ366B", "MCQ366C", "MCQ366D")
 MedicalCondnsQ2021 <- MedicalCondnsQ2021 |>
-  select("SEQN")
+  select("SEQN", "MCQ010", "AGQ030", "MCQ053", "MCQ160A", "MCQ160B", "MCQ160C", "MCQ160D","MCQ160E", "MCQ160F", "MCQ160M", "MCQ160P", "MCQ160L", "MCQ500", "MCQ550", "MCQ220", "MCQ230A", "MCQ230B", "MCQ230C")
 MedicalCondnsQP2017 <- MedicalCondnsQP2017 |>
-  select("SEQN")
+  select("SEQN", "MCQ010", "AGQ030", "MCQ053", "MCQ160A", "MCQ195", "MCQ160B", "MCD180B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", "MCQ160M", "MCQ160P", "MCQ160L", "MCQ500", "MCQ550", "MCQ220", "MCQ230A", "MCQ230B", "MCQ230C", "MCQ366A", "MCQ366B", "MCQ366C", "MCQ366D")
 
 MentalHealthQ2011 <- MentalHealthQ2011 |>
   select("SEQN", "DPQ010", "DPQ020", "DPQ030", "DPQ040","DPQ050", "DPQ060", "DPQ070", "DPQ080", "DPQ090", "DPQ100")
@@ -374,17 +374,17 @@ MentalHealthQP2017 <- MentalHealthQP2017 |>
   select("SEQN", "DPQ010", "DPQ020", "DPQ030", "DPQ040","DPQ050", "DPQ060", "DPQ070", "DPQ080", "DPQ090", "DPQ100")
 
 PestisideQ2011 <- PestisideQ2011 |>
-  select("SEQN")
+  select("SEQN", "PUQ100", "PUQ110")
 PestisideQ2013 <- PestisideQ2013 |>
-  select("SEQN")
+  select("SEQN", "PUQ100", "PUQ110")
 PestisideQ2015 <- PestisideQ2015 |>
-  select("SEQN")
+  select("SEQN", "PUQ100", "PUQ110")
 PestisideQ2017 <- PestisideQ2017 |>
-  select("SEQN")
+  select("SEQN", "PUQ100", "PUQ110")
 PestisideQ2021 <- PestisideQ2021 |>
-  select("SEQN")
+  select("SEQN", "PUQ100", "PUQ110")
 PestisideQP2017 <- PestisideQP2017 |>
-  select("SEQN")
+  select("SEQN", "PUQ100", "PUQ110")
 
 PhysicalActQ2011 <- PhysicalActQ2011 |>
   select("SEQN")
@@ -400,17 +400,17 @@ PhysicalActQP2017 <- PhysicalActQP2017 |>
   select("SEQN")
 
 PrescriptionMedsQ2011 <- PrescriptionMedsQ2011 |>
-  select("SEQN")
+  select("SEQN", "RXDUSE","RXDDRUG","RXDDRGID","RXQSEEN","RXDDAYS","RXDCOUNT")
 PrescriptionMedsQ2013 <- PrescriptionMedsQ2013 |>
-  select("SEQN")
+  select("SEQN", "RXDUSE","RXDDRUG","RXDDRGID","RXQSEEN","RXDDAYS")
 PrescriptionMedsQ2015 <- PrescriptionMedsQ2015 |>
-  select("SEQN")
+  select("SEQN", "RXDUSE","RXDDRUG","RXDDRGID","RXQSEEN","RXDDAYS","RXDCOUNT")
 PrescriptionMedsQ2017 <- PrescriptionMedsQ2017 |>
-  select("SEQN")
+  select("SEQN", "RXDUSE","RXDDRUG","RXDDRGID","RXQSEEN","RXDDAYS","RXDCOUNT")
 PrescriptionMedsQ2021 <- PrescriptionMedsQ2021 |>
-  select("SEQN")
+  select("SEQN", "RXQ033","RXQ050")
 PrescriptionMedsQP2017 <- PrescriptionMedsQP2017 |>
-  select("SEQN")
+  select("SEQN", "RXDUSE","RXDDRUG","RXDDRGID","RXQSEEN","RXDDAYS","RXDCOUNT")
 
 SleepDisordersQ2011 <- SleepDisordersQ2011 |>
   select("SEQN", "SLD010H", "SLQ050", "SLQ060")
