@@ -248,7 +248,7 @@ HDL_Chol2015 <- HDL_Chol2015 |>
 HDL_Chol2017 <- HDL_Chol2017 |>
   select("SEQN", "LBDHDD", "LBDHDDSI")
 HDL_Chol2021 <- HDL_Chol2021 |>
-  select("SEQN", "WTPH2YR","LBDHDD", "LBDHDDSI")
+  select("SEQN","LBDHDD", "LBDHDDSI")
 HDL_CholP2017 <- HDL_CholP2017 |>
   select("SEQN", "LBDHDD", "LBDHDDSI")
 
