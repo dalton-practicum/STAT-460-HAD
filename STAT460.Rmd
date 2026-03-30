@@ -226,51 +226,51 @@ BodyMeasurementsP2017 <- BodyMeasurementsP2017 |>
   select("SEQN","BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
 
 # Lab
-#TotalChol2011 <- TotalChol2011 |>
-#  select("SEQN")
-#TotalChol2013 <- TotalChol2013 |>
-#  select("SEQN")
-#TotalChol2015 <- TotalChol2015 |>
-#  select("SEQN")
-#TotalChol2017 <- TotalChol2017 |>
-#  select("SEQN")
-#TotalChol2021 <- TotalChol2021 |>
-#  select("SEQN")
-#TotalCholP2017 <- TotalCholP2017 |>
-#  select("SEQN")
+TotalChol2011 <- TotalChol2011 |>
+  select("SEQN", "LBXTC", "LBDTCSI")
+TotalChol2013 <- TotalChol2013 |>
+  select("SEQN", "LBXTC", "LBDTCSI")
+TotalChol2015 <- TotalChol2015 |>
+  select("SEQN", "LBXTC", "LBDTCSI")
+TotalChol2017 <- TotalChol2017 |>
+  select("SEQN", "LBXTC", "LBDTCSI")
+TotalChol2021 <- TotalChol2021 |>
+  select("SEQN", "LBXTC", "LBDTCSI","WTPH2YR")
+TotalCholP2017 <- TotalCholP2017 |>
+  select("SEQN", "LBXTC", "LBDTCSI")
 
-#HDL_Chol2011 <- HDL_Chol2011|>
-#  select("SEQN")
-#HDL_Chol2013 <- HDL_Chol2013 |>
-#  select("SEQN")
-#HDL_Chol2015 <- HDL_Chol2015 |>
-#  select("SEQN")
-#HDL_Chol2017 <- HDL_Chol2017 |>
-#  select("SEQN")
-#HDL_Chol2021 <- HDL_Chol2021 |>
-#  select("SEQN")
-#HDL_CholP2017 <- HDL_CholP2017 |>
-#  select("SEQN")
+HDL_Chol2011 <- HDL_Chol2011|>
+  select("SEQN", "LBDHDD", "LBDHDDSI")
+HDL_Chol2013 <- HDL_Chol2013 |>
+  select("SEQN", "LBDHDD", "LBDHDDSI")
+HDL_Chol2015 <- HDL_Chol2015 |>
+  select("SEQN", "LBDHDD", "LBDHDDSI")
+HDL_Chol2017 <- HDL_Chol2017 |>
+  select("SEQN", "LBDHDD", "LBDHDDSI")
+HDL_Chol2021 <- HDL_Chol2021 |>
+  select("SEQN", "WTPH2YR","LBDHDD", "LBDHDDSI")
+HDL_CholP2017 <- HDL_CholP2017 |>
+  select("SEQN", "LBDHDD", "LBDHDDSI")
 
-#LDL_Tri_Chol2011 <- LDL_Tri_Chol2011 |>
-#  select("SEQN")
-#LDL_Tri_Chol2013 <- LDL_Tri_Chol2013 |>
-#  select("SEQN")
-#LDL_Tri_Chol2015 <- LDL_Tri_Chol2015 |>
-#  select("SEQN")
-#LDL_Tri_Chol2017 <- LDL_Tri_Chol2017 |>
-#  select("SEQN")
-#LDL_Tri_Chol2021 <- LDL_Tri_Chol2021 |>
-#  select("SEQN")
-#LDL_Tri_CholP2017 <- LDL_Tri_CholP2017 |>
-#  select("SEQN")
+LDL_Tri_Chol2011 <- LDL_Tri_Chol2011 |>
+  select("SEQN", "WRSAF2YR","LBXTR","LBDTRSI","LBDLDL","LBDLDLSI")
+LDL_Tri_Chol2013 <- LDL_Tri_Chol2013 |>
+  select("SEQN", WRSAF2YR,"LBXTR","LBDTRSI","LBDLDL","LBDLDLSI")
+LDL_Tri_Chol2015 <- LDL_Tri_Chol2015 |>
+  select("SEQN", "WTSAFPRP", "LBXTR", "LBDTRSI", "LBDLDL","LBDLDSI")
+LDL_Tri_Chol2017 <- LDL_Tri_Chol2017 |>
+  select("SEQN", "WTSAFPRP", "LBXTR", "LBDTRSI", "LBDLDL","LBDLDSI","LBDLDLM","LBDLDMSI","LBDLDLN","LBDLDNSI")
+LDL_Tri_Chol2021 <- LDL_Tri_Chol2021 |>
+  select("SEQN", "WTSAF2YR","LBXTLG", "LBDTRSI", "LBDLDL", "LBDLDLSI","LBDLDLM","LBDLDMSI","LBDLDLN","LBDLDNSI")
+LDL_Tri_CholP2017 <- LDL_Tri_CholP2017 |>
+  select("SEQN", "WTSAFPRP", "LBXTR", "LBDTRSI", "LBDLDL","LBDLDSI","LBDLDLM", "LBDLDMSI","LBDLDLN", "LBDLDNSI")
 
-#GLYP2013 <- GLYP2013 |>
-#  select("SEQN")
-#GLYP2015 <- GLYP2015 |>
-#  select("SEQN")
-#GLYP2017 <- GLYP2017 |>
-#  select("SEQN")
+GLYP2013 <- GLYP2013 |>
+  select("SEQN", "WTSSCH2Y","SSGLYP","SSGLYPL")
+GLYP2015 <- GLYP2015 |>
+  select("SEQN", "WTSSGL2Y","SSGLYP","SSGLYP")
+GLYP2017 <- GLYP2017 |>
+  select("SEQN", "WTSSBJ2Y", "SSGLYP","SSGLYPL")
 
 Insulin2013 <- Insulin2013 |>
   select("SEQN", "LBXIN", "LBDINSI", "PHAFSTMN")
@@ -280,8 +280,8 @@ Insulin2017 <- Insulin2017 |>
   select("SEQN", "LBXIN", "LBDINSI")
 Insulin2021 <- Insulin2021 |>
   select("SEQN", "LBXIN", "LBDINSI")
-#InsulinP2017 <- InsulinP2017 |>
-#  select("SEQN")
+InsulinP2017 <- InsulinP2017 |>
+  select("SEQN", "LBXIN","LBDINSI","LBDINLC")
 
 #Metals2011 <- Metals2011 |>
 #  select("SEQN")
@@ -307,13 +307,12 @@ PFAs2017 <- PFAs2017 |>
 PFAsP2017 <- PFAsP2017 |>
   select("SEQN", "LBXNFOS", "LBXMFOS", "LBXNFOA", "LBXBFOA", "LBXPFHS", "LBXPFNA")
 
-#Hormones2011 <- Hormones2011 |>
-#  select("SEQN")
-#Hormones2013 <- Hormones2013 |>
-#  select("SEQN")
-#Hormones2015 <- Hormones2015 |>
-#  select("SEQN")
-
+Hormones2011 <- Hormones2011 |>
+  select("SEQN", "LBXTST")
+Hormones2013 <- Hormones2013 |>
+  select("SEQN", "LBXTST","LBXEST","LBXSHBG")
+Hormones2015 <- Hormones2015 |>
+  select("SEQN", "LBXTST","LBXEST","LBXSHBG")
 Hormones2017 <- Hormones2017 |>
   select("SEQN", "SSTEST", "SSTSHBG", "SSTLUH")
 Hormones2021 <- Hormones2021 |>
