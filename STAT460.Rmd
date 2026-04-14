@@ -182,7 +182,7 @@ YouthWeightHistoryQ2017 <- read_xpt("Data 2017-18/WHQMEC_J.xpt")
 YouthWeightHistoryQP2017 <- read_xpt("Data PP2017-20/P_WHQMEC.xpt")
 ```
 
-#### Cleaning (this is so fun)
+#### Cleaning
 ```{r}
 # Demographics
 Demographics2011 <- Demographics2011 |>
@@ -584,7 +584,8 @@ QuestionnarieP2017 <- DiabetesQP2017 |>
   full_join(WeightHistoryQP2017, by = c("SEQN" = "SEQN"))
 ```
 
-### Merge and Export
+
+#### Merge and Export
 ```{r}
 NHANES2011 <- Demographics2011 |>
   full_join(Examination2011, by = c("SEQN" = "SEQN")) |>
@@ -623,6 +624,20 @@ write_xpt(NHANES2015, "NHANES2015.xpt")
 write_xpt(NHANES2017, "NHANES2017.xpt")
 write_xpt(NHANES2021, "NHANES2021.xpt")
 write_xpt(NHANESP2017, "NHANESP2017.xpt")
+
+
+```
+
+### Start
+```{r}
+NHANES2011 <- read_xpt("NHANES2011.xpt")
+NHANES2013 <- read_xpt("NHANES2013.xpt") 
+NHANES2015 <- read_xpt("NHANES2015.xpt") 
+NHANES2017 <- read_xpt("NHANES2017.xpt") 
+NHANES2021 <- read_xpt("NHANES2021.xpt") 
+NHANESP2017 <- read_xpt("NHANESP2017.xpt") 
+
+sum(dim(NHANES2011), dim(NHANES2013), dim(NHANES2015), dim(NHANES2017), dim(NHANES2021))
 
 
 ```
