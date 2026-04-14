@@ -566,7 +566,7 @@ Questionnarie2021 <- DiabetesQ2021 |>
   full_join(MedicalCondnsQ2021, by = c("SEQN" = "SEQN")) |>
   full_join(MentalHealthQ2021, by = c("SEQN" = "SEQN")) |>
   full_join(PestisideQ2021, by = c("SEQN" = "SEQN")) |>
-  full_join(PhysicalActQ2017, by = c("SEQN" = "SEQN")) |>
+  full_join(PhysicalActQ2021, by = c("SEQN" = "SEQN")) |>
   full_join(PrescriptionMedsQ2021, by = c("SEQN" = "SEQN")) |>
   full_join(SleepDisordersQ2021, by = c("SEQN" = "SEQN")) |>
   full_join(SmokingQ2021, by = c("SEQN" = "SEQN")) |>
