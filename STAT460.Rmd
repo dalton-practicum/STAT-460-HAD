@@ -638,8 +638,6 @@ NHANES2021 <- read_xpt("NHANES2021.xpt")
 NHANESP2017 <- read_xpt("NHANESP2017.xpt") 
 
 sum(dim(NHANES2011), dim(NHANES2013), dim(NHANES2015), dim(NHANES2017), dim(NHANES2021))
-
-
 ```
 
 
