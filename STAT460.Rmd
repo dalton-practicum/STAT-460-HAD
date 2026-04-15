@@ -624,8 +624,6 @@ write_xpt(NHANES2015, "NHANES2015.xpt")
 write_xpt(NHANES2017, "NHANES2017.xpt")
 write_xpt(NHANES2021, "NHANES2021.xpt")
 write_xpt(NHANESP2017, "NHANESP2017.xpt")
-
-
 ```
 
 ### Start
@@ -638,6 +636,28 @@ NHANES2021 <- read_xpt("NHANES2021.xpt")
 NHANESP2017 <- read_xpt("NHANESP2017.xpt") 
 
 sum(dim(NHANES2011), dim(NHANES2013), dim(NHANES2015), dim(NHANES2017), dim(NHANES2021))
+## Reminding myself how to do things. :/
+PFAsAsthma <- NHANES2017 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", "MCQ500", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F" # Cardiovascular
+         ) |> #Medical Question
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  filter(!is.na(LBXPFHS))
+
+PFAsAsthmaYay <- PFAsAsthma |>
+  filter(MCQ010 == 1) |>
+  select(-MCQ010)
+
+PFAsAsthmaNay <- PFAsAsthma |>
+  filter(MCQ010 == 2) |>
+  select(-MCQ010)
+
+summary(PFAsAsthmaYay)
 ```
 
 
