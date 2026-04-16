@@ -23,7 +23,7 @@ monofont: TimesNewRoman
 library(rmarkdown); library(knitr); library(moments);library(mdsr) 
 library(scatterplot3d); library(corrplot); library(pso);library(usethis)
 library(psych); library(GPArotation); library(lavaan);library(here)
-library(haven);library(tidyverse);library(tidyverse)
+library(haven);library(tidyverse);library(tidyverse);library(ggplot2)
 ```
 
 ### Data Cleaning
@@ -452,6 +452,7 @@ WeightHistoryQP2017 <- WeightHistoryQP2017 |>
   select("SEQN", "WHD080E", "WHD080B", "WHD080I", "WHQ150")
 ```
 
+
 #### Merging
 ```{r}
 # Examination
@@ -585,6 +586,7 @@ QuestionnarieP2017 <- DiabetesQP2017 |>
 ```
 
 
+
 #### Merge and Export
 ```{r}
 NHANES2011 <- Demographics2011 |>
@@ -626,6 +628,7 @@ write_xpt(NHANES2021, "NHANES2021.xpt")
 write_xpt(NHANESP2017, "NHANESP2017.xpt")
 ```
 
+
 ### Start
 ```{r}
 NHANES2011 <- read_xpt("NHANES2011.xpt")
@@ -641,23 +644,50 @@ PFAsAsthma <- NHANES2017 |>
   select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
          "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
          "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
+         # Medical Questions
          "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
          "DIQ010", "DIQ160", # METABOLIC
          "MCQ160M", "MCQ160L", "MCQ500", # Endo/Liver
          "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F" # Cardiovascular
-         ) |> #Medical Question
+         ) |> 
   filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXBFOA = log(LBXBFOA)) |>
+  mutate(logLBXMFOS = log(LBXMFOS)) |>
+  mutate(logLBXNFOA = log(LBXNFOA)) |>
   filter(!is.na(LBXPFHS))
+
+PFAident <- c("SEQN", "RIDAGEYR", "RIDRETH3", "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
+PFAlist <- c("LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA")
+PFARespQs <- c("MCQ010", "MCQ160G", "MCQ160K", "MCQ160O")
+PFAMetaQs <- c("DIQ010", "DIQ160")
+PFAEndoQs <- c("MCQ160M", "MCQ160L", "MCQ500")
+PFACardQs <- c("MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
 
 PFAsAsthmaYay <- PFAsAsthma |>
   filter(MCQ010 == 1) |>
-  select(-MCQ010)
+  select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
 PFAsAsthmaNay <- PFAsAsthma |>
   filter(MCQ010 == 2) |>
-  select(-MCQ010)
+  select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
+
+PFAsAsthma2 <- PFAsAsthma |>
+  filter(MCQ010 != 9) |>
+  mutate(MCQ010 = if_else(MCQ010 == 1, "Yes", "No"))
 
 summary(PFAsAsthmaYay)
+summary(PFAsAsthmaNay)
+
+fit <- aov(logLBXPFHS ~ MCQ010, data = PFAsAsthma)
+summary(fit)
+# TukeyHSD(fit)
+
+ggplot(data = PFAsAsthma2, aes(x = logLBXPFHS, fill = MCQ010)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
+
 ```
 
 
