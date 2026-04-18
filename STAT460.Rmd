@@ -1044,7 +1044,7 @@ ggplot(data = PFAsBronchitis, aes(x = logLBXNFOA, fill = MCQ160K)) +
 
 ```
 
-### MCQ160O - DO
+### MCQ160O - Accidentally labeled as 2011, oopsies
 
 ```{r}
 # COPD Differences
