@@ -629,7 +629,10 @@ write_xpt(NHANESP2017, "NHANESP2017.xpt")
 ```
 
 
+## Distribution Analysis
+
 ### Start 2017
+
 ```{r}
 NHANES2011 <- read_xpt("NHANES2011.xpt")
 NHANES2013 <- read_xpt("NHANES2013.xpt") 
@@ -3082,6 +3085,33 @@ ggplot(data = PFAsLiverTot2015, aes(x = logLBXNFOA, fill = MCQ160L)) +
 
 ```
 
-### Next next next
+## Logistic Regression Models
+
+We could do this by year and have different confounding variables found in each one.
+
+Possible Confounders?
+
+```{r}
+
+```
+
+## CB-SEM and PCA
+
+```{r}
+
+```
+
+## Neural Network
+
+```{r}
+
+```
+
+### TDA?
+
+```{r}
+
+```
+
 
 >>>>>>> 5ac0bc8572beaae8a9c4eaa56fa871a51a2c2a78
