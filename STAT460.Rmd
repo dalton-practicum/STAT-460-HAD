@@ -186,17 +186,17 @@ YouthWeightHistoryQP2017 <- read_xpt("Data PP2017-20/P_WHQMEC.xpt")
 ```{r}
 # Demographics
 Demographics2011 <- Demographics2011 |>
-  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3", "INDFMPIR")
 Demographics2013 <- Demographics2013 |>
-  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3", "INDFMPIR")
 Demographics2015 <- Demographics2015 |>
-  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3", "INDFMPIR")
 Demographics2017 <- Demographics2017 |>
-  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3", "INDFMPIR")
 Demographics2021 <- Demographics2021 |>
-  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3", "INDFMPIR")
 DemographicsPP2017 <- DemographicsPP2017 |>
-  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3")
+  select("SEQN", "RIDSTATR", "RIAGENDR","RIDAGEYR", "RIDRETH3", "INDFMPIR")
 
 # Examination
 BloodPressure2011 <- BloodPressure2011 |>
@@ -426,17 +426,17 @@ SleepDisordersQP2017 <- SleepDisordersQP2017 |>
   select("SEQN", "SLD012", "SLQ320", "SLD013", "SLQ030","SLQ040","SLQ050","SLQ120")
 
 SmokingQ2011 <- SmokingQ2011 |>
-  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN")
+  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN", "SMQ020")
 SmokingQ2013 <- SmokingQ2013 |>
-  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN")
+  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN", "SMQ020")
 SmokingQ2015 <- SmokingQ2015 |>
-  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN")
+  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN", "SMQ020")
 SmokingQ2017 <- SmokingQ2017 |>
-  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN")
+  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN", "SMQ020")
 SmokingQ2021 <- SmokingQ2021 |>
-  select("SEQN", "SMQ040", "SMD650", "SMD100MN")
+  select("SEQN", "SMQ040", "SMD650", "SMD100MN", "SMQ020")
 SmokingQP2017 <- SmokingQP2017 |>
-  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN")
+  select("SEQN", "SMD030", "SMQ040", "SMD650", "SMD100MN", "SMQ020")
 
 WeightHistoryQ2011 <- WeightHistoryQ2011 |>
   select("SEQN", "WHD080E", "WHD080B", "WHD080I", "WHD100R", "WHQ150")
@@ -643,7 +643,7 @@ NHANESP2017 <- read_xpt("NHANESP2017.xpt")
 
 sum(dim(NHANES2011), dim(NHANES2013), dim(NHANES2015), dim(NHANES2017), dim(NHANES2021))
 ## Reminding myself how to do things. :/
-PFAsAsthma <- NHANES2017 |>
+PFAsTotal2017 <- NHANES2017 |>
   select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
          "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
          "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
@@ -668,31 +668,31 @@ PFAMetaQs <- c("DIQ010", "DIQ160")
 PFAEndoQs <- c("MCQ160M", "MCQ160L", "MCQ500")
 PFACardQs <- c("MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
 
-PFAsAsthmaYay <- PFAsAsthma |>
+PFAsTotal2017Yay <- PFAsTotal2017 |>
   filter(MCQ010 == 1) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsAsthmaNay <- PFAsAsthma |>
+PFAsTotal2017Nay <- PFAsTotal2017 |>
   filter(MCQ010 == 2) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsAsthma2 <- PFAsAsthma |>
+PFAsTotal20172 <- PFAsTotal2017 |>
   filter(MCQ010 != 7 & MCQ010 != 9) |>
   mutate(MCQ010 = if_else(MCQ010 == 1, "Yes", "No"))
 
-PFAsEmphysemaYay <- PFAsAsthma |>
+PFAsEmphysemaYay <- PFAsTotal2017 |>
   filter(MCQ160G == 1) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsEmphysemaNay <- PFAsAsthma |>
+PFAsEmphysemaNay <- PFAsTotal2017 |>
   filter(MCQ160G == 2) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsEmphysema <- PFAsAsthma |>
+PFAsEmphysema <- PFAsTotal2017 |>
   filter(MCQ160G != 9) |>
   mutate(MCQ160G = if_else(MCQ160G == 1, "Yes", "No"))
 
-PFAsAsthma3 <- PFAsAsthma |>
+PFAsTotal20173 <- PFAsTotal2017 |>
   mutate(MCQ160L = coalesce(MCQ160L, MCQ500))
 
 ```
@@ -703,108 +703,108 @@ PFAsAsthma3 <- PFAsAsthma |>
 # Asthma Differences
 
 ## FNS
-YesAthmaSumm <- summary(PFAsAsthmaYay)
-NoAthmaSumm <- summary(PFAsAsthmaNay)
+YesAthmaSumm <- summary(PFAsTotal2017Yay)
+NoAthmaSumm <- summary(PFAsTotal2017Nay)
 YesAthmaSumm
 NoAthmaSumm
 
 
 ## PFHS
 ### ANOVA
-AsthmaFitsPFHS <- aov(logLBXPFHS ~ MCQ010, data = PFAsAsthma)
+AsthmaFitsPFHS <- aov(logLBXPFHS ~ MCQ010, data = PFAsTotal2017)
 summary(AsthmaFitsPFHS)
 
 ### Mean Difference
-diff1 <- diff(tapply(PFAsAsthma2$logLBXPFHS, PFAsAsthma2$MCQ010, mean))
+diff1 <- diff(tapply(PFAsTotal20172$logLBXPFHS, PFAsTotal20172$MCQ010, mean))
 AsthmaDifferencePFHS <- exp(diff1)
 AsthmaDifferencePFHS
 
 ### Confidence Interval
-AsthmaConfIntPFHS <- t.test(logLBXPFHS ~ MCQ010, data = PFAsAsthma2)$conf.int
+AsthmaConfIntPFHS <- t.test(logLBXPFHS ~ MCQ010, data = PFAsTotal20172)$conf.int
 AsthmaConfIntPFHS
 
 ### Plot
-ggplot(data = PFAsAsthma2, aes(x = logLBXPFHS, fill = MCQ010)) + 
+ggplot(data = PFAsTotal20172, aes(x = logLBXPFHS, fill = MCQ010)) + 
   scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
   geom_density(alpha = 0.4)
 
 
 ## PFNA
 ### ANOVA
-AsthmaFitsPFNA <- aov(logLBXPFNA ~ MCQ010, data = PFAsAsthma)
+AsthmaFitsPFNA <- aov(logLBXPFNA ~ MCQ010, data = PFAsTotal2017)
 summary(AsthmaFitsPFNA)
 
 ### Mean Difference
-diff2 <- diff(tapply(PFAsAsthma2$logLBXPFNA, PFAsAsthma2$MCQ010, mean))
+diff2 <- diff(tapply(PFAsTotal20172$logLBXPFNA, PFAsTotal20172$MCQ010, mean))
 AsthmaDifferencePFNA <- exp(diff2)
 AsthmaDifferencePFNA
 
 ### Confidence Interval
-AsthmaConfIntPFNA <- t.test(logLBXPFNA ~ MCQ010, data = PFAsAsthma2)$conf.int
+AsthmaConfIntPFNA <- t.test(logLBXPFNA ~ MCQ010, data = PFAsTotal20172)$conf.int
 AsthmaConfIntPFNA
 
 ### Plot
-ggplot(data = PFAsAsthma2, aes(x = logLBXPFNA, fill = MCQ010)) + 
+ggplot(data = PFAsTotal20172, aes(x = logLBXPFNA, fill = MCQ010)) + 
   scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
   geom_density(alpha = 0.4)
 
 
 ## Sb-PFOA (BFOA)
 ### ANOVA
-AsthmaFitsBFOA <- aov(logLBXBFOA ~ MCQ010, data = PFAsAsthma)
+AsthmaFitsBFOA <- aov(logLBXBFOA ~ MCQ010, data = PFAsTotal2017)
 summary(AsthmaFitsBFOA)
 
 ### Mean Difference
-diff3 <- diff(tapply(PFAsAsthma2$logLBXBFOA, PFAsAsthma2$MCQ010, mean))
+diff3 <- diff(tapply(PFAsTotal20172$logLBXBFOA, PFAsTotal20172$MCQ010, mean))
 AsthmaDifferenceBFOA <- exp(diff3)
 AsthmaDifferenceBFOA
 
 ### Confidence Interval
-AsthmaConfIntBFOA <- t.test(logLBXBFOA ~ MCQ010, data = PFAsAsthma2)$conf.int
+AsthmaConfIntBFOA <- t.test(logLBXBFOA ~ MCQ010, data = PFAsTotal20172)$conf.int
 AsthmaConfIntBFOA
 
 ### Plot
-ggplot(data = PFAsAsthma2, aes(x = logLBXBFOA, fill = MCQ010)) + 
+ggplot(data = PFAsTotal20172, aes(x = logLBXBFOA, fill = MCQ010)) + 
   scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
   geom_density(alpha = 0.4)
 
 
 ## Sm-PFOS (MFOS)
 ### ANOVA
-AsthmaFitsMFOS <- aov(logLBXMFOS ~ MCQ010, data = PFAsAsthma)
+AsthmaFitsMFOS <- aov(logLBXMFOS ~ MCQ010, data = PFAsTotal2017)
 summary(AsthmaFitsMFOS)
 
 ### Mean Difference
-diff3 <- diff(tapply(PFAsAsthma2$logLBXMFOS, PFAsAsthma2$MCQ010, mean))
+diff3 <- diff(tapply(PFAsTotal20172$logLBXMFOS, PFAsTotal20172$MCQ010, mean))
 AsthmaDifferenceMFOS <- exp(diff3)
 AsthmaDifferenceMFOS
 
 ### Confidence Interval
-AsthmaConfIntMFOS <- t.test(logLBXMFOS ~ MCQ010, data = PFAsAsthma2)$conf.int
+AsthmaConfIntMFOS <- t.test(logLBXMFOS ~ MCQ010, data = PFAsTotal20172)$conf.int
 AsthmaConfIntMFOS
 
 ### Plot
-ggplot(data = PFAsAsthma2, aes(x = logLBXMFOS, fill = MCQ010)) + 
+ggplot(data = PFAsTotal20172, aes(x = logLBXMFOS, fill = MCQ010)) + 
   scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
   geom_density(alpha = 0.4)
 
 
 ## n-PFOA (NFOA)
 ### ANOVA
-AsthmaFitsNFOA <- aov(logLBXNFOA ~ MCQ010, data = PFAsAsthma)
+AsthmaFitsNFOA <- aov(logLBXNFOA ~ MCQ010, data = PFAsTotal2017)
 summary(AsthmaFitsNFOA)
 
 ### Mean Difference
-diff3 <- diff(tapply(PFAsAsthma2$logLBXNFOA, PFAsAsthma2$MCQ010, mean))
+diff3 <- diff(tapply(PFAsTotal20172$logLBXNFOA, PFAsTotal20172$MCQ010, mean))
 AsthmaDifferenceNFOA <- exp(diff3)
 AsthmaDifferenceNFOA
 
 ### Confidence Interval
-AsthmaConfIntNFOA <- t.test(logLBXNFOA ~ MCQ010, data = PFAsAsthma2)$conf.int
+AsthmaConfIntNFOA <- t.test(logLBXNFOA ~ MCQ010, data = PFAsTotal20172)$conf.int
 AsthmaConfIntNFOA
 
 ### Plot
-ggplot(data = PFAsAsthma2, aes(x = logLBXNFOA, fill = MCQ010)) + 
+ggplot(data = PFAsTotal20172, aes(x = logLBXNFOA, fill = MCQ010)) + 
   scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
   geom_density(alpha = 0.4)
 ```
@@ -823,7 +823,7 @@ NoEmphySumm
 
 ## PFHS
 ### ANOVA
-EmphyFitsPFHS <- aov(logLBXPFHS ~ MCQ160G, data = PFAsAsthma)
+EmphyFitsPFHS <- aov(logLBXPFHS ~ MCQ160G, data = PFAsTotal2017)
 summary(EmphyFitsPFHS)
 
 ### Mean Difference
@@ -843,7 +843,7 @@ ggplot(data = PFAsEmphysema, aes(x = logLBXPFHS, fill = MCQ160G)) +
 
 ## PFNA
 ### ANOVA
-EmphyFitsPFNA <- aov(logLBXPFNA ~ MCQ160G, data = PFAsAsthma)
+EmphyFitsPFNA <- aov(logLBXPFNA ~ MCQ160G, data = PFAsTotal2017)
 summary(EmphyFitsPFHS)
 
 ### Mean Difference
@@ -863,7 +863,7 @@ ggplot(data = PFAsEmphysema, aes(x = logLBXPFNA, fill = MCQ160G)) +
 
 ## Sb-PFOA (BFOA)
 ### ANOVA
-EmphyFitsBFOA <- aov(logLBXBFOA ~ MCQ160G, data = PFAsAsthma)
+EmphyFitsBFOA <- aov(logLBXBFOA ~ MCQ160G, data = PFAsTotal2017)
 summary(EmphyFitsBFOA)
 
 ### Mean Difference
@@ -883,7 +883,7 @@ ggplot(data = PFAsEmphysema, aes(x = logLBXBFOA, fill = MCQ160G)) +
 
 ## Sm-PFOS (MFOS)
 ### ANOVA
-EmphyFitsMFOS <- aov(logLBXMFOS ~ MCQ160G, data = PFAsAsthma)
+EmphyFitsMFOS <- aov(logLBXMFOS ~ MCQ160G, data = PFAsTotal2017)
 summary(EmphyFitsMFOS)
 
 ### Mean Difference
@@ -903,7 +903,7 @@ ggplot(data = PFAsEmphysema, aes(x = logLBXMFOS, fill = MCQ160G)) +
 
 ## n-PFOA (NFOA)
 ### ANOVA
-EmphyFitsNFOA <- aov(logLBXNFOA ~ MCQ160G, data = PFAsAsthma)
+EmphyFitsNFOA <- aov(logLBXNFOA ~ MCQ160G, data = PFAsTotal2017)
 summary(EmphyFitsNFOA)
 
 ### Mean Difference
@@ -927,15 +927,15 @@ ggplot(data = PFAsEmphysema, aes(x = logLBXNFOA, fill = MCQ160G)) +
 ```{r}
 # Bronchitis Differences
 
-PFAsBronchitisYay <- PFAsAsthma |>
+PFAsBronchitisYay <- PFAsTotal2017 |>
   filter(MCQ160K == 1) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsBronchitisNay <- PFAsAsthma |>
+PFAsBronchitisNay <- PFAsTotal2017 |>
   filter(MCQ160K == 2) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsBronchitis <- PFAsAsthma |>
+PFAsBronchitis <- PFAsTotal2017 |>
   filter(MCQ160K != 9) |>
   mutate(MCQ160K = if_else(MCQ160K == 1, "Yes", "No"))
 
@@ -948,7 +948,7 @@ NoBronSumm
 
 ## PFHS
 ### ANOVA
-BronFitsPFHS <- aov(logLBXPFHS ~ MCQ160K, data = PFAsAsthma)
+BronFitsPFHS <- aov(logLBXPFHS ~ MCQ160K, data = PFAsTotal2017)
 summary(BronFitsPFHS)
 
 ### Mean Difference
@@ -968,7 +968,7 @@ ggplot(data = PFAsBronchitis, aes(x = logLBXPFHS, fill = MCQ160K)) +
 
 ## PFNA
 ### ANOVA
-BronFitsPFNA <- aov(logLBXPFNA ~ MCQ160K, data = PFAsAsthma)
+BronFitsPFNA <- aov(logLBXPFNA ~ MCQ160K, data = PFAsTotal2017)
 summary(BronFitsPFNA)
 
 ### Mean Difference
@@ -988,7 +988,7 @@ ggplot(data = PFAsBronchitis, aes(x = logLBXPFNA, fill = MCQ160K)) +
 
 ## Sb-PFOA (BFOA)
 ### ANOVA
-BronFitsBFOA <- aov(logLBXBFOA ~ MCQ160K, data = PFAsAsthma)
+BronFitsBFOA <- aov(logLBXBFOA ~ MCQ160K, data = PFAsTotal2017)
 summary(BronFitsBFOA)
 
 ### Mean Difference
@@ -1008,7 +1008,7 @@ ggplot(data = PFAsBronchitis, aes(x = logLBXBFOA, fill = MCQ160K)) +
 
 ## Sm-PFOS (MFOS)
 ### ANOVA
-BronFitsMFOS <- aov(logLBXMFOS ~ MCQ160K, data = PFAsAsthma)
+BronFitsMFOS <- aov(logLBXMFOS ~ MCQ160K, data = PFAsTotal2017)
 summary(BronFitsMFOS)
 
 ### Mean Difference
@@ -1028,7 +1028,7 @@ ggplot(data = PFAsBronchitis, aes(x = logLBXMFOS, fill = MCQ160K)) +
 
 ## n-PFOA (NFOA)
 ### ANOVA
-BronFitsNFOA <- aov(logLBXNFOA ~ MCQ160K, data = PFAsAsthma)
+BronFitsNFOA <- aov(logLBXNFOA ~ MCQ160K, data = PFAsTotal2017)
 summary(BronFitsNFOA)
 
 ### Mean Difference
@@ -1052,15 +1052,15 @@ ggplot(data = PFAsBronchitis, aes(x = logLBXNFOA, fill = MCQ160K)) +
 ```{r}
 # COPD Differences
 
-PFAsCOPDYay2011 <- PFAsAsthma |>
+PFAsCOPDYay2011 <- PFAsTotal2017 |>
   filter(MCQ160O == 1) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsCOPDNay2011 <- PFAsAsthma |>
+PFAsCOPDNay2011 <- PFAsTotal2017 |>
   filter(MCQ160O == 2) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsCOPDTot2011 <- PFAsAsthma |>
+PFAsCOPDTot2011 <- PFAsTotal2017 |>
   filter(MCQ160O != 9 & MCQ160O != 7) |>
   mutate(MCQ160O = if_else(MCQ160O == 1, "Yes", "No"))
 
@@ -1073,7 +1073,7 @@ NoCOPDSumm
 
 ## PFHS
 ### ANOVA
-COPDFitsPFHS2011 <- aov(logLBXPFHS ~ MCQ160O, data = PFAsAsthma)
+COPDFitsPFHS2011 <- aov(logLBXPFHS ~ MCQ160O, data = PFAsTotal2017)
 summary(COPDFitsPFHS2011)
 
 ### Mean Difference
@@ -1093,7 +1093,7 @@ ggplot(data = PFAsCOPDTot2011, aes(x = logLBXPFHS, fill = MCQ160O)) +
 
 ## PFNA
 ### ANOVA
-COPDFitsPFNA2011 <- aov(logLBXPFNA ~ MCQ160O, data = PFAsAsthma)
+COPDFitsPFNA2011 <- aov(logLBXPFNA ~ MCQ160O, data = PFAsTotal2017)
 summary(COPDFitsPFNA2011)
 
 ### Mean Difference
@@ -1113,7 +1113,7 @@ ggplot(data = PFAsCOPDTot2011, aes(x = logLBXPFNA, fill = MCQ160O)) +
 
 ## Sb-PFOA (BFOA)
 ### ANOVA
-COPDFitsBFOA2011 <- aov(logLBXBFOA ~ MCQ160O, data = PFAsAsthma)
+COPDFitsBFOA2011 <- aov(logLBXBFOA ~ MCQ160O, data = PFAsTotal2017)
 summary(COPDFitsBFOA2011)
 
 ### Mean Difference
@@ -1133,7 +1133,7 @@ ggplot(data = PFAsCOPDTot2011, aes(x = logLBXBFOA, fill = MCQ160O)) +
 
 ## Sm-PFOS (MFOS)
 ### ANOVA
-COPDFitsMFOS2011 <- aov(logLBXMFOS ~ MCQ160O, data = PFAsAsthma)
+COPDFitsMFOS2011 <- aov(logLBXMFOS ~ MCQ160O, data = PFAsTotal2017)
 summary(COPDFitsMFOS2011)
 
 ### Mean Difference
@@ -1153,7 +1153,7 @@ ggplot(data = PFAsCOPDTot2011, aes(x = logLBXMFOS, fill = MCQ160O)) +
 
 ## n-PFOA (NFOA)
 ### ANOVA
-COPDFitsNFOA2011 <- aov(logLBXNFOA ~ MCQ160O, data = PFAsAsthma)
+COPDFitsNFOA2011 <- aov(logLBXNFOA ~ MCQ160O, data = PFAsTotal2017)
 summary(COPDFitsNFOA2011)
 
 ### Mean Difference
@@ -1188,15 +1188,15 @@ ggplot(data = PFAsCOPDTot2011, aes(x = logLBXNFOA, fill = MCQ160O)) +
 ```{r}
 # Thyroid Differences
 
-PFAsThyroidYay <- PFAsAsthma |>
+PFAsThyroidYay <- PFAsTotal2017 |>
   filter(MCQ160M == 1) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsThyroidNay <- PFAsAsthma |>
+PFAsThyroidNay <- PFAsTotal2017 |>
   filter(MCQ160M == 2) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsThyroid <- PFAsAsthma |>
+PFAsThyroid <- PFAsTotal2017 |>
   filter(MCQ160M != c(7, 9)) |>
   mutate(MCQ160M = if_else(MCQ160M == 1, "Yes", "No"))
 
@@ -1209,7 +1209,7 @@ NoThyroidSumm
 
 ## PFHS
 ### ANOVA
-ThyroidFitsPFHS <- aov(logLBXPFHS ~ MCQ160M, data = PFAsAsthma)
+ThyroidFitsPFHS <- aov(logLBXPFHS ~ MCQ160M, data = PFAsTotal2017)
 summary(ThyroidFitsPFHS)
 
 ### Mean Difference
@@ -1229,7 +1229,7 @@ ggplot(data = PFAsThyroid, aes(x = logLBXPFHS, fill = MCQ160M)) +
 
 ## PFNA
 ### ANOVA
-ThyroidFitsPFNA <- aov(logLBXPFNA ~ MCQ160M, data = PFAsAsthma)
+ThyroidFitsPFNA <- aov(logLBXPFNA ~ MCQ160M, data = PFAsTotal2017)
 summary(ThyroidFitsPFNA)
 
 ### Mean Difference
@@ -1249,7 +1249,7 @@ ggplot(data = PFAsThyroid, aes(x = logLBXPFNA, fill = MCQ160M)) +
 
 ## Sb-PFOA (BFOA)
 ### ANOVA
-ThyroidFitsBFOA <- aov(logLBXBFOA ~ MCQ160M, data = PFAsAsthma)
+ThyroidFitsBFOA <- aov(logLBXBFOA ~ MCQ160M, data = PFAsTotal2017)
 summary(ThyroidFitsBFOA)
 
 ### Mean Difference
@@ -1269,7 +1269,7 @@ ggplot(data = PFAsThyroid, aes(x = logLBXBFOA, fill = MCQ160M)) +
 
 ## Sm-PFOS (MFOS)
 ### ANOVA
-ThyroidFitsMFOS <- aov(logLBXMFOS ~ MCQ160M, data = PFAsAsthma)
+ThyroidFitsMFOS <- aov(logLBXMFOS ~ MCQ160M, data = PFAsTotal2017)
 summary(ThyroidFitsMFOS)
 
 ### Mean Difference
@@ -1289,7 +1289,7 @@ ggplot(data = PFAsThyroid, aes(x = logLBXMFOS, fill = MCQ160M)) +
 
 ## n-PFOA (NFOA)
 ### ANOVA
-ThyroidFitsNFOA <- aov(logLBXNFOA ~ MCQ160M, data = PFAsAsthma)
+ThyroidFitsNFOA <- aov(logLBXNFOA ~ MCQ160M, data = PFAsTotal2017)
 summary(ThyroidFitsNFOA)
 
 ### Mean Difference
@@ -1314,15 +1314,15 @@ In the case where MCQ160L had an `NA` value, the MCQ500 had a value (and vice-ve
 ```{r}
 # Liver Differences
 
-PFAsLiverYay <- PFAsAsthma3 |>
+PFAsLiverYay <- PFAsTotal20173 |>
   filter(MCQ160L == 1) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsLiverNay <- PFAsAsthma3 |>
+PFAsLiverNay <- PFAsTotal20173 |>
   filter(MCQ160L == 2) |>
   select(-c(PFARespQs, PFAMetaQs, PFAEndoQs, PFACardQs, PFAident))
 
-PFAsLiver <- PFAsAsthma3 |>
+PFAsLiver <- PFAsTotal20173 |>
   filter(MCQ160L != c(7, 9)) |>
   mutate(MCQ160L = if_else(MCQ160L == 1, "Yes", "No"))
 
@@ -1335,7 +1335,7 @@ NoLiverSumm
 
 ## PFHS
 ### ANOVA
-LiverFitsPFHS <- aov(logLBXPFHS ~ MCQ160L, data = PFAsAsthma3)
+LiverFitsPFHS <- aov(logLBXPFHS ~ MCQ160L, data = PFAsTotal20173)
 summary(LiverFitsPFHS)
 
 ### Mean Difference
@@ -1355,7 +1355,7 @@ ggplot(data = PFAsLiver, aes(x = logLBXPFHS, fill = MCQ160L)) +
 
 ## PFNA
 ### ANOVA
-LiverFitsPFNA <- aov(logLBXPFNA ~ MCQ160L, data = PFAsAsthma3)
+LiverFitsPFNA <- aov(logLBXPFNA ~ MCQ160L, data = PFAsTotal20173)
 summary(LiverFitsPFNA)
 
 ### Mean Difference
@@ -1375,7 +1375,7 @@ ggplot(data = PFAsLiver, aes(x = logLBXPFNA, fill = MCQ160L)) +
 
 ## Sb-PFOA (BFOA)
 ### ANOVA
-LiverFitsBFOA <- aov(logLBXBFOA ~ MCQ160L, data = PFAsAsthma3)
+LiverFitsBFOA <- aov(logLBXBFOA ~ MCQ160L, data = PFAsTotal20173)
 summary(LiverFitsBFOA)
 
 ### Mean Difference
@@ -1395,7 +1395,7 @@ ggplot(data = PFAsLiver, aes(x = logLBXBFOA, fill = MCQ160L)) +
 
 ## Sm-PFOS (MFOS)
 ### ANOVA
-LiverFitsMFOS <- aov(logLBXMFOS ~ MCQ160L, data = PFAsAsthma3)
+LiverFitsMFOS <- aov(logLBXMFOS ~ MCQ160L, data = PFAsTotal20173)
 summary(LiverFitsMFOS)
 
 ### Mean Difference
@@ -1415,7 +1415,7 @@ ggplot(data = PFAsLiver, aes(x = logLBXMFOS, fill = MCQ160L)) +
 
 ## n-PFOA (NFOA)
 ### ANOVA
-LiverFitsNFOA <- aov(logLBXNFOA ~ MCQ160L, data = PFAsAsthma3)
+LiverFitsNFOA <- aov(logLBXNFOA ~ MCQ160L, data = PFAsTotal20173)
 summary(LiverFitsNFOA)
 
 ### Mean Difference
@@ -3089,7 +3089,6 @@ ggplot(data = PFAsLiverTot2015, aes(x = logLBXNFOA, fill = MCQ160L)) +
 
 We could do this by year and have different confounding variables found in each one.
 
-Possible Confounders?
 
 ```{r}
 
