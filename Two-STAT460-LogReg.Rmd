@@ -1,0 +1,39 @@
+---
+title: "STAT460 Logistic Regression Analysis"
+author: "Beast"
+date: "2026-04-21"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    number_sections: false
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+  pdf_document:
+    toc: true
+subtitle: Dalton & Madilin Super Document 2
+mainfont: TimesNewRoman
+sansfont: TimesNewRoman
+monofont: TimesNewRoman
+---
+
+# Load Relevant R Libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown); library(knitr); library(moments);library(mdsr) 
+library(scatterplot3d); library(corrplot); library(pso);library(usethis)
+library(psych); library(GPArotation); library(lavaan);library(here)
+library(haven);library(tidyverse);library(tidyverse);library(ggplot2)
+```
+
+# Importing
+```{r}
+NHANES2011 <- read_xpt("NHANES2011.xpt")
+NHANES2013 <- read_xpt("NHANES2013.xpt") 
+NHANES2015 <- read_xpt("NHANES2015.xpt") 
+NHANES2017 <- read_xpt("NHANES2017.xpt") 
+NHANES2021 <- read_xpt("NHANES2021.xpt") 
+NHANESP2017 <- read_xpt("NHANESP2017.xpt") 
+```
+
+#
