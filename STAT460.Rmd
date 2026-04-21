@@ -3316,11 +3316,31 @@ ggplot(data = PFAsLiverTot2015, aes(x = logLBXNFOA, fill = MCQ160L)) +
 
 ## Logistic Regression Models
 
-We could do this by year and have different confounding variables found in each one.
+### 2011
 
 ```{r}
-
+# 2011 Logistic 
 ```
+
+### 2013
+
+```{r}
+# 2013 Logistic 
+```
+
+### 2015
+
+```{r}
+# 2015 Logistic 
+```
+
+### 2017
+
+```{r}
+# 2017 Logistic 
+```
+
+
 
 ## CB-SEM and PCA
 
