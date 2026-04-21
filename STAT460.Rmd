@@ -1653,6 +1653,7 @@ ggplot(data = PFAsAsthmaTot2011, aes(x = logLBXPFOS, fill = MCQ010)) +
   geom_density(alpha = 0.4)
 
 ###########################################################################
+
 # 2013 Asthma Analysis
 
 PFAsAsthmaYay2013 <- PFAsTotal2013 |>
@@ -1735,7 +1736,43 @@ ggplot(data = PFAsAsthmaTot2013, aes(x = logSSBFOA, fill = MCQ010)) +
   geom_density(alpha = 0.4)
 
 
-## Sm-PFOS (SSMFOS) & n-PFOA (SSNFOA) are both the same for every individual.
+## Sm-PFOS (SSMFOS)
+### ANOVA
+AsthmaFits2013PFOS <- aov(logSSMFOS ~ MCQ010, data = PFAsTotal2013)
+summary(AsthmaFits2013PFOS)
+
+### Mean Difference
+diff13d <- diff(tapply(PFAsAsthmaTot2013$logSSBFOA, PFAsAsthmaTot2013$MCQ010, mean))
+AsthmaDifference2013PFOS <- exp(diff13d)
+AsthmaDifference2013PFOS
+
+### Confidence Interval
+AsthmaConfInt2013PFOS <- t.test(logSSBFOA ~ MCQ010, data = PFAsAsthmaTot2013)$conf.int
+AsthmaConfInt2013PFOS
+
+### Plot
+ggplot(data = PFAsAsthmaTot2013, aes(x = logSSBFOA, fill = MCQ010)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
+
+
+## n-PFOA (SSNFOS)
+AsthmaFits2013PFOA <- aov(logSSNFOS ~ MCQ010, data = PFAsTotal2013)
+summary(AsthmaFits2013PFOA)
+
+### Mean Difference
+diff13e <- diff(tapply(PFAsAsthmaTot2013$logSSNFOS, PFAsAsthmaTot2013$MCQ010, mean))
+AsthmaDifference2013PFOA <- exp(diff13e)
+AsthmaDifference2013PFOA
+
+### Confidence Interval cannot be done
+
+### Plot
+ggplot(data = PFAsAsthmaTot2013, aes(x = logSSNFOS, fill = MCQ010)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
+
+
 ######################################################
 
 # 2015 Asthma Analysis
@@ -1906,7 +1943,63 @@ ggplot(data = PFAsEmphyTot2011, aes(x = logLBXPFHS, fill = MCQ160G)) +
 
 
 ## PFNA
+### ANOVA
+EmphyFits2011PFNA <- aov(logLBXPFNA ~ MCQ160G, data = PFAsTotal2011)
+summary(EmphyFits2011PFNA)
 
+### Mean Difference
+diffe11b <- diff(tapply(PFAsEmphyTot2011$logLBXPFNA, PFAsEmphyTot2011$MCQ160G, mean))
+EmphyDifference2011PFNA <- exp(diffe11b)
+EmphyDifference2011PFNA
+
+### Confidence Interval
+EmphyConfInt2011PFNA <- t.test(logLBXPFNA ~ MCQ160G, data = PFAsEmphyTot2011)$conf.int
+EmphyConfInt2011PFNA
+
+### Plot
+ggplot(data = PFAsEmphyTot2011, aes(x = logLBXPFNA, fill = MCQ160G)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
+
+
+## PFOA
+### ANOVA
+EmphyFits2011PFOA <- aov(logLBXPFOA ~ MCQ160G, data = PFAsTotal2011)
+summary(EmphyFits2011PFOA)
+
+### Mean Difference
+diffe11c <- diff(tapply(PFAsEmphyTot2011$logLBXPFOA, PFAsEmphyTot2011$MCQ160G, mean))
+EmphyDifference2011PFOA <- exp(diffe11c)
+EmphyDifference2011PFOA
+
+### Confidence Interval
+EmphyConfInt2011PFOA <- t.test(logLBXPFOA ~ MCQ160G, data = PFAsEmphyTot2011)$conf.int
+EmphyConfInt2011PFOA
+
+### Plot
+ggplot(data = PFAsEmphyTot2011, aes(x = logLBXPFOA, fill = MCQ160G)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
+
+
+## PFOS
+### ANOVA
+EmphyFits2011PFOS <- aov(logLBXPFOS ~ MCQ160G, data = PFAsTotal2011)
+summary(EmphyFits2011PFOS)
+
+### Mean Difference
+diffe11c <- diff(tapply(PFAsEmphyTot2011$logLBXPFOS, PFAsEmphyTot2011$MCQ160G, mean))
+EmphyDifference2011PFOS <- exp(diffe11c)
+EmphyDifference2011PFOS
+
+### Confidence Interval
+EmphyConfInt2011PFOS <- t.test(logLBXPFOS ~ MCQ160G, data = PFAsEmphyTot2011)$conf.int
+EmphyConfInt2011PFOS
+
+### Plot
+ggplot(data = PFAsEmphyTot2011, aes(x = logLBXPFOS, fill = MCQ160G)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
 
 ########################################################
 
@@ -1992,7 +2085,42 @@ ggplot(data = PFAsEmphyTot2013, aes(x = logSSBFOA, fill = MCQ160G)) +
   geom_density(alpha = 0.4)
 
 
-## Sm-PFOS (SSMFOS) & n-PFOA (SSNFOA) are both the same for every individual.
+## Sm-PFOS (SSMFOS)
+### ANOVA
+EmphyFits2013PFOS <- aov(logSSMFOS ~ MCQ160G, data = PFAsTotal2013)
+summary(EmphyFits2013PFOS)
+
+### Mean Difference
+diffe13d <- diff(tapply(PFAsEmphyTot2013$logSSMFOS, PFAsEmphyTot2013$MCQ160G, mean))
+EmphyDifference2013PFOS <- exp(diffe13d)
+EmphyDifference2013PFOS
+
+### Confidence Interval
+EmphyConfInt2013PFOS <- t.test(logSSMFOS ~ MCQ160G, data = PFAsEmphyTot2013)$conf.int
+EmphyConfInt2013PFOS
+
+### Plot
+ggplot(data = PFAsEmphyTot2013, aes(x = logSSMFOS, fill = MCQ160G)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
+
+
+## n-PFOA (SSNFOS) 
+### ANOVA
+EmphyFits2013PFOA <- aov(logSSMFOS ~ MCQ160G, data = PFAsTotal2013)
+summary(EmphyFits2013PFOA)
+
+### Mean Difference
+diffe13e <- diff(tapply(PFAsEmphyTot2013$logSSMFOS, PFAsEmphyTot2013$MCQ160G, mean))
+EmphyDifference2013PFOA <- exp(diffe13e)
+EmphyDifference2013PFOA
+
+### Confidence Interval cannot be done
+
+### Plot
+ggplot(data = PFAsEmphyTot2013, aes(x = logSSMFOS, fill = MCQ160G)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
 
 ########################################################
 
@@ -2327,7 +2455,42 @@ ggplot(data = PFAsBronTot2013, aes(x = logSSBFOA, fill = MCQ160K)) +
   geom_density(alpha = 0.4)
 
 
-## Sm-PFOS (SSMFOS) & n-PFOA (SSNFOA) are both the same for every individual.
+## Sm-PFOS (SSMFOS)
+### ANOVA
+BronFits2013PFOS <- aov(logSSBFOA ~ MCQ160K, data = PFAsTotal2013)
+summary(BronFits2013PFOS)
+
+### Mean Difference
+diffb13d <- diff(tapply(PFAsBronTot2013$logSSBFOA, PFAsBronTot2013$MCQ160K, mean))
+BronDifference2013PFOS <- exp(diffb13d)
+BronDifference2013PFOS
+
+### Confidence Interval
+BronConfInt2013PFOS <- t.test(logSSBFOA ~ MCQ160K, data = PFAsBronTot2013)$conf.int
+BronConfInt2013PFOS
+
+### Plot
+ggplot(data = PFAsBronTot2013, aes(x = logSSBFOA, fill = MCQ160K)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
+
+
+## n-PFOA (SSNFOS)
+### ANOVA
+BronFits2013PFOA <- aov(logSSNFOS ~ MCQ160K, data = PFAsTotal2013)
+summary(BronFits2013PFOS)
+
+### Mean Difference
+diffb13e <- diff(tapply(PFAsBronTot2013$logSSNFOS, PFAsBronTot2013$MCQ160K, mean))
+BronDifference2013PFOA <- exp(diffb13e)
+BronDifference2013PFOS
+
+### Confidence Interval cannot be done
+
+### Plot
+ggplot(data = PFAsBronTot2013, aes(x = logSSNFOS, fill = MCQ160K)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
 
 #####################################################
 
@@ -2643,7 +2806,40 @@ ggplot(data = PFAsThyroidTot2013, aes(x = logSSBFOA, fill = MCQ160M)) +
   geom_density(alpha = 0.4)
 
 
-## Sm-PFOS (SSMFOS) & n-PFOA (SSNFOA) are both the same for every individual.
+## Sm-PFOS (SSMFOS)
+### ANOVA
+ThyroidFits2013PFOS <- aov(logSSMFOS ~ MCQ160M, data = PFAsTotal2013)
+summary(ThyroidFits2013PFOS)
+
+### Mean Difference
+difft13d <- diff(tapply(PFAsThyroidTot2013$logSSMFOS, PFAsThyroidTot2013$MCQ160M, mean))
+ThyroidDifference2013PFOS <- exp(difft13d)
+ThyroidDifference2013PFOS
+
+### Confidence Interval cannot be done
+
+### Plot
+ggplot(data = PFAsThyroidTot2013, aes(x = logSSMFOS, fill = MCQ160M)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
+
+
+##n-PFOA (SSNFOS)
+### ANOVA
+ThyroidFits2013PFOA <- aov(logSSNFOS ~ MCQ160M, data = PFAsTotal2013)
+summary(ThyroidFits2013PFOA)
+
+### Mean Difference
+difft13e <- diff(tapply(PFAsThyroidTot2013$logSSNFOS, PFAsThyroidTot2013$MCQ160M, mean))
+ThyroidDifference2013PFOA <- exp(difft13e)
+ThyroidDifference2013PFOA
+
+### Confidence Interval cannot be done
+
+### Plot
+ggplot(data = PFAsThyroidTot2013, aes(x = logSSNFOS, fill = MCQ160M)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
 
 ##################################################
 
@@ -2959,8 +3155,39 @@ ggplot(data = PFAsLiverTot2013, aes(x = logSSBFOA, fill = MCQ160L)) +
   geom_density(alpha = 0.4)
 
 
-## Sm-PFOS (SSMFOS) & n-PFOA (SSNFOA) are both the same for every individual.
+## Sm-PFOS (SSMFOS) &
+### ANOVA
+LiverFits2013PFOS <- aov(logSSMFOS ~ MCQ160L, data = PFAsTotal2013)
+summary(LiverFits2013PFOS)
 
+### Mean Difference
+diffl13d <- diff(tapply(PFAsLiverTot2013$logSSMFOS, PFAsLiverTot2013$MCQ160L, mean))
+LiverDifference2013PFOS <- exp(diffl13d)
+LiverDifference2013PFOS
+
+### Confidence Interval cannot be done
+
+### Plot
+ggplot(data = PFAsLiverTot2013, aes(x = logSSMFOS, fill = MCQ160L)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
+
+## n-PFOA (SSNFOS) are both the same for every individual.
+### ANOVA
+LiverFits2013PFOA <- aov(logSSNFOS ~ MCQ160L, data = PFAsTotal2013)
+summary(LiverFits2013PFOA)
+
+### Mean Difference
+diffl13e <- diff(tapply(PFAsLiverTot2013$logSSNFOS, PFAsLiverTot2013$MCQ160L, mean))
+LiverDifference2013PFOA <- exp(diffl13e)
+LiverDifference2013PFOA
+
+### Confidence Interval cannot be done
+
+### Plot
+ggplot(data = PFAsLiverTot2013, aes(x = logSSNFOS, fill = MCQ160L)) + 
+  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
+  geom_density(alpha = 0.4)
 
 ##################################################
 
