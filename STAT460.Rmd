@@ -1546,6 +1546,8 @@ PFAEndoQs2011 <- c("MCQ160M", "MCQ160L")
 PFACardQs2011 <- c("MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
 ```
 
+2013 is horrible. I hate 2013, Madi hates 2013, EVERYONE hates 2013. *mic drop*
+
 # Asthma Distributions
 
 ```{r}
@@ -3088,7 +3090,6 @@ ggplot(data = PFAsLiverTot2015, aes(x = logLBXNFOA, fill = MCQ160L)) +
 ## Logistic Regression Models
 
 We could do this by year and have different confounding variables found in each one.
-
 
 ```{r}
 
