@@ -21,7 +21,7 @@ monofont: TimesNewRoman
 # Load Relevant R Libraries
 
 ```{r warning=FALSE, message=FALSE}
-library(rmarkdown); library(knitr); library(moments);library(mdsr) 
+library(rmarkdown); library(knitr); library(moments);library(mdsr);library(nnet)
 library(scatterplot3d); library(corrplot); library(pso);library(usethis)
 library(psych); library(GPArotation); library(lavaan);library(here)
 library(haven);library(tidyverse);library(tidyverse);library(ggplot2)
@@ -145,7 +145,7 @@ PFAsVars2013 <- NHANES2013 |>
 
 ## 2011 Table Building
 PFAsVars2011 <- NHANES2011 |>
-  select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
          "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
          "INDFMPIR", # Economic status
          # Blood
@@ -174,8 +174,48 @@ PFAsVars2011 <- NHANES2011 |>
   mutate(
     SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
     DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE)) |>
+  mutate(
+    RIDRETH3 = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9) |>
   mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
-         PAQ650 = ifelse(MCQ010 == 1, 1, 0)) |>
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0)) |>
   filter(!is.na(LBXPFHS))
 ```
 
@@ -188,21 +228,43 @@ PFAsVars2011 <- NHANES2011 |>
 ```{r}
 # MCQ010
 logRegAsthma2011 <- glm(data = PFAsVars2011, 
-                        MCQ010 ~ logLBXPFHS + RIDAGEYR +
-                          RIDRETH3 + BMXBMI + BMXWAIST + 
-                          INDFMPIR + SMQ020, family = binomial)
-logRegAsthma2011
+                        MCQ010 ~ logLBXPFHS + logLBXPFNA + logLBXPFOA +
+                          logLBXPFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegAsthma2011)
 
 # MCQ160G
+logRegEmphysema2011 <- glm(data = PFAsVars2011,
+                           MCQ160G ~ logLBXPFHS + logLBXPFNA + logLBXPFOA +
+                             logLBXPFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                             BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegEmphysema2011)
 
 # MCQ160K
-
+logRegBron2011 <- glm(data = PFAsVars2011,
+                      MCQ160K ~ logLBXPFHS + logLBXPFNA + logLBXPFOA +
+                        logLBXPFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegBron2011)
 ```
 
 ### Metabolic
 
 ```{r}
 # DIQ010
+logRegDiabetesYes2011 <- glm(data = PFAsVars2011,
+                      DIQ010_yes ~ logLBXPFHS + logLBXPFNA + logLBXPFOA +
+                        logLBXPFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+
+summary(logRegDiabetesYes2011)
+
+logRegDiabetesBorderline2011 <- glm(data = PFAsVars2011,
+                      DIQ010_borderline ~ logLBXPFHS + logLBXPFNA + logLBXPFOA +
+                        logLBXPFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+
+summary(logRegDiabetesBorderline2011)
 
 # DIQ160
 
@@ -212,6 +274,11 @@ logRegAsthma2011
 
 ```{r}
 # MCQ160M
+logRegThyroid2011 <- glm(data = PFAsVars2011, 
+                        MCQ160M ~ logLBXPFHS + logLBXPFNA + logLBXPFOA +
+                          logLBXPFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegThyroid2011)
 
 # MCQ160L
 
