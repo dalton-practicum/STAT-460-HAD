@@ -19,6 +19,7 @@ monofont: TimesNewRoman
 ---
 
 # Load Relevant R Libraries
+
 ```{r warning=FALSE, message=FALSE}
 library(rmarkdown); library(knitr); library(moments);library(mdsr) 
 library(scatterplot3d); library(corrplot); library(pso);library(usethis)
@@ -27,6 +28,7 @@ library(haven);library(tidyverse);library(tidyverse);library(ggplot2)
 ```
 
 # Importing
+
 ```{r}
 NHANES2011 <- read_xpt("NHANES2011.xpt")
 NHANES2013 <- read_xpt("NHANES2013.xpt") 
@@ -36,4 +38,162 @@ NHANES2021 <- read_xpt("NHANES2021.xpt")
 NHANESP2017 <- read_xpt("NHANESP2017.xpt") 
 ```
 
-#
+# Table Building
+
+```{r}
+## 2017 Table
+PFAsVars2017 <- NHANES2017 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "INDFMPIR", # Economic status
+         # Blood
+         "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+         "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", 
+         
+         "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
+         
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", "MCQ500", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
+         
+         # Possible Other Confounders
+         "SMQ020", "PAQ655", "PAQ665"
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXBFOA = log(LBXBFOA)) |>
+  mutate(logLBXMFOS = log(LBXMFOS)) |>
+  mutate(logLBXNFOA = log(LBXNFOA)) |>
+  mutate(
+    SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE)) |>
+  filter(!is.na(LBXPFHS))
+
+PFAident <- c("SEQN", "RIDAGEYR", "RIDRETH3", "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST", "INDFMPIR")
+PFAlist <- c("LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA")
+PFARespQs <- c("MCQ010", "MCQ160G", "MCQ160K", "MCQ160O")
+PFAMetaQs <- c("DIQ010", "DIQ160")
+PFAEndoQs <- c("MCQ160M", "MCQ160L", "MCQ500")
+PFACardQs <- c("MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
+
+# 2015 Table
+PFAsTotal2015 <- NHANES2015 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F" # Cardiovascular
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXBFOA = log(LBXBFOA)) |>
+  mutate(logLBXMFOS = log(LBXMFOS)) |>
+  mutate(logLBXNFOA = log(LBXNFOA)) |>
+  filter(!is.na(LBXPFHS))
+
+PFAident2015 <- c("SEQN", "RIDAGEYR", "RIDRETH3", "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
+PFAlist2015 <- c("LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA")
+PFARespQs2015 <- c("MCQ010", "MCQ160G", "MCQ160K", "MCQ160O")
+PFAMetaQs2015 <- c("DIQ010", "DIQ160")
+PFAEndoQs2015 <- c("MCQ160M", "MCQ160L")
+PFACardQs2015 <- c("MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
+
+
+# 2013 Table
+PFAsTotal2013 <- NHANES2013 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "SSPFHS", "SSPFNA", "SSBFOA", "SSMFOS", "SSNFOS", #PFAs
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F" # Cardiovascular
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logSSPFHS = log(SSPFHS)) |>
+  mutate(logSSPFNA = log(SSPFNA)) |>
+  mutate(logSSBFOA = log(SSBFOA)) |>
+  mutate(logSSMFOS = log(SSMFOS)) |>
+  mutate(logSSNFOS = log(SSNFOS)) |>
+  filter(!is.na(SSPFHS))
+
+PFAident2013 <- c("SEQN", "RIDAGEYR", "RIDRETH3", "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
+PFAlist2013 <- c("SSPFHS", "SSPFNA", "SSBFOA", "SSMFOS", "SSNFOS")
+PFARespQs2013 <- c("MCQ010", "MCQ160G", "MCQ160K", "MCQ160O")
+PFAMetaQs2013 <- c("DIQ010", "DIQ160")
+PFAEndoQs2013 <- c("MCQ160M", "MCQ160L")
+PFACardQs2013 <- c("MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
+
+
+# 2011 Table Building
+PFAsTotal2011 <- NHANES2011 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "LBXPFHS", "LBXPFNA", "LBXPFOA", "LBXPFOS", #PFAs
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F" # Cardiovascular
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXPFOA = log(LBXPFOA)) |>
+  mutate(logLBXPFOS = log(LBXPFOS)) |>
+  filter(!is.na(LBXPFHS))
+
+PFAident2011 <- c("SEQN", "RIDAGEYR", "RIDRETH3", "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST")
+PFAlist2011 <- c("LBXPFHS", "LBXPFNA", "LBXPFOA", "LBXPFOS")
+PFARespQs2011 <- c("MCQ010", "MCQ160G", "MCQ160K")
+PFAMetaQs2011 <- c("DIQ010", "DIQ160")
+PFAEndoQs2011 <- c("MCQ160M", "MCQ160L")
+PFACardQs2011 <- c("MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
+```
+
+# Logistic Regression Models
+
+## 2011
+
+### 
+
+```{r}
+# 2011  
+```
+
+## 2013
+
+```{r}
+# 2013 Logistic 
+```
+
+## 2015
+
+```{r}
+# 2015 Logistic 
+```
+
+## 2017
+
+```{r}
+# 2017 Logistic 
+```
+
+
+
+
+
+
+
+
+
+
+
