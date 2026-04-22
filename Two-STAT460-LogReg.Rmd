@@ -43,7 +43,7 @@ NHANESP2017 <- read_xpt("NHANESP2017.xpt")
 ```{r}
 ## 2017 Table
 PFAsVars2017 <- NHANES2017 |>
-  select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
          "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
          "INDFMPIR", # Economic status
          # Blood
@@ -65,6 +65,7 @@ PFAsVars2017 <- NHANES2017 |>
          "SMQ020", "SMQ040", "PAQ650", "PAQ655", "PAQ665"
          ) |> 
   filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(MCQ160L = coalesce(MCQ160L, MCQ500)) |>
   mutate(logLBXPFHS = log(LBXPFHS)) |>
   mutate(logLBXPFNA = log(LBXPFNA)) |>
   mutate(logLBXBFOA = log(LBXBFOA)) |>
@@ -72,12 +73,55 @@ PFAsVars2017 <- NHANES2017 |>
   mutate(logLBXNFOA = log(LBXNFOA)) |>
   mutate(
     SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
-    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE)) |>
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE))   |>
+  mutate(
+    RIDRETH3 = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0)) |>
   filter(!is.na(LBXPFHS))
 
 ## 2015 Table
 PFAsVars2015 <- NHANES2015 |>
-  select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
          "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
          "INDFMPIR", # Economic status
          # Blood
@@ -106,12 +150,55 @@ PFAsVars2015 <- NHANES2015 |>
   mutate(logLBXNFOA = log(LBXNFOA)) |>
   mutate(
     SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
-    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE)) |>
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE))   |>
+  mutate(
+    RIDRETH3 = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0)) |>
   filter(!is.na(LBXPFHS))
 
 ## 2013 Table Building
 PFAsVars2013 <- NHANES2013 |>
-  select("SEQN", "RIDAGEYR", "RIDRETH3", # Individual and age/ethnicity
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
          "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
          "INDFMPIR", # Economic status
          # Blood
@@ -140,7 +227,50 @@ PFAsVars2013 <- NHANES2013 |>
   mutate(logSSNFOS = log(SSNFOS)) |>
   mutate(
     SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
-    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE)) |>
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE))  |>
+  mutate(
+    RIDRETH3 = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0)) |>
   filter(!is.na(SSPFHS))
 
 ## 2011 Table Building
@@ -215,6 +345,7 @@ PFAsVars2011 <- NHANES2011 |>
          SMQ020 = ifelse(SMQ020 == 1, 1, 0),
          PAQ650 = ifelse(PAQ650 == 1, 1, 0),
          MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
          RIAGENDR = ifelse(RIAGENDR == 1, 1, 0)) |>
   filter(!is.na(LBXPFHS))
 ```
@@ -246,6 +377,7 @@ logRegBron2011 <- glm(data = PFAsVars2011,
                         logLBXPFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
                         BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
 summary(logRegBron2011)
+
 ```
 
 ### Metabolic
@@ -268,6 +400,7 @@ summary(logRegDiabetesBorderline2011)
 
 # DIQ160
 
+
 ```
 
 ### Endocrine
@@ -281,21 +414,31 @@ logRegThyroid2011 <- glm(data = PFAsVars2011,
 summary(logRegThyroid2011)
 
 # MCQ160L
+logRegLiver2011 <- glm(data = PFAsVars2011, 
+                        MCQ160L ~ logLBXPFHS + logLBXPFNA + logLBXPFOA +
+                          logLBXPFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegLiver2011)
 
 ```
 
-### Cardiovascular "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F"
+### Cardiovascular
 
 ```{r}
 # MCQ160B
 
+
 # MCQ160C
+
 
 # MCQ160D
 
+
 # MCQ160E
 
+
 # MCQ160F
+
 
 ```
 
@@ -305,13 +448,48 @@ summary(logRegThyroid2011)
 ### Respiratory
 
 ```{r}
+# MCQ010
+logRegAsthma2013 <- glm(data = PFAsVars2013, 
+                        MCQ010 ~ logSSPFHS + logSSPFNA + logSSBFOA +
+                          logSSMFOS + logSSNFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegAsthma2013)
 
+# MCQ160G
+logRegEmphysema2013 <- glm(data = PFAsVars2013,
+                           MCQ160G ~ logSSPFHS + logSSPFNA + logSSBFOA +
+                             logSSMFOS + logSSNFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                             BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegEmphysema2013)
+
+# MCQ160K
+logRegBron2013 <- glm(data = PFAsVars2013,
+                      MCQ160K ~ logSSPFHS + logSSPFNA + logSSBFOA +
+                          logSSMFOS + logSSNFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegBron2013)
 
 ```
 
 ### Metabolic
 
 ```{r}
+# DIQ010
+logRegDiabetesYes2013 <- glm(data = PFAsVars2013,
+                      DIQ010_yes ~ logSSPFHS + logSSPFNA + logSSBFOA +
+                          logSSMFOS + logSSNFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+
+summary(logRegDiabetesYes2013)
+
+logRegDiabetesBorderline2013 <- glm(data = PFAsVars2013,
+                      DIQ010_borderline ~ logSSPFHS + logSSPFNA + logSSBFOA +
+                          logSSMFOS + logSSNFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+
+summary(logRegDiabetesBorderline2013)
+
+# DIQ160
 
 
 ```
@@ -319,14 +497,38 @@ summary(logRegThyroid2011)
 ### Endocrine
 
 ```{r}
+# MCQ160M
+logRegThyroid2013 <- glm(data = PFAsVars2013, 
+                        MCQ160M ~ logSSPFHS + logSSPFNA + logSSBFOA +
+                          logSSMFOS + logSSNFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegThyroid2013)
 
+# MCQ160L
+logRegLiver2013 <- glm(data = PFAsVars2013, 
+                        MCQ160L ~ logSSPFHS + logSSPFNA + logSSBFOA +
+                          logSSMFOS + logSSNFOS + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegLiver2013)
 
 ```
 
 ### Cardiovascular
 
 ```{r}
+# MCQ160B
 
+
+# MCQ160C
+
+
+# MCQ160D
+
+
+# MCQ160E
+
+
+# MCQ160F
 
 ```
 
@@ -336,28 +538,93 @@ summary(logRegThyroid2011)
 ### Respiratory
 
 ```{r}
+# MCQ010
+logRegAsthma2015 <- glm(data = PFAsVars2015, 
+                        MCQ010 ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegAsthma2015)
 
+# MCQ160G
+logRegEmphysema2015 <- glm(data = PFAsVars2015,
+                           MCQ160G ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                             BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegEmphysema2015)
+
+# MCQ160K
+logRegBron2015 <- glm(data = PFAsVars2015,
+                      MCQ160K ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegBron2015)
+
+# MCQ160O
+logRegCOPD2015 <- glm(data = PFAsVars2015,
+                      MCQ160O ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegCOPD2015) 
 
 ```
 
 ### Metabolic
 
 ```{r}
+# DIQ010
+logRegDiabetesYes2015 <- glm(data = PFAsVars2015,
+                      DIQ010_yes ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
 
+summary(logRegDiabetesYes2015)
+
+logRegDiabetesBorderline2015 <- glm(data = PFAsVars2015,
+                      DIQ010_borderline ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+
+summary(logRegDiabetesBorderline2015)
+
+# DIQ160
 
 ```
 
 ### Endocrine
 
 ```{r}
+# MCQ160M
+logRegThyroid2015 <- glm(data = PFAsVars2015, 
+                        MCQ160M ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegThyroid2015)
 
+# MCQ160L
+logRegLiver2015 <- glm(data = PFAsVars2015, 
+                        MCQ160L ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegLiver2015)
 
 ```
 
 ### Cardiovascular
 
 ```{r}
+# MCQ160B
 
+
+# MCQ160C
+
+
+# MCQ160D
+
+
+# MCQ160E
+
+
+# MCQ160F
 
 ```
 
@@ -367,28 +634,93 @@ summary(logRegThyroid2011)
 ### Respiratory
 
 ```{r}
+# MCQ010
+logRegAsthma2017 <- glm(data = PFAsVars2017, 
+                        MCQ010 ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegAsthma2017)
 
+# MCQ160G
+logRegEmphysema2017 <- glm(data = PFAsVars2017,
+                           MCQ160G ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                             BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegEmphysema2017)
+
+# MCQ160K
+logRegBron2017 <- glm(data = PFAsVars2017,
+                      MCQ160K ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegBron2017)
+
+# MCQ160O
+logRegCOPD2017 <- glm(data = PFAsVars2017,
+                      MCQ160O ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegCOPD2017) 
 
 ```
 
 ### Metabolic
 
 ```{r}
+# DIQ010
+logRegDiabetesYes2017 <- glm(data = PFAsVars2017,
+                      DIQ010_yes ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
 
+summary(logRegDiabetesYes2017)
+
+logRegDiabetesBorderline2017 <- glm(data = PFAsVars2017,
+                      DIQ010_borderline ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                        BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+
+summary(logRegDiabetesBorderline2017)
+
+# DIQ160
 
 ```
 
 ### Endocrine
 
 ```{r}
+# MCQ160M
+logRegThyroid2017 <- glm(data = PFAsVars2017, 
+                        MCQ160M ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegThyroid2017)
 
+# MCQ160L merged with MCQ500
+logRegLiver2017 <- glm(data = PFAsVars2017, 
+                        MCQ160L ~ logLBXPFHS + logLBXPFNA + logLBXBFOA +
+                          logLBXMFOS + logLBXNFOA + RIDAGEYR + RIDRETH3 + BMXBMI + 
+                          BMXWAIST + INDFMPIR + SMQ020 + RIAGENDR_cat, family = binomial)
+summary(logRegLiver2017)
 
 ```
 
 ### Cardiovascular
 
 ```{r}
+# MCQ160B
 
+
+# MCQ160C
+
+
+# MCQ160D
+
+
+# MCQ160E
+
+
+# MCQ160F
 
 ```
 

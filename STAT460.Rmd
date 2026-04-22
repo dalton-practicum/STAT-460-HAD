@@ -18,7 +18,7 @@ sansfont: TimesNewRoman
 monofont: TimesNewRoman
 ---
 
-#### Load Relevant R Libraries
+# Load Relevant R Libraries
 ```{r warning=FALSE, message=FALSE}
 library(rmarkdown); library(knitr); library(moments);library(mdsr) 
 library(scatterplot3d); library(corrplot); library(pso);library(usethis)
@@ -26,9 +26,9 @@ library(psych); library(GPArotation); library(lavaan);library(here)
 library(haven);library(tidyverse);library(tidyverse);library(ggplot2)
 ```
 
-### Data Cleaning
+# Data Cleaning
 
-#### Importing
+## Importing
 ```{r}
 # Demographics
 Demographics2011 <- read_xpt("Data 2011-12/DEMO_G.xpt") 
@@ -182,7 +182,7 @@ YouthWeightHistoryQ2017 <- read_xpt("Data 2017-18/WHQMEC_J.xpt")
 YouthWeightHistoryQP2017 <- read_xpt("Data PP2017-20/P_WHQMEC.xpt")
 ```
 
-#### Cleaning
+## Cleaning
 ```{r}
 # Demographics
 Demographics2011 <- Demographics2011 |>
@@ -453,7 +453,7 @@ WeightHistoryQP2017 <- WeightHistoryQP2017 |>
 ```
 
 
-#### Merging
+## Merging
 ```{r}
 # Examination
 Examination2011 <- BodyMeasurements2011 |>
@@ -587,7 +587,7 @@ QuestionnarieP2017 <- DiabetesQP2017 |>
 
 
 
-#### Merge and Export
+## Merge and Export
 ```{r}
 NHANES2011 <- Demographics2011 |>
   full_join(Examination2011, by = c("SEQN" = "SEQN")) |>
@@ -629,9 +629,9 @@ write_xpt(NHANESP2017, "NHANESP2017.xpt")
 ```
 
 
-## Distribution Analysis
+# Distribution Analysis
 
-### Start 2017
+## Start 2017
 
 ```{r}
 NHANES2011 <- read_xpt("NHANES2011.xpt")
@@ -2214,7 +2214,7 @@ ggplot(data = PFAsS2, aes(x = logLBXNFOA, fill = MCQ160F)) +
   geom_density(alpha = 0.4)
 ```
 
-### Other Years
+# Other Years
 
 ```{r}
 # 2015 Table Building
@@ -2299,7 +2299,7 @@ PFACardQs2011 <- c("MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
 
 2013 is horrible. I hate 2013, Madi hates 2013, EVERYONE hates 2013. *mic drop*
 
-# Asthma Distributions
+## Asthma Distributions
 
 ```{r}
 # 2011 Asthma Analysis
@@ -2648,7 +2648,7 @@ ggplot(data = PFAsAsthmaTot2015, aes(x = logLBXNFOA, fill = MCQ010)) +
   geom_density(alpha = 0.4)
 ```
 
-### Emphysema Distributions
+## Emphysema Distributions
 
 ```{r}
 # 2011 Emphysema Analysis
@@ -2998,7 +2998,7 @@ ggplot(data = PFAsEmphyTot2015, aes(x = logLBXNFOA, fill = MCQ160G)) +
 
 ```
 
-### Bronchitis Distributions
+## Bronchitis Distributions
 
 ```{r}
 # 2011 Bronchitis Analysis
@@ -3368,7 +3368,7 @@ ggplot(data = PFAsBronTot2015, aes(x = logLBXNFOA, fill = MCQ160K)) +
 
 ```
 
-### Thyroid Distributions
+## Thyroid Distributions
 
 ```{r}
 # 2011 Thyroid Analysis
@@ -3718,7 +3718,7 @@ ggplot(data = PFAsThyroidTot2015, aes(x = logLBXNFOA, fill = MCQ160M)) +
 
 ```
 
-### Liver Distributions
+## Liver Distributions
 
 ```{r}
 # 2011 Liver Analysis
@@ -4065,7 +4065,7 @@ ggplot(data = PFAsLiverTot2015, aes(x = logLBXNFOA, fill = MCQ160L)) +
 
 ```
 
-### Diabetes Distributions
+## Diabetes Distributions
 ```{r}
 # 2011 Diabetes Analysis
 
@@ -4243,7 +4243,7 @@ ggplot(PFAsDiabTot2015, aes(x = logLBXNFOA, fill = DIQ010)) +
   geom_density(alpha = 0.4)
 ```
 
-###Pre-Diabetes
+## Pre-Diabetes
 
 ```{r}
 
@@ -4390,7 +4390,7 @@ t.test(logLBXNFOA ~ DIQ160, data = PFAsPreDiabTot2015)$conf.int
 ggplot(PFAsPreDiabTot2015, aes(x = logLBXNFOA, fill = DIQ160)) + geom_density(alpha = 0.4)
 ```
 
-### Congestive Heart Failure
+## Congestive Heart Failure
 
 ```{r}
 #2011
@@ -4637,7 +4637,8 @@ ggplot(PFAsCHFTot2015, aes(x = logLBXNFOA, fill = MCQ160B)) +
   geom_density(alpha = 0.4)
 ```
 
-### Coronary Heart Disease 
+## Coronary Heart Disease 
+
 ```{r}
 ## 2011
 PFAsCHDTot2011 <- PFAsTotal2011 |>
@@ -4849,7 +4850,8 @@ ggplot(PFAsCHDTot2015, aes(x = logLBXNFOA, fill = MCQ160C)) +
   geom_density(alpha = 0.4)
 ```
 
-###Angina / Angina Pectoris Differences
+## Angina / Angina Pectoris Differences
+
 ```{r}
 # Angina / Angina Pectoris Differences
 
@@ -5059,7 +5061,8 @@ ggplot(PFAsAAPTot2015, aes(x = logLBXNFOA, fill = MCQ160D)) +
   geom_density(alpha = 0.4)
 ```
 
-###Heart Attack
+## Heart Attack
+
 ```{r}
 # Heart Attack Differences
 
@@ -5227,7 +5230,8 @@ ggplot(PFAsHATot2015, aes(x = logLBXNFOA, fill = MCQ160E)) +
 
 ```
 
-### Stroke
+## Stroke
+
 ```{r}
 # Stroke Differences
 
@@ -5402,31 +5406,32 @@ ggplot(PFAsSTTot2015, aes(x = logLBXNFOA, fill = MCQ160F)) +
   geom_density(alpha = 0.4)
 ```
 
-## Logistic Regression Models
+# Logistic Regression Models
 
-### 2011
+## 2011
 
 ```{r}
 # 2011 Logistic 
 ```
 
-### 2013
+## 2013
 
 ```{r}
 # 2013 Logistic 
 ```
 
-### 2015
+## 2015
 
 ```{r}
 # 2015 Logistic 
 ```
 
-### 2017
+## 2017
 
 ```{r}
 # 2017 Logistic 
 ```
+
 
 
 
