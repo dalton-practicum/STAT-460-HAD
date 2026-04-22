@@ -49,6 +49,10 @@ PFAsVars2017 <- NHANES2017 |>
          # Blood
          "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
          "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", 
+         "BPQ020",
+         
+         # Chol
+         "LBXTC", "LBDHDD",
          
          "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
          
@@ -59,7 +63,7 @@ PFAsVars2017 <- NHANES2017 |>
          "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
          
          # Possible Other Confounders
-         "SMQ020", "PAQ655", "PAQ665"
+         "SMQ020", "SMQ040", "PAQ605", "PAQ650", "PAQ655", "PAQ665"
          ) |> 
   filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
   mutate(logLBXPFHS = log(LBXPFHS)) |>
