@@ -174,6 +174,8 @@ PFAsVars2011 <- NHANES2011 |>
   mutate(
     SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
     DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE)) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         PAQ650 = ifelse(MCQ010 == 1, 1, 0)) |>
   filter(!is.na(LBXPFHS))
 ```
 
@@ -181,37 +183,146 @@ PFAsVars2011 <- NHANES2011 |>
 
 ## 2011
 
-### 
+### Respiratory
 
 ```{r}
-# 2011  
+# MCQ010
+logRegAsthma2011 <- glm(data = PFAsVars2011, 
+                        MCQ010 ~ logLBXPFHS + RIDAGEYR +
+                          RIDRETH3 + BMXBMI + BMXWAIST + 
+                          INDFMPIR + SMQ020, family = binomial)
+logRegAsthma2011
+
+# MCQ160G
+
+# MCQ160K
+
 ```
+
+### Metabolic
+
+```{r}
+# DIQ010
+
+# DIQ160
+
+```
+
+### Endocrine
+
+```{r}
+# MCQ160M
+
+# MCQ160L
+
+```
+
+### Cardiovascular "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F"
+
+```{r}
+# MCQ160B
+
+# MCQ160C
+
+# MCQ160D
+
+# MCQ160E
+
+# MCQ160F
+
+```
+
 
 ## 2013
 
+### Respiratory
+
 ```{r}
-# 2013 Logistic 
+
+
 ```
+
+### Metabolic
+
+```{r}
+
+
+```
+
+### Endocrine
+
+```{r}
+
+
+```
+
+### Cardiovascular
+
+```{r}
+
+
+```
+
 
 ## 2015
 
+### Respiratory
+
 ```{r}
-# 2015 Logistic 
+
+
 ```
+
+### Metabolic
+
+```{r}
+
+
+```
+
+### Endocrine
+
+```{r}
+
+
+```
+
+### Cardiovascular
+
+```{r}
+
+
+```
+
 
 ## 2017
 
+### Respiratory
+
 ```{r}
-# 2017 Logistic 
+
+
 ```
 
+### Metabolic
+
+```{r}
 
 
+```
+
+### Endocrine
+
+```{r}
 
 
+```
+
+### Cardiovascular
+
+```{r}
 
 
-
-
+```
 
 
