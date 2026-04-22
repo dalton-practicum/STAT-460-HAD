@@ -1174,13 +1174,211 @@ ggplot(data = PFAsCOPDTot2011, aes(x = logLBXNFOA, fill = MCQ160O)) +
 ### DIQ010
 
 ```{r}
+#DIQ010
+#FNS
+DiabSumm <- summary(PFAsAsthma |> filter(DIQ010 %in% c(1,2,3)))
+DiabSumm
 
+
+PFAsDiab2 <- PFAsAsthma |>
+  filter(DIQ010 %in% c(1,2,3)) |>
+  mutate(
+    DIQ010 = factor(DIQ010,
+                    levels = c(1,2,3),
+                    labels = c("Diabetes","No Diabetes","Borderline"))
+  )
+
+##PFHS
+### Anova
+DiabFitsPFHS <- aov(logLBXPFHS ~ DIQ010, data = PFAsDiab2)
+summary(DiabFitsPFHS)
+
+###Mean Differences
+DiabMeansPFHS <- tapply(PFAsDiab2$logLBXPFHS, PFAsDiab2$DIQ010, mean)
+exp(DiabMeansPFHS)
+
+###Post-Hoc
+TukeyHSD(DiabFitsPFHS)
+
+###Plot
+ggplot(PFAsDiab2, aes(x = logLBXPFHS, fill = factor(DIQ010))) + geom_density(alpha = 0.4) + labs( x = "logLBXPFHS", fill = "DIQ010" )
+
+## PFNA
+### ANOVA
+DiabFitsPFNA <- aov(logLBXPFNA ~ DIQ010, data = PFAsDiab2)
+summary(DiabFitsPFNA)
+
+### Mean Differences
+DiabMeansPFNA <- tapply(PFAsDiab2$logLBXPFNA, PFAsDiab2$DIQ010, mean)
+exp(DiabMeansPFNA)
+
+### Post-hoc
+TukeyHSD(DiabFitsPFNA)
+
+### Plot
+ggplot(data = PFAsDiab2, aes(x = logLBXPFNA, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+### ANOVA
+DiabFitsBFOA <- aov(logLBXBFOA ~ DIQ010, data = PFAsDiab2)
+summary(DiabFitsBFOA)
+
+### Mean Differences
+DiabMeansBFOA <- tapply(PFAsDiab2$logLBXBFOA, PFAsDiab2$DIQ010, mean)
+exp(DiabMeansBFOA)
+
+### Post-hoc
+TukeyHSD(DiabFitsBFOA)
+
+### Plot
+ggplot(data = PFAsDiab2, aes(x = logLBXBFOA, fill = DIQ010))  +
+  geom_density(alpha = 0.4)
+
+## MFOS
+### ANOVA
+DiabFitsMFOS <- aov(logLBXMFOS ~ DIQ010, data = PFAsDiab2)
+summary(DiabFitsMFOS)
+
+### Mean Differences
+DiabMeansMFOS <- tapply(PFAsDiab2$logLBXMFOS, PFAsDiab2$DIQ010, mean)
+exp(DiabMeansMFOS)
+
+### Post-hoc
+TukeyHSD(DiabFitsMFOS)
+### Plot
+ggplot(data = PFAsDiab2, aes(x = logLBXMFOS, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## NFOA
+### ANOVA
+DiabFitsNFOA <- aov(logLBXNFOA ~ DIQ010, data = PFAsDiab2)
+summary(DiabFitsNFOA)
+### Mean Differences
+DiabMeansNFOA <- tapply(PFAsDiab2$logLBXNFOA, PFAsDiab2$DIQ010, mean)
+exp(DiabMeansNFOA)
+### Post-hoc
+TukeyHSD(DiabFitsNFOA)
+### Plot
+ggplot(data = PFAsDiab2, aes(x = logLBXNFOA, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
 ```
 
 ### DIQ160
 
 ```{r}
+### DIQ160
 
+# Pre-Diabetes Differences
+
+## FNS
+YesPreDiabSumm <- summary(PFAsAsthma |> filter(DIQ160 == 1))
+NoPreDiabSumm  <- summary(PFAsAsthma |> filter(DIQ160 == 2))
+
+YesPreDiabSumm
+NoPreDiabSumm
+
+
+PFAsPreDiab2 <- PFAsAsthma |>
+  filter(DIQ160 %in% c(1,2)) |>
+  mutate(
+    DIQ160 = factor(DIQ160,
+                    levels = c(1,2),
+                    labels = c("Yes","No"))
+  )
+
+## PFHS
+### ANOVA
+PreDiabFitsPFHS <- aov(logLBXPFHS ~ DIQ160, data = PFAsPreDiab2)
+summary(PreDiabFitsPFHS)
+
+### Mean Difference
+diff1 <- diff(tapply(PFAsPreDiab2$logLBXPFHS, PFAsPreDiab2$DIQ160, mean))
+PreDiabDifferencePFHS <- exp(diff1)
+PreDiabDifferencePFHS
+
+### Confidence Interval
+PreDiabConfIntPFHS <- t.test(logLBXPFHS ~ DIQ160, data = PFAsPreDiab2)$conf.int
+PreDiabConfIntPFHS
+
+### Plot
+ggplot(data = PFAsPreDiab2, aes(x = logLBXPFHS, fill = DIQ160)) +
+  geom_density(alpha = 0.4)
+
+
+## PFNA
+### ANOVA
+PreDiabFitsPFNA <- aov(logLBXPFNA ~ DIQ160, data = PFAsPreDiab2)
+summary(PreDiabFitsPFNA)
+
+### Mean Difference
+diff2 <- diff(tapply(PFAsPreDiab2$logLBXPFNA, PFAsPreDiab2$DIQ160, mean))
+PreDiabDifferencePFNA <- exp(diff2)
+PreDiabDifferencePFNA
+
+### Confidence Interval
+PreDiabConfIntPFNA <- t.test(logLBXPFNA ~ DIQ160, data = PFAsPreDiab2)$conf.int
+PreDiabConfIntPFNA
+
+### Plot
+ggplot(data = PFAsPreDiab2, aes(x = logLBXPFNA, fill = DIQ160)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+### ANOVA
+PreDiabFitsBFOA <- aov(logLBXBFOA ~ DIQ160, data = PFAsPreDiab2)
+summary(PreDiabFitsBFOA)
+
+### Mean Difference
+diff3 <- diff(tapply(PFAsPreDiab2$logLBXBFOA, PFAsPreDiab2$DIQ160, mean))
+PreDiabDifferenceBFOA <- exp(diff3)
+PreDiabDifferenceBFOA
+
+### Confidence Interval
+PreDiabConfIntBFOA <- t.test(logLBXBFOA ~ DIQ160, data = PFAsPreDiab2)$conf.int
+PreDiabConfIntBFOA
+
+### Plot
+ggplot(data = PFAsPreDiab2, aes(x = logLBXBFOA, fill = DIQ160))  +
+  geom_density(alpha = 0.4)
+
+
+## MFOS
+### ANOVA
+PreDiabFitsMFOS <- aov(logLBXMFOS ~ DIQ160, data = PFAsPreDiab2)
+summary(PreDiabFitsMFOS)
+
+### Mean Difference
+diff4 <- diff(tapply(PFAsPreDiab2$logLBXMFOS, PFAsPreDiab2$DIQ160, mean))
+PreDiabDifferenceMFOS <- exp(diff4)
+PreDiabDifferenceMFOS
+
+### Confidence Interval
+PreDiabConfIntMFOS <- t.test(logLBXMFOS ~ DIQ160, data = PFAsPreDiab2)$conf.int
+PreDiabConfIntMFOS
+
+### Plot
+ggplot(data = PFAsPreDiab2, aes(x = logLBXMFOS, fill = DIQ160)) +
+  geom_density(alpha = 0.4)
+
+
+## NFOA
+### ANOVA
+PreDiabFitsNFOA <- aov(logLBXNFOA ~ DIQ160, data = PFAsPreDiab2)
+summary(PreDiabFitsNFOA)
+
+### Mean Difference
+diff5 <- diff(tapply(PFAsPreDiab2$logLBXNFOA, PFAsPreDiab2$DIQ160, mean))
+PreDiabDifferenceNFOA <- exp(diff5)
+PreDiabDifferenceNFOA
+
+### Confidence Interval
+PreDiabConfIntNFOA <- t.test(logLBXNFOA ~ DIQ160, data = PFAsPreDiab2)$conf.int
+PreDiabConfIntNFOA
+
+### Plot
+ggplot(data = PFAsPreDiab2, aes(x = logLBXNFOA, fill = DIQ160)) +
+  geom_density(alpha = 0.4)
 ```
 
 ### MCQ160M
@@ -1436,31 +1634,584 @@ ggplot(data = PFAsLiver, aes(x = logLBXNFOA, fill = MCQ160L)) +
 ### MCQ160B
 
 ```{r}
+### MCQ160B
 
+# Congestive Heart Failure Differences
+
+## FNS
+YesCHFSumm <- summary(PFAsAsthma |> filter(MCQ160B == 1))
+NoCHFSumm  <- summary(PFAsAsthma |> filter(MCQ160B == 2))
+
+YesCHFSumm
+NoCHFSumm
+
+
+PFAsCHF2 <- PFAsAsthma |>
+  filter(MCQ160B %in% c(1,2)) |>
+  mutate(
+    MCQ160B = factor(MCQ160B,
+                     levels = c(1,2),
+                     labels = c("Yes","No"))
+  )
+
+## PFHS
+### ANOVA
+CHFFitsPFHS <- aov(logLBXPFHS ~ MCQ160B, data = PFAsCHF2)
+summary(CHFFitsPFHS)
+
+### Mean Difference
+diff1 <- diff(tapply(PFAsCHF2$logLBXPFHS, PFAsCHF2$MCQ160B, mean))
+CHFDifferencePFHS <- exp(diff1)
+CHFDifferencePFHS
+
+### Confidence Interval
+CHFConfIntPFHS <- t.test(logLBXPFHS ~ MCQ160B, data = PFAsCHF2)$conf.int
+CHFConfIntPFHS
+
+### Plot
+ggplot(data = PFAsCHF2, aes(x = logLBXPFHS, fill = MCQ160B))  +
+  geom_density(alpha = 0.4)
+
+## PFNA
+### ANOVA
+CHFFitsPFNA <- aov(logLBXPFNA ~ MCQ160B, data = PFAsCHF2)
+summary(CHFFitsPFNA)
+
+### Mean Difference
+diff2 <- diff(tapply(PFAsCHF2$logLBXPFNA, PFAsCHF2$MCQ160B, mean))
+CHFDifferencePFNA <- exp(diff2)
+CHFDifferencePFNA
+
+### Confidence Interval
+CHFConfIntPFNA <- t.test(logLBXPFNA ~ MCQ160B, data = PFAsCHF2)$conf.int
+CHFConfIntPFNA
+
+### Plot
+ggplot(data = PFAsCHF2, aes(x = logLBXPFNA, fill = MCQ160B))  +
+  geom_density(alpha = 0.4)
+
+## BFOA
+### ANOVA
+CHFFitsBFOA <- aov(logLBXBFOA ~ MCQ160B, data = PFAsCHF2)
+summary(CHFFitsBFOA)
+
+### Mean Difference
+diff3 <- diff(tapply(PFAsCHF2$logLBXBFOA, PFAsCHF2$MCQ160B, mean))
+CHFDifferenceBFOA <- exp(diff3)
+CHFDifferenceBFOA
+
+### Confidence Interval
+CHFConfIntBFOA <- t.test(logLBXBFOA ~ MCQ160B, data = PFAsCHF2)$conf.int
+CHFConfIntBFOA
+
+### Plot
+ggplot(data = PFAsCHF2, aes(x = logLBXBFOA, fill = MCQ160B))  +
+  geom_density(alpha = 0.4)
+
+## MFOS
+### ANOVA
+CHFFitsMFOS <- aov(logLBXMFOS ~ MCQ160B, data = PFAsCHF2)
+summary(CHFFitsMFOS)
+
+### Mean Difference
+diff4 <- diff(tapply(PFAsCHF2$logLBXMFOS, PFAsCHF2$MCQ160B, mean))
+CHFDifferenceMFOS <- exp(diff4)
+CHFDifferenceMFOS
+
+### Confidence Interval
+CHFConfIntMFOS <- t.test(logLBXMFOS ~ MCQ160B, data = PFAsCHF2)$conf.int
+CHFConfIntMFOS
+
+### Plot
+ggplot(data = PFAsCHF2, aes(x = logLBXMFOS, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+## NFOA
+### ANOVA
+CHFFitsNFOA <- aov(logLBXNFOA ~ MCQ160B, data = PFAsCHF2)
+summary(CHFFitsNFOA)
+
+### Mean Difference
+diff5 <- diff(tapply(PFAsCHF2$logLBXNFOA, PFAsCHF2$MCQ160B, mean))
+CHFDifferenceNFOA <- exp(diff5)
+CHFDifferenceNFOA
+
+### Confidence Interval
+CHFConfIntNFOA <- t.test(logLBXNFOA ~ MCQ160B, data = PFAsCHF2)$conf.int
+CHFConfIntNFOA
+
+### Plot
+ggplot(data = PFAsCHF2, aes(x = logLBXNFOA, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
 ```
 
 ### MCQ160C
 
 ```{r}
+#MCQ160C
+# Coronary Heart Disease Differences
+
+## FNS
+YesCHDSumm <- summary(PFAsAsthma |> filter(MCQ160C == 1))
+NoCHDSumm  <- summary(PFAsAsthma |> filter(MCQ160C == 2))
+
+YesCHDSumm
+NoCHDSumm
+
+
+PFAsCHD2 <- PFAsAsthma |>
+  filter(MCQ160C %in% c(1,2)) |>
+  mutate(
+    MCQ160C = factor(MCQ160C,
+                     levels = c(1,2),
+                     labels = c("Yes","No"))
+  )
+
+## PFHS
+### ANOVA
+CHDFitsPFHS <- aov(logLBXPFHS ~ MCQ160C, data = PFAsCHD2)
+summary(CHDFitsPFHS)
+
+### Mean Difference
+diff1 <- diff(tapply(PFAsCHD2$logLBXPFHS, PFAsCHD2$MCQ160C, mean))
+CHDDifferencePFHS <- exp(diff1)
+CHDDifferencePFHS
+
+### Confidence Interval
+CHDConfIntPFHS <- t.test(logLBXPFHS ~ MCQ160C, data = PFAsCHD2)$conf.int
+CHDConfIntPFHS
+
+### Plot
+ggplot(data = PFAsCHD2, aes(x = logLBXPFHS, fill = MCQ160C)) + 
+  geom_density(alpha = 0.4)
+
+
+
+## PFNA
+### ANOVA
+CHDFitsPFNA <- aov(logLBXPFNA ~ MCQ160C, data = PFAsCHD2)
+summary(CHDFitsPFNA)
+
+### Mean Difference
+diff2 <- diff(tapply(PFAsCHD2$logLBXPFNA, PFAsCHD2$MCQ160C, mean))
+CHDDifferencePFNA <- exp(diff2)
+CHDDifferencePFNA
+
+### Confidence Interval
+CHDConfIntPFNA <- t.test(logLBXPFNA ~ MCQ160C, data = PFAsCHD2)$conf.int
+CHDConfIntPFNA
+
+### Plot
+ggplot(data = PFAsCHD2, aes(x = logLBXPFNA, fill = MCQ160C))  +
+  geom_density(alpha = 0.4)
+
+
+## BFOA
+### ANOVA
+CHDFitsBFOA <- aov(logLBXBFOA ~ MCQ160C, data = PFAsCHD2)
+summary(CHDFitsBFOA)
+
+### Mean Difference
+diff3 <- diff(tapply(PFAsCHD2$logLBXBFOA, PFAsCHD2$MCQ160C, mean))
+CHDDifferenceBFOA <- exp(diff3)
+CHDDifferenceBFOA
+
+### Confidence Interval
+CHDConfIntBFOA <- t.test(logLBXBFOA ~ MCQ160C, data = PFAsCHD2)$conf.int
+CHDConfIntBFOA
+
+### Plot
+ggplot(data = PFAsCHD2, aes(x = logLBXBFOA, fill = MCQ160C))  +
+  geom_density(alpha = 0.4)
+
+
+## MFOS
+### ANOVA
+CHDFitsMFOS <- aov(logLBXMFOS ~ MCQ160C, data = PFAsCHD2)
+summary(CHDFitsMFOS)
+
+### Mean Difference
+diff4 <- diff(tapply(PFAsCHD2$logLBXMFOS, PFAsCHD2$MCQ160C, mean))
+CHDDifferenceMFOS <- exp(diff4)
+CHDDifferenceMFOS
+
+### Confidence Interval
+CHDConfIntMFOS <- t.test(logLBXMFOS ~ MCQ160C, data = PFAsCHD2)$conf.int
+CHDConfIntMFOS
+
+### Plot
+ggplot(data = PFAsCHD2, aes(x = logLBXMFOS, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+
+## NFOA
+### ANOVA
+CHDFitsNFOA <- aov(logLBXNFOA ~ MCQ160C, data = PFAsCHD2)
+summary(CHDFitsNFOA)
+
+### Mean Difference
+diff5 <- diff(tapply(PFAsCHD2$logLBXNFOA, PFAsCHD2$MCQ160C, mean))
+CHDDifferenceNFOA <- exp(diff5)
+CHDDifferenceNFOA
+
+### Confidence Interval
+CHDConfIntNFOA <- t.test(logLBXNFOA ~ MCQ160C, data = PFAsCHD2)$conf.int
+CHDConfIntNFOA
+
+### Plot
+ggplot(data = PFAsCHD2, aes(x = logLBXNFOA, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
 
 ```
 
 ### MCQ160D
 
 ```{r}
+#MCQ160D
+# Angina/ Angina Pectoris Differences
 
+## FNS
+YesAAPSumm <- summary(PFAsAsthma |> filter(MCQ160D == 1))
+NoAAPSumm  <- summary(PFAsAsthma |> filter(MCQ160D == 2))
+
+YesAAPSumm
+NoAAPSumm
+
+
+PFAsAAP2 <- PFAsAsthma |>
+  filter(MCQ160D %in% c(1,2)) |>
+  mutate(
+    MCQ160D = factor(MCQ160D,
+                     levels = c(1,2),
+                     labels = c("Yes","No"))
+  )
+
+## PFHS
+### ANOVA
+AAPFitsPFHS <- aov(logLBXPFHS ~ MCQ160D, data = PFAsAAP2)
+summary(AAPFitsPFHS)
+
+### Mean Difference
+diff1 <- diff(tapply(PFAsAAP2$logLBXPFHS, PFAsAAP2$MCQ160D, mean))
+AAPDifferencePFHS <- exp(diff1)
+AAPDifferencePFHS
+
+### Confidence Interval
+AAPConfIntPFHS <- t.test(logLBXPFHS ~ MCQ160D, data = PFAsAAP2)$conf.int
+AAPConfIntPFHS
+
+### Plot
+ggplot(data = PFAsAAP2, aes(x = logLBXPFHS, fill = MCQ160D)) + 
+  geom_density(alpha = 0.4)
+
+
+
+## PFNA
+### ANOVA
+AAPFitsPFNA <- aov(logLBXPFNA ~ MCQ160D, data = PFAsAAP2)
+summary(AAPFitsPFNA)
+
+### Mean Difference
+diff2 <- diff(tapply(PFAsAAP2$logLBXPFNA, PFAsAAP2$MCQ160D, mean))
+AAPDifferencePFNA <- exp(diff2)
+AAPDifferencePFNA
+
+### Confidence Interval
+AAPConfIntPFNA <- t.test(logLBXPFNA ~ MCQ160D, data = PFAsAAP2)$conf.int
+AAPConfIntPFNA
+
+### Plot
+ggplot(data = PFAsAAP2, aes(x = logLBXPFNA, fill = MCQ160D))  +
+  geom_density(alpha = 0.4)
+
+
+## BFOA
+### ANOVA
+AAPFitsBFOA <- aov(logLBXBFOA ~ MCQ160D, data = PFAsAAP2)
+summary(AAPFitsBFOA)
+
+### Mean Difference
+diff3 <- diff(tapply(PFAsAAP2$logLBXBFOA, PFAsAAP2$MCQ160D, mean))
+AAPDifferenceBFOA <- exp(diff3)
+AAPDifferenceBFOA
+
+### Confidence Interval
+AAPConfIntBFOA <- t.test(logLBXBFOA ~ MCQ160D, data = PFAsAAP2)$conf.int
+AAPConfIntBFOA
+
+### Plot
+ggplot(data = PFAsAAP2, aes(x = logLBXBFOA, fill = MCQ160D))  +
+  geom_density(alpha = 0.4)
+
+
+## MFOS
+### ANOVA
+AAPFitsMFOS <- aov(logLBXMFOS ~ MCQ160D, data = PFAsAAP2)
+summary(AAPFitsMFOS)
+
+### Mean Difference
+diff4 <- diff(tapply(PFAsAAP2$logLBXMFOS, PFAsAAP2$MCQ160D, mean))
+AAPDifferenceMFOS <- exp(diff4)
+AAPDifferenceMFOS
+
+### Confidence Interval
+AAPConfIntMFOS <- t.test(logLBXMFOS ~ MCQ160D, data = PFAsAAP2)$conf.int
+AAPConfIntMFOS
+
+### Plot
+ggplot(data = PFAsAAP2, aes(x = logLBXMFOS, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+
+## NFOA
+### ANOVA
+AAPFitsNFOA <- aov(logLBXNFOA ~ MCQ160D, data = PFAsAAP2)
+summary(AAPFitsNFOA)
+
+### Mean Difference
+diff5 <- diff(tapply(PFAsAAP2$logLBXNFOA, PFAsAAP2$MCQ160D, mean))
+AAPDifferenceNFOA <- exp(diff5)
+AAPDifferenceNFOA
+
+### Confidence Interval
+AAPConfIntNFOA <- t.test(logLBXNFOA ~ MCQ160D, data = PFAsAAP2)$conf.int
+AAPConfIntNFOA
+
+### Plot
+ggplot(data = PFAsAAP2, aes(x = logLBXNFOA, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
 ```
 
 ### MCQ160E
 
 ```{r}
+#MCQ160E
+# Heart Attack Differences
 
+## FNS
+YesHASumm <- summary(PFAsAsthma |> filter(MCQ160E == 1))
+NoHASumm  <- summary(PFAsAsthma |> filter(MCQ160E == 2))
+
+YesHASumm
+NoHASumm
+
+
+PFAsHA2 <- PFAsAsthma |>
+  filter(MCQ160E %in% c(1,2)) |>
+  mutate(
+    MCQ160E = factor(MCQ160E,
+                     levels = c(1,2),
+                     labels = c("Yes","No"))
+  )
+## PFHS
+### ANOVA
+HAFitsPFHS <- aov(logLBXPFHS ~ MCQ160E, data = PFAsHA2)
+summary(HAFitsPFHS)
+
+### Mean Difference
+diff1 <- diff(tapply(PFAsHA2$logLBXPFHS, PFAsHA2$MCQ160E, mean))
+HADifferencePFHS <- exp(diff1)
+HADifferencePFHS
+
+### Confidence Interval
+HAConfIntPFHS <- t.test(logLBXPFHS ~ MCQ160E, data = PFAsHA2)$conf.int
+HAConfIntPFHS
+
+### Plot
+ggplot(data = PFAsHA2, aes(x = logLBXPFHS, fill = MCQ160E)) + 
+  geom_density(alpha = 0.4)
+
+
+
+## PFNA
+### ANOVA
+HAFitsPFNA <- aov(logLBXPFNA ~ MCQ160E, data = PFAsHA2)
+summary(HAFitsPFNA)
+
+### Mean Difference
+diff2 <- diff(tapply(PFAsHA2$logLBXPFNA, PFAsHA2$MCQ160E, mean))
+HADifferencePFNA <- exp(diff2)
+HADifferencePFNA
+
+HAConfIntPFNA <- t.test(logLBXPFNA ~ MCQ160E, data = PFAsHA2)$conf.int
+HAConfIntPFNA
+
+### Plot
+ggplot(data = PFAsHA2, aes(x = logLBXPFNA, fill = MCQ160E))  +
+  geom_density(alpha = 0.4)
+
+
+## BFOA
+### ANOVA
+HAFitsBFOA <- aov(logLBXBFOA ~ MCQ160E, data = PFAsHA2)
+summary(HAFitsBFOA)
+
+### Mean Difference
+diff3 <- diff(tapply(PFAsHA2$logLBXBFOA, PFAsHA2$MCQ160E, mean))
+HADifferenceBFOA <- exp(diff3)
+HADifferenceBFOA
+
+### Confidence Interval
+HAConfIntBFOA <- t.test(logLBXBFOA ~ MCQ160E, data = PFAsHA2)$conf.int
+HAConfIntBFOA
+
+### Plot
+ggplot(data = PFAsHA2, aes(x = logLBXBFOA, fill = MCQ160E))  +
+  geom_density(alpha = 0.4)
+
+
+## MFOS
+### ANOVA
+HAFitsMFOS <- aov(logLBXMFOS ~ MCQ160E, data = PFAsHA2)
+summary(HAFitsMFOS)
+
+### Mean Difference
+diff4 <- diff(tapply(PFAsHA2$logLBXMFOS, PFAsHA2$MCQ160E, mean))
+HADifferenceMFOS <- exp(diff4)
+HADifferenceMFOS
+
+### Confidence Interval
+HAConfIntMFOS <- t.test(logLBXMFOS ~ MCQ160E, data = PFAsHA2)$conf.int
+HAConfIntMFOS
+
+### Plot
+ggplot(data = PFAsHA2, aes(x = logLBXMFOS, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+
+## NFOA
+### ANOVA
+HAFitsNFOA <- aov(logLBXNFOA ~ MCQ160E, data = PFAsHA2)
+summary(HAFitsNFOA)
+
+### Mean Difference
+diff5 <- diff(tapply(PFAsHA2$logLBXNFOA, PFAsHA2$MCQ160E, mean))
+HADifferenceNFOA <- exp(diff5)
+HADifferenceNFOA
+
+### Confidence Interval
+HAConfIntNFOA <- t.test(logLBXNFOA ~ MCQ160E, data = PFAsHA2)$conf.int
+HAConfIntNFOA
+
+### Plot
+ggplot(data = PFAsHA2, aes(x = logLBXNFOA, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
 ```
 
 ### MCQ160F
 
 ```{r}
+#MCQ160F
+# Stroke Differences
 
+## FNS
+YesSSumm <- summary(PFAsAsthma |> filter(MCQ160F == 1))
+NoSSumm  <- summary(PFAsAsthma |> filter(MCQ160F == 2))
+
+YesSSumm
+NoSSumm
+
+
+PFAsS2 <- PFAsAsthma |>
+  filter(MCQ160F %in% c(1,2)) |>
+  mutate(
+    MCQ160F = factor(MCQ160F,
+                     levels = c(1,2),
+                     labels = c("Yes","No"))
+  )
+## PFHS
+### ANOVA
+SFitsPFHS <- aov(logLBXPFHS ~ MCQ160F, data = PFAsS2)
+summary(SFitsPFHS)
+
+### Mean Difference
+diff1 <- diff(tapply(PFAsS2$logLBXPFHS, PFAsS2$MCQ160F, mean))
+SDifferencePFHS <- exp(diff1)
+SDifferencePFHS
+
+### Confidence Interval
+SConfIntPFHS <- t.test(logLBXPFHS ~ MCQ160F, data = PFAsS2)$conf.int
+SConfIntPFHS
+
+### Plot
+ggplot(data = PFAsS2, aes(x = logLBXPFHS, fill = MCQ160F)) + 
+  geom_density(alpha = 0.4)
+
+
+
+## PFNA
+### ANOVA
+SFitsPFNA <- aov(logLBXPFNA ~ MCQ160F, data = PFAsS2)
+summary(SFitsPFNA)
+
+### Mean Difference
+diff2 <- diff(tapply(PFAsS2$logLBXPFNA, PFAsS2$MCQ160F, mean))
+SDifferencePFNA <- exp(diff2)
+SDifferencePFNA
+
+SConfIntPFNA <- t.test(logLBXPFNA ~ MCQ160F, data = PFAsS2)$conf.int
+SConfIntPFNA
+
+### Plot
+ggplot(data = PFAsS2, aes(x = logLBXPFNA, fill = MCQ160F))  +
+  geom_density(alpha = 0.4)
+
+
+## BFOA
+### ANOVA
+SFitsBFOA <- aov(logLBXBFOA ~ MCQ160F, data = PFAsS2)
+summary(SFitsBFOA)
+
+### Mean Difference
+diff3 <- diff(tapply(PFAsS2$logLBXBFOA, PFAsS2$MCQ160F, mean))
+SDifferenceBFOA <- exp(diff3)
+SDifferenceBFOA
+
+### Confidence Interval
+SConfIntBFOA <- t.test(logLBXBFOA ~ MCQ160F, data = PFAsS2)$conf.int
+SConfIntBFOA
+
+### Plot
+ggplot(data = PFAsS2, aes(x = logLBXBFOA, fill = MCQ160F))  +
+  geom_density(alpha = 0.4)
+
+
+## MFOS
+### ANOVA
+SFitsMFOS <- aov(logLBXMFOS ~ MCQ160F, data = PFAsS2)
+summary(SFitsMFOS)
+
+### Mean Difference
+diff4 <- diff(tapply(PFAsS2$logLBXMFOS, PFAsS2$MCQ160F, mean))
+SDifferenceMFOS <- exp(diff4)
+SDifferenceMFOS
+
+### Confidence Interval
+SConfIntMFOS <- t.test(logLBXMFOS ~ MCQ160F, data = PFAsS2)$conf.int
+SConfIntMFOS
+
+### Plot
+ggplot(data = PFAsS2, aes(x = logLBXMFOS, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+
+## NFOA
+### ANOVA
+SFitsNFOA <- aov(logLBXNFOA ~ MCQ160F, data = PFAsS2)
+summary(SFitsNFOA)
+
+### Mean Difference
+diff5 <- diff(tapply(PFAsS2$logLBXNFOA, PFAsS2$MCQ160F, mean))
+SDifferenceNFOA <- exp(diff5)
+SDifferenceNFOA
+
+### Confidence Interval
+SConfIntNFOA <- t.test(logLBXNFOA ~ MCQ160F, data = PFAsS2)$conf.int
+SConfIntNFOA
+
+### Plot
+ggplot(data = PFAsS2, aes(x = logLBXNFOA, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
 ```
 
 ### Other Years
@@ -3312,6 +4063,1343 @@ ggplot(data = PFAsLiverTot2015, aes(x = logLBXNFOA, fill = MCQ160L)) +
   scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
   geom_density(alpha = 0.4)
 
+```
+
+### Diabetes Distributions
+```{r}
+# 2011 Diabetes Analysis
+
+PFAsDiabTot2011 <- PFAsTotal2011 |>
+  filter(DIQ010 %in% c(1,2,3)) |>
+  mutate(DIQ010 = factor(DIQ010,
+                         levels = c(1,2,3),
+                         labels = c("Yes","No","Borderline")))
+
+## FNS (FIXED DATASET)
+summary(PFAsDiabTot2011)
+
+## PFHS
+DiabFits2011PFHS <- aov(logLBXPFHS ~ DIQ010, data = PFAsDiabTot2011)
+summary(DiabFits2011PFHS)
+exp(tapply(PFAsDiabTot2011$logLBXPFHS, PFAsDiabTot2011$DIQ010, mean))
+TukeyHSD(DiabFits2011PFHS)
+
+ggplot(PFAsDiabTot2011, aes(x = logLBXPFHS, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+DiabFits2011PFNA <- aov(logLBXPFNA ~ DIQ010, data = PFAsDiabTot2011)
+summary(DiabFits2011PFNA)
+exp(tapply(PFAsDiabTot2011$logLBXPFNA, PFAsDiabTot2011$DIQ010, mean))
+TukeyHSD(DiabFits2011PFNA)
+
+ggplot(PFAsDiabTot2011, aes(x = logLBXPFNA, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## PFOA
+DiabFits2011PFOA <- aov(logLBXPFOA ~ DIQ010, data = PFAsDiabTot2011)
+summary(DiabFits2011PFOA)
+exp(tapply(PFAsDiabTot2011$logLBXPFOA, PFAsDiabTot2011$DIQ010, mean))
+TukeyHSD(DiabFits2011PFOA)
+
+ggplot(PFAsDiabTot2011, aes(x = logLBXPFOA, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## PFOS
+DiabFits2011PFOS <- aov(logLBXPFOS ~ DIQ010, data = PFAsDiabTot2011)
+summary(DiabFits2011PFOS)
+exp(tapply(PFAsDiabTot2011$logLBXPFOS, PFAsDiabTot2011$DIQ010, mean))
+TukeyHSD(DiabFits2011PFOS)
+
+ggplot(PFAsDiabTot2011, aes(x = logLBXPFOS, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+# 2013 Diabetes Analysis
+PFAsDiab2013 <- PFAsTotal2013 |>
+  filter(DIQ010 %in% c(1,2,3)) |>
+  mutate(DIQ010 = factor(DIQ010,
+                         levels = c(1,2,3),
+                         labels = c("Yes","No","Borderline")))
+
+## FNS (overall check)
+summary(PFAsDiab2013)
+
+## PFHS
+Diab2013PFHS <- aov(logSSPFHS ~ DIQ010, data = PFAsDiab2013)
+summary(Diab2013PFHS)
+
+diff13_pfhs <- diff(tapply(PFAsDiab2013$logSSPFHS,
+                           PFAsDiab2013$DIQ010, mean))
+exp(diff13_pfhs)
+
+#t.test(logSSPFHS ~ DIQ010, data = PFAsDiab2013)$conf.int
+
+ggplot(PFAsDiab2013, aes(x = logSSPFHS, fill = DIQ010))+
+  geom_density(alpha = 0.4)
+
+## PFNA
+Diab2013PFNA <- aov(logSSPFNA ~ DIQ010, data = PFAsDiab2013)
+summary(Diab2013PFNA)
+
+diff13_pfna <- diff(tapply(PFAsDiab2013$logSSPFNA,
+                           PFAsDiab2013$DIQ010, mean))
+exp(diff13_pfna)
+
+#t.test(logSSPFNA ~ DIQ010, data = PFAsDiab2013)$conf.int
+
+ggplot(PFAsDiab2013, aes(x = logSSPFNA, fill = DIQ010))) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+Diab2013BFOA <- aov(logSSBFOA ~ DIQ010, data = PFAsDiab2013)
+summary(Diab2013BFOA)
+
+diff13_bfoa <- diff(tapply(PFAsDiab2013$logSSBFOA,
+                           PFAsDiab2013$DIQ010, mean))
+exp(diff13_bfoa)
+
+#t.test(logSSBFOA ~ DIQ010, data = PFAsDiab2013)$conf.int
+
+ggplot(PFAsDiab2013, aes(x = logSSBFOA, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+Diab2013MFOS <- aov(logSSMFOS ~ DIQ010, data = PFAsDiab2013)
+summary(Diab2013MFOS)
+
+diff13_mfos <- diff(tapply(PFAsDiab2013$logSSMFOS,
+                           PFAsDiab2013$DIQ010, mean))
+exp(diff13_mfos)
+
+#t.test(logSSMFOS ~ DIQ010, data = PFAsDiab2013)$conf.int
+
+ggplot(PFAsDiab2013, aes(x = logSSMFOS, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## NFOA
+Diab2013NFOS <- aov(logSSNFOS ~ DIQ010, data = PFAsDiab2013)
+summary(Diab2013NFOS)
+
+diff13_nfos <- diff(tapply(PFAsDiab2013$logSSNFOS,
+                           PFAsDiab2013$DIQ010, mean))
+exp(diff13_nfos)
+
+#t.test(logSSNFOA ~ DIQ010, data = PFAsDiab2013)$conf.int
+
+ggplot(PFAsDiab2013, aes(x = logSSNFOS, fill = DIQ010))  +
+  geom_density(alpha = 0.4)
+
+# 2015 Diabetes Analysis
+
+PFAsDiabTot2015 <- PFAsTotal2015 |>
+  filter(DIQ010 %in% c(1,2,3)) |>
+  mutate(DIQ010 = factor(DIQ010,
+                         levels = c(1,2,3),
+                         labels = c("Yes","No","Borderline")))
+
+## PFHS
+DiabFits2015PFHS <- aov(logLBXPFHS ~ DIQ010, data = PFAsDiabTot2015)
+summary(DiabFits2015PFHS)
+exp(tapply(PFAsDiabTot2015$logLBXPFHS, PFAsDiabTot2015$DIQ010, mean))
+TukeyHSD(DiabFits2015PFHS)
+
+ggplot(PFAsDiabTot2015, aes(x = logLBXPFHS, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+DiabFits2015PFNA <- aov(logLBXPFNA ~ DIQ010, data = PFAsDiabTot2015)
+summary(DiabFits2015PFNA)
+exp(tapply(PFAsDiabTot2015$logLBXPFNA, PFAsDiabTot2015$DIQ010, mean))
+TukeyHSD(DiabFits2015PFNA)
+
+ggplot(PFAsDiabTot2015, aes(x = logLBXPFNA, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+DiabFits2015BFOA <- aov(logLBXBFOA ~ DIQ010, data = PFAsDiabTot2015)
+summary(DiabFits2015BFOA)
+exp(tapply(PFAsDiabTot2015$logLBXBFOA, PFAsDiabTot2015$DIQ010, mean))
+TukeyHSD(DiabFits2015BFOA)
+
+ggplot(PFAsDiabTot2015, aes(x = logLBXBFOA, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+DiabFits2015MFOS <- aov(logLBXMFOS ~ DIQ010, data = PFAsDiabTot2015)
+summary(DiabFits2015MFOS)
+exp(tapply(PFAsDiabTot2015$logLBXMFOS, PFAsDiabTot2015$DIQ010, mean))
+TukeyHSD(DiabFits2015MFOS)
+
+ggplot(PFAsDiabTot2015, aes(x = logLBXMFOS, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+
+## NFOA
+DiabFits2015NFOA <- aov(logLBXNFOA ~ DIQ010, data = PFAsDiabTot2015)
+summary(DiabFits2015NFOA)
+exp(tapply(PFAsDiabTot2015$logLBXNFOA, PFAsDiabTot2015$DIQ010, mean))
+TukeyHSD(DiabFits2015NFOA)
+
+ggplot(PFAsDiabTot2015, aes(x = logLBXNFOA, fill = DIQ010)) +
+  geom_density(alpha = 0.4)
+```
+
+###Pre-Diabetes
+
+```{r}
+
+# 2011 Pre-diabetes Analysis
+
+PFAsPreDiabTot2011 <- PFAsTotal2011 |>
+  filter(DIQ160 %in% c(1,2)) |>
+  mutate(DIQ160 = if_else(DIQ160 == 1, "Yes", "No"))
+
+## PFHS
+diff11_pfhs <- diff(tapply(PFAsPreDiabTot2011$logLBXPFHS,
+                           PFAsPreDiabTot2011$DIQ160, mean))
+exp(diff11_pfhs)
+
+t.test(logLBXPFHS ~ DIQ160, data = PFAsPreDiabTot2011)$conf.int
+
+ggplot(PFAsPreDiabTot2011, aes(x = logLBXPFHS, fill = DIQ160)) + geom_density(alpha = 0.4)
+
+## PFNA
+diff11_pfna <- diff(tapply(PFAsPreDiabTot2011$logLBXPFNA,
+                           PFAsPreDiabTot2011$DIQ160, mean))
+exp(diff11_pfna)
+
+t.test(logLBXPFNA ~ DIQ160, data = PFAsPreDiabTot2011)$conf.int
+
+ggplot(PFAsPreDiabTot2011, aes(x = logLBXPFNA, fill = DIQ160)) +  geom_density(alpha = 0.4)
+
+## PFOA
+diff11_pfoa <- diff(tapply(PFAsPreDiabTot2011$logLBXPFOA,
+                           PFAsPreDiabTot2011$DIQ160, mean))
+exp(diff11_pfoa)
+
+t.test(logLBXPFOA ~ DIQ160, data = PFAsPreDiabTot2011)$conf.int
+
+ggplot(PFAsPreDiabTot2011, aes(x = logLBXPFOA, fill = DIQ160)) + geom_density(alpha = 0.4)
+
+## PFOS
+diff11_pfos <- diff(tapply(PFAsPreDiabTot2011$logLBXPFOS,
+                           PFAsPreDiabTot2011$DIQ160, mean))
+exp(diff11_pfos)
+
+t.test(logLBXPFOS ~ DIQ160, data = PFAsPreDiabTot2011)$conf.int
+
+ggplot(PFAsPreDiabTot2011, aes(x = logLBXPFOS, fill = DIQ160)) + geom_density(alpha = 0.4)
+# 2013 Pre-diabetes Analysis
+
+PFAsPreDiabTot2013 <- PFAsTotal2013 |>
+  filter(DIQ160 %in% c(1,2)) |>
+  mutate(DIQ160 = if_else(DIQ160 == 1, "Yes", "No"))
+
+## PFHS
+diff13_pfhs <- diff(tapply(PFAsPreDiabTot2013$logSSPFHS,
+                           PFAsPreDiabTot2013$DIQ160, mean))
+exp(diff13_pfhs)
+
+t.test(logSSPFHS ~ DIQ160, data = PFAsPreDiabTot2013)$conf.int
+
+ggplot(PFAsPreDiabTot2013, aes(x = logSSPFHS, fill = DIQ160)) + geom_density(alpha = 0.4)
+
+## PFNA
+diff13_pfna <- diff(tapply(PFAsPreDiabTot2013$logSSPFNA,
+                           PFAsPreDiabTot2013$DIQ160, mean))
+exp(diff13_pfna)
+
+#t.test(logSSPFNA ~ DIQ160, data = PFAsPreDiabTot2013)$conf.int
+
+ggplot(PFAsPreDiabTot2013, aes(x = logSSPFNA, fill = DIQ160)) + geom_density(alpha = 0.4)
+
+## BFOA
+diff13_bfoa <- diff(tapply(PFAsPreDiabTot2013$logSSBFOA,
+                           PFAsPreDiabTot2013$DIQ160, mean))
+exp(diff13_bfoa)
+
+#t.test(logSSBFOA ~ DIQ160, data = PFAsPreDiabTot2013)$conf.int
+
+ggplot(PFAsPreDiabTot2013, aes(x = logSSBFOA, fill = DIQ160)) + geom_density(alpha = 0.4)
+
+## MFOS
+diff13_mfos <- diff(tapply(PFAsPreDiabTot2013$logSSMFOS,
+                           PFAsPreDiabTot2013$DIQ160, mean))
+exp(diff13_mfos)
+
+#t.test(logSSMFOS ~ DIQ160, data = PFAsPreDiabTot2013)$conf.int
+
+ggplot(PFAsPreDiabTot2013, aes(x = logSSMFOS, fill = DIQ160)) + geom_density(alpha = 0.4)
+
+## NFOA 
+#diff13_nfoa <- diff(tapply(PFAsPreDiabTot2013$logSSNFOA,
+#                           PFAsPreDiabTot2013$DIQ160, mean))
+#exp(diff13_nfoa)
+
+#t.test(logSSNFOA ~ DIQ160, data = PFAsPreDiabTot2013)$conf.int
+
+#ggplot(PFAsPreDiabTot2013, aes(x = logSSNFOA, fill = DIQ160)) + geom_density(alpha = 0.4)
+# 2015 Pre-diabetes Analysis
+#2015
+PFAsPreDiabTot2015 <- PFAsTotal2015 |>
+  filter(DIQ160 %in% c(1,2)) |>
+  mutate(DIQ160 = if_else(DIQ160 == 1, "Yes", "No"))
+
+## PFHS
+diff15_pfhs <- diff(tapply(PFAsPreDiabTot2015$logLBXPFHS,
+                           PFAsPreDiabTot2015$DIQ160, mean))
+exp(diff15_pfhs)
+
+t.test(logLBXPFHS ~ DIQ160, data = PFAsPreDiabTot2015)$conf.int
+
+ggplot(PFAsPreDiabTot2015, aes(x = logLBXPFHS, fill = DIQ160)) + geom_density(alpha = 0.4)
+#2015
+## PFNA
+diff15_pfna <- diff(tapply(PFAsPreDiabTot2015$logLBXPFNA,
+                           PFAsPreDiabTot2015$DIQ160, mean))
+exp(diff15_pfna)
+
+t.test(logLBXPFNA ~ DIQ160, data = PFAsPreDiabTot2015)$conf.int
+
+ggplot(PFAsPreDiabTot2015, aes(x = logLBXPFNA, fill = DIQ160)) + geom_density(alpha = 0.4)
+
+## BFOA
+diff15_bfoa <- diff(tapply(PFAsPreDiabTot2015$logLBXBFOA,
+                           PFAsPreDiabTot2015$DIQ160, mean))
+exp(diff15_bfoa)
+
+t.test(logLBXBFOA ~ DIQ160, data = PFAsPreDiabTot2015)$conf.int
+
+ggplot(PFAsPreDiabTot2015, aes(x = logLBXBFOA, fill = DIQ160)) + geom_density(alpha = 0.4)
+
+## MFOS
+diff15_mfos <- diff(tapply(PFAsPreDiabTot2015$logLBXMFOS,
+                           PFAsPreDiabTot2015$DIQ160, mean))
+exp(diff15_mfos)
+
+t.test(logLBXMFOS ~ DIQ160, data = PFAsPreDiabTot2015)$conf.int
+
+ggplot(PFAsPreDiabTot2015, aes(x = logLBXMFOS, fill = DIQ160)) + geom_density(alpha = 0.4)
+
+## NFOA
+diff15_nfoa <- diff(tapply(PFAsPreDiabTot2015$logLBXNFOA,
+                           PFAsPreDiabTot2015$DIQ160, mean))
+exp(diff15_nfoa)
+
+t.test(logLBXNFOA ~ DIQ160, data = PFAsPreDiabTot2015)$conf.int
+
+ggplot(PFAsPreDiabTot2015, aes(x = logLBXNFOA, fill = DIQ160)) + geom_density(alpha = 0.4)
+```
+
+### Congestive Heart Failure
+
+```{r}
+#2011
+PFAsCHFTot2011 <- PFAsTotal2011 |>
+  filter(MCQ160B %in% c(1,2)) |>
+  mutate(MCQ160B = factor(MCQ160B,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsCHFTot2011)
+
+### PFHS
+CHFFits2011PFHS <- aov(logLBXPFHS ~ MCQ160B, data = PFAsCHFTot2011)
+summary(CHFFits2011PFHS)
+
+diff11_pfhs <- diff(tapply(PFAsCHFTot2011$logLBXPFHS,
+                           PFAsCHFTot2011$MCQ160B, mean))
+exp(diff11_pfhs)
+
+t.test(logLBXPFHS ~ MCQ160B, data = PFAsCHFTot2011)$conf.int
+
+ggplot(PFAsCHFTot2011, aes(x = logLBXPFHS, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+### PFNA
+CHFFits2011PFNA <- aov(logLBXPFNA ~ MCQ160B, data = PFAsCHFTot2011)
+summary(CHFFits2011PFNA)
+
+diff11_pfna <- diff(tapply(PFAsCHFTot2011$logLBXPFNA,
+                           PFAsCHFTot2011$MCQ160B, mean))
+exp(diff11_pfna)
+
+t.test(logLBXPFNA ~ MCQ160B, data = PFAsCHFTot2011)$conf.int
+
+ggplot(PFAsCHFTot2011, aes(x = logLBXPFNA, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+### PFOA
+CHFFits2011PFOA <- aov(logLBXPFOA ~ MCQ160B, data = PFAsCHFTot2011)
+summary(CHFFits2011PFOA)
+
+diff11_pfoa <- diff(tapply(PFAsCHFTot2011$logLBXPFOA,
+                           PFAsCHFTot2011$MCQ160B, mean))
+exp(diff11_pfoa)
+
+t.test(logLBXPFOA ~ MCQ160B, data = PFAsCHFTot2011)$conf.int
+
+ggplot(PFAsCHFTot2011, aes(x = logLBXPFOA, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+### PFOS
+CHFFits2011PFOS <- aov(logLBXPFOS ~ MCQ160B, data = PFAsCHFTot2011)
+summary(CHFFits2011PFOS)
+
+diff11_pfos <- diff(tapply(PFAsCHFTot2011$logLBXPFOS,
+                           PFAsCHFTot2011$MCQ160B, mean))
+exp(diff11_pfos)
+
+t.test(logLBXPFOS ~ MCQ160B, data = PFAsCHFTot2011)$conf.int
+
+ggplot(PFAsCHFTot2011, aes(x = logLBXPFOS, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+## 2013
+PFAsCHFTot2013 <- PFAsTotal2013 |>
+  filter(MCQ160B %in% c(1,2)) |>
+  mutate(MCQ160B = factor(MCQ160B,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsCHFTot2013)
+
+### PFHS
+CHFFits2013PFHS <- aov(logSSPFHS ~ MCQ160B, data = PFAsCHFTot2013)
+summary(CHFFits2013PFHS)
+
+diff13_pfhs <- diff(tapply(PFAsCHFTot2013$logSSPFHS,
+                           PFAsCHFTot2013$MCQ160B, mean))
+exp(diff13_pfhs)
+
+t.test(logSSPFHS ~ MCQ160B, data = PFAsCHFTot2013)$conf.int
+
+ggplot(PFAsCHFTot2013, aes(x = logSSPFHS, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+### PFNA
+CHFFits2013PFNA <- aov(logSSPFNA ~ MCQ160B, data = PFAsCHFTot2013)
+summary(CHFFits2013PFNA)
+
+diff13_pfna <- diff(tapply(PFAsCHFTot2013$logSSPFNA,
+                           PFAsCHFTot2013$MCQ160B, mean))
+exp(diff13_pfna)
+
+t.test(logSSPFNA ~ MCQ160B, data = PFAsCHFTot2013)$conf.int
+
+ggplot(PFAsCHFTot2013, aes(x = logSSPFNA, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+### BFOA
+CHFFits2013BFOA <- aov(logSSBFOA ~ MCQ160B, data = PFAsCHFTot2013)
+summary(CHFFits2013BFOA)
+
+diff13_bfoa <- diff(tapply(PFAsCHFTot2013$logSSBFOA,
+                           PFAsCHFTot2013$MCQ160B, mean))
+exp(diff13_bfoa)
+
+t.test(logSSBFOA ~ MCQ160B, data = PFAsCHFTot2013)$conf.int
+
+ggplot(PFAsCHFTot2013, aes(x = logSSBFOA, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+### MFOS
+CHFFits2013MFOS <- aov(logSSMFOS ~ MCQ160B, data = PFAsCHFTot2013)
+summary(CHFFits2013MFOS)
+
+diff13_mfos <- diff(tapply(PFAsCHFTot2013$logSSMFOS,
+                           PFAsCHFTot2013$MCQ160B, mean))
+exp(diff13_mfos)
+
+#t.test(logSSMFOS ~ MCQ160B, data = PFAsCHFTot2013)$conf.int
+
+ggplot(PFAsCHFTot2013, aes(x = logSSMFOS, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+### NFOS
+CHFFits2013NFOS <- aov(logSSNFOS ~ MCQ160B, data = PFAsCHFTot2013)
+summary(CHFFits2013NFOS)
+
+diff13_nfos <- diff(tapply(PFAsCHFTot2013$logSSNFOS,
+                           PFAsCHFTot2013$MCQ160B, mean))
+exp(diff13_nfos)
+
+#t.test(logSSNFOS ~ MCQ160B, data = PFAsCHFTot2013)$conf.int
+
+ggplot(PFAsCHFTot2013, aes(x = logSSNFOS, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+# 2015
+PFAsCHFTot2015 <- PFAsTotal2015 |>
+  filter(MCQ160B %in% c(1,2)) |>
+  mutate(MCQ160B = factor(MCQ160B,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+## FNS
+summary(PFAsCHFTot2015)
+
+## PFHS
+CHFFits2015PFHS <- aov(logLBXPFHS ~ MCQ160B, data = PFAsCHFTot2015)
+summary(CHFFits2015PFHS)
+
+### Mean Difference
+diff15_pfhs <- diff(tapply(PFAsCHFTot2015$logLBXPFHS,
+                           PFAsCHFTot2015$MCQ160B, mean))
+AsthmaDifference2015PFHS <- exp(diff15_pfhs)
+AsthmaDifference2015PFHS
+
+### Confidence Interval
+CHFFits2015PFHS_CI <- t.test(logLBXPFHS ~ MCQ160B,
+                              data = PFAsCHFTot2015)$conf.int
+CHFFits2015PFHS_CI
+
+### Plot
+ggplot(PFAsCHFTot2015, aes(x = logLBXPFHS, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+
+## PFNA
+CHFFits2015PFNA <- aov(logLBXPFNA ~ MCQ160B, data = PFAsCHFTot2015)
+summary(CHFFits2015PFNA)
+
+### Mean Difference
+diff15_pfna <- diff(tapply(PFAsCHFTot2015$logLBXPFNA,
+                           PFAsCHFTot2015$MCQ160B, mean))
+AsthmaDifference2015PFNA <- exp(diff15_pfna)
+AsthmaDifference2015PFNA
+
+### Confidence Interval
+CHFFits2015PFNA_CI <- t.test(logLBXPFNA ~ MCQ160B,
+                              data = PFAsCHFTot2015)$conf.int
+CHFFits2015PFNA_CI
+
+### Plot
+ggplot(PFAsCHFTot2015, aes(x = logLBXPFNA, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+
+## BFOA
+CHFFits2015BFOA <- aov(logLBXBFOA ~ MCQ160B, data = PFAsCHFTot2015)
+summary(CHFFits2015BFOA)
+
+### Mean Difference
+diff15_bfoa <- diff(tapply(PFAsCHFTot2015$logLBXBFOA,
+                           PFAsCHFTot2015$MCQ160B, mean))
+AsthmaDifference2015BFOA <- exp(diff15_bfoa)
+AsthmaDifference2015BFOA
+
+### Confidence Interval
+CHFFits2015BFOA_CI <- t.test(logLBXBFOA ~ MCQ160B,
+                              data = PFAsCHFTot2015)$conf.int
+CHFFits2015BFOA_CI
+
+### Plot
+ggplot(PFAsCHFTot2015, aes(x = logLBXBFOA, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+
+## MFOS
+CHFFits2015MFOS <- aov(logLBXMFOS ~ MCQ160B, data = PFAsCHFTot2015)
+summary(CHFFits2015MFOS)
+
+### Mean Difference
+diff15_mfos <- diff(tapply(PFAsCHFTot2015$logLBXMFOS,
+                           PFAsCHFTot2015$MCQ160B, mean))
+AsthmaDifference2015MFOS <- exp(diff15_mfos)
+AsthmaDifference2015MFOS
+
+### Confidence Interval
+CHFFits2015MFOS_CI <- t.test(logLBXMFOS ~ MCQ160B,
+                              data = PFAsCHFTot2015)$conf.int
+CHFFits2015MFOS_CI
+
+### Plot
+ggplot(PFAsCHFTot2015, aes(x = logLBXMFOS, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+
+
+## NFOA
+CHFFits2015NFOA <- aov(logLBXNFOA ~ MCQ160B, data = PFAsCHFTot2015)
+summary(CHFFits2015NFOA)
+
+### Mean Difference
+diff15_nfoa <- diff(tapply(PFAsCHFTot2015$logLBXNFOA,
+                           PFAsCHFTot2015$MCQ160B, mean))
+AsthmaDifference2015NFOA <- exp(diff15_nfoa)
+AsthmaDifference2015NFOA
+
+### Confidence Interval
+CHFFits2015NFOA_CI <- t.test(logLBXNFOA ~ MCQ160B,
+                              data = PFAsCHFTot2015)$conf.int
+CHFFits2015NFOA_CI
+
+### Plot
+ggplot(PFAsCHFTot2015, aes(x = logLBXNFOA, fill = MCQ160B)) +
+  geom_density(alpha = 0.4)
+```
+
+### Coronary Heart Disease 
+```{r}
+## 2011
+PFAsCHDTot2011 <- PFAsTotal2011 |>
+  filter(MCQ160C %in% c(1,2)) |>
+  mutate(MCQ160C = factor(MCQ160C,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsCHDTot2011)
+
+## PFHS
+CHDFits2011PFHS <- aov(logLBXPFHS ~ MCQ160C, data = PFAsCHDTot2011)
+summary(CHDFits2011PFHS)
+
+diff11_pfhs <- diff(tapply(PFAsCHDTot2011$logLBXPFHS,
+                           PFAsCHDTot2011$MCQ160C, mean))
+exp(diff11_pfhs)
+
+t.test(logLBXPFHS ~ MCQ160C, data = PFAsCHDTot2011)$conf.int
+
+ggplot(PFAsCHDTot2011, aes(x = logLBXPFHS, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+CHDFits2011PFNA <- aov(logLBXPFNA ~ MCQ160C, data = PFAsCHDTot2011)
+summary(CHDFits2011PFNA)
+
+diff11_pfna <- diff(tapply(PFAsCHDTot2011$logLBXPFNA,
+                           PFAsCHDTot2011$MCQ160C, mean))
+exp(diff11_pfna)
+
+t.test(logLBXPFNA ~ MCQ160C, data = PFAsCHDTot2011)$conf.int
+
+ggplot(PFAsCHDTot2011, aes(x = logLBXPFNA, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## PFOA
+CHDFits2011PFOA <- aov(logLBXPFOA ~ MCQ160C, data = PFAsCHDTot2011)
+summary(CHDFits2011PFOA)
+
+diff11_pfoa <- diff(tapply(PFAsCHDTot2011$logLBXPFOA,
+                           PFAsCHDTot2011$MCQ160C, mean))
+exp(diff11_pfoa)
+
+t.test(logLBXPFOA ~ MCQ160C, data = PFAsCHDTot2011)$conf.int
+
+ggplot(PFAsCHDTot2011, aes(x = logLBXPFOA, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## PFOS
+CHDFits2011PFOS <- aov(logLBXPFOS ~ MCQ160C, data = PFAsCHDTot2011)
+summary(CHDFits2011PFOS)
+
+diff11_pfos <- diff(tapply(PFAsCHDTot2011$logLBXPFOS,
+                           PFAsCHDTot2011$MCQ160C, mean))
+exp(diff11_pfos)
+
+t.test(logLBXPFOS ~ MCQ160C, data = PFAsCHDTot2011)$conf.int
+
+ggplot(PFAsCHDTot2011, aes(x = logLBXPFOS, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## 2013
+PFAsCHDTot2013 <- PFAsTotal2013 |>
+  filter(MCQ160C %in% c(1,2)) |>
+  mutate(MCQ160C = factor(MCQ160C,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsCHDTot2013)
+
+## PFHS
+CHDFits2013PFHS <- aov(logSSPFHS ~ MCQ160C, data = PFAsCHDTot2013)
+summary(CHDFits2013PFHS)
+
+diff13_pfhs <- diff(tapply(PFAsCHDTot2013$logSSPFHS,
+                           PFAsCHDTot2013$MCQ160C, mean))
+exp(diff13_pfhs)
+
+t.test(logSSPFHS ~ MCQ160C, data = PFAsCHDTot2013)$conf.int
+
+ggplot(PFAsCHDTot2013, aes(x = logSSPFHS, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+CHDFits2013PFNA <- aov(logSSPFNA ~ MCQ160C, data = PFAsCHDTot2013)
+summary(CHDFits2013PFNA)
+
+diff13_pfna <- diff(tapply(PFAsCHDTot2013$logSSPFNA,
+                           PFAsCHDTot2013$MCQ160C, mean))
+exp(diff13_pfna)
+
+t.test(logSSPFNA ~ MCQ160C, data = PFAsCHDTot2013)$conf.int
+
+ggplot(PFAsCHDTot2013, aes(x = logSSPFNA, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+CHDFits2013BFOA <- aov(logSSBFOA ~ MCQ160C, data = PFAsCHDTot2013)
+summary(CHDFits2013BFOA)
+
+diff13_bfoa <- diff(tapply(PFAsCHDTot2013$logSSBFOA,
+                           PFAsCHDTot2013$MCQ160C, mean))
+exp(diff13_bfoa)
+
+t.test(logSSBFOA ~ MCQ160C, data = PFAsCHDTot2013)$conf.int
+
+ggplot(PFAsCHDTot2013, aes(x = logSSBFOA, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+CHDFits2013MFOS <- aov(logSSMFOS ~ MCQ160C, data = PFAsCHDTot2013)
+summary(CHDFits2013MFOS)
+
+diff13_mfos <- diff(tapply(PFAsCHDTot2013$logSSMFOS,
+                           PFAsCHDTot2013$MCQ160C, mean))
+exp(diff13_mfos)
+
+#t.test(logSSMFOS ~ MCQ160C, data = PFAsCHDTot2013)$conf.int
+
+ggplot(PFAsCHDTot2013, aes(x = logSSMFOS, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## NFOS
+CHDFits2013NFOS <- aov(logSSNFOS ~ MCQ160C, data = PFAsCHDTot2013)
+summary(CHDFits2013NFOS)
+
+diff13_nfos <- diff(tapply(PFAsCHDTot2013$logSSNFOS,
+                           PFAsCHDTot2013$MCQ160C, mean))
+exp(diff13_nfos)
+
+#t.test(logSSNFOS ~ MCQ160C, data = PFAsCHDTot2013)$conf.int
+
+ggplot(PFAsCHDTot2013, aes(x = logSSNFOS, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+##2015
+PFAsCHDTot2015 <- PFAsTotal2015 |>
+  filter(MCQ160C %in% c(1,2)) |>
+  mutate(MCQ160C = factor(MCQ160C,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsCHDTot2015)
+
+## PFHS
+CHDFits2015PFHS <- aov(logLBXPFHS ~ MCQ160C, data = PFAsCHDTot2015)
+summary(CHDFits2015PFHS)
+
+diff15_pfhs <- diff(tapply(PFAsCHDTot2015$logLBXPFHS,
+                           PFAsCHDTot2015$MCQ160C, mean))
+exp(diff15_pfhs)
+
+t.test(logLBXPFHS ~ MCQ160C, data = PFAsCHDTot2015)$conf.int
+
+ggplot(PFAsCHDTot2015, aes(x = logLBXPFHS, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+CHDFits2015PFNA <- aov(logLBXPFNA ~ MCQ160C, data = PFAsCHDTot2015)
+summary(CHDFits2015PFNA)
+
+diff15_pfna <- diff(tapply(PFAsCHDTot2015$logLBXPFNA,
+                           PFAsCHDTot2015$MCQ160C, mean))
+exp(diff15_pfna)
+
+t.test(logLBXPFNA ~ MCQ160C, data = PFAsCHDTot2015)$conf.int
+
+ggplot(PFAsCHDTot2015, aes(x = logLBXPFNA, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+CHDFits2015BFOA <- aov(logLBXBFOA ~ MCQ160C, data = PFAsCHDTot2015)
+summary(CHDFits2015BFOA)
+
+diff15_bfoa <- diff(tapply(PFAsCHDTot2015$logLBXBFOA,
+                           PFAsCHDTot2015$MCQ160C, mean))
+exp(diff15_bfoa)
+
+t.test(logLBXBFOA ~ MCQ160C, data = PFAsCHDTot2015)$conf.int
+
+ggplot(PFAsCHDTot2015, aes(x = logLBXBFOA, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+CHDFits2015MFOS <- aov(logLBXMFOS ~ MCQ160C, data = PFAsCHDTot2015)
+summary(CHDFits2015MFOS)
+
+diff15_mfos <- diff(tapply(PFAsCHDTot2015$logLBXMFOS,
+                           PFAsCHDTot2015$MCQ160C, mean))
+exp(diff15_mfos)
+
+t.test(logLBXMFOS ~ MCQ160C, data = PFAsCHDTot2015)$conf.int
+
+ggplot(PFAsCHDTot2015, aes(x = logLBXMFOS, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+
+## NFOA
+CHDFits2015NFOA <- aov(logLBXNFOA ~ MCQ160C, data = PFAsCHDTot2015)
+summary(CHDFits2015NFOA)
+
+diff15_nfoa <- diff(tapply(PFAsCHDTot2015$logLBXNFOA,
+                           PFAsCHDTot2015$MCQ160C, mean))
+exp(diff15_nfoa)
+
+t.test(logLBXNFOA ~ MCQ160C, data = PFAsCHDTot2015)$conf.int
+
+ggplot(PFAsCHDTot2015, aes(x = logLBXNFOA, fill = MCQ160C)) +
+  geom_density(alpha = 0.4)
+```
+
+###Angina / Angina Pectoris Differences
+```{r}
+# Angina / Angina Pectoris Differences
+
+### 2011
+PFAsAAPTot2011 <- PFAsTotal2011 |>
+  filter(MCQ160D %in% c(1,2)) |>
+  mutate(MCQ160D = factor(MCQ160D,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsAAPTot2011)
+
+## PFHS
+AAPFits2011PFHS <- aov(logLBXPFHS ~ MCQ160D, data = PFAsAAPTot2011)
+summary(AAPFits2011PFHS)
+
+diff11_pfhs <- diff(tapply(PFAsAAPTot2011$logLBXPFHS,
+                           PFAsAAPTot2011$MCQ160D, mean))
+exp(diff11_pfhs)
+
+t.test(logLBXPFHS ~ MCQ160D, data = PFAsAAPTot2011)$conf.int
+
+ggplot(PFAsAAPTot2011, aes(x = logLBXPFHS, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+AAPFits2011PFNA <- aov(logLBXPFNA ~ MCQ160D, data = PFAsAAPTot2011)
+summary(AAPFits2011PFNA)
+
+diff11_pfna <- diff(tapply(PFAsAAPTot2011$logLBXPFNA,
+                           PFAsAAPTot2011$MCQ160D, mean))
+exp(diff11_pfna)
+
+t.test(logLBXPFNA ~ MCQ160D, data = PFAsAAPTot2011)$conf.int
+
+ggplot(PFAsAAPTot2011, aes(x = logLBXPFNA, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## PFOA
+AAPFits2011PFOA <- aov(logLBXPFOA ~ MCQ160D, data = PFAsAAPTot2011)
+summary(AAPFits2011PFOA)
+
+diff11_pfoa <- diff(tapply(PFAsAAPTot2011$logLBXPFOA,
+                           PFAsAAPTot2011$MCQ160D, mean))
+exp(diff11_pfoa)
+
+t.test(logLBXPFOA ~ MCQ160D, data = PFAsAAPTot2011)$conf.int
+
+ggplot(PFAsAAPTot2011, aes(x = logLBXPFOA, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## PFOS
+AAPFits2011PFOS <- aov(logLBXPFOS ~ MCQ160D, data = PFAsAAPTot2011)
+summary(AAPFits2011PFOS)
+
+diff11_pfos <- diff(tapply(PFAsAAPTot2011$logLBXPFOS,
+                           PFAsAAPTot2011$MCQ160D, mean))
+exp(diff11_pfos)
+
+t.test(logLBXPFOS ~ MCQ160D, data = PFAsAAPTot2011)$conf.int
+
+ggplot(PFAsAAPTot2011, aes(x = logLBXPFOS, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+### 2013
+
+PFAsAAPTot2013 <- PFAsTotal2013 |>
+  filter(MCQ160D %in% c(1,2)) |>
+  mutate(MCQ160D = factor(MCQ160D,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsAAPTot2013)
+
+## PFHS
+AAPFits2013PFHS <- aov(logSSPFHS ~ MCQ160D, data = PFAsAAPTot2013)
+summary(AAPFits2013PFHS)
+
+diff13_pfhs <- diff(tapply(PFAsAAPTot2013$logSSPFHS,
+                           PFAsAAPTot2013$MCQ160D, mean))
+exp(diff13_pfhs)
+
+t.test(logSSPFHS ~ MCQ160D, data = PFAsAAPTot2013)$conf.int
+
+ggplot(PFAsAAPTot2013, aes(x = logSSPFHS, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+AAPFits2013PFNA <- aov(logSSPFNA ~ MCQ160D, data = PFAsAAPTot2013)
+summary(AAPFits2013PFNA)
+
+diff13_pfna <- diff(tapply(PFAsAAPTot2013$logSSPFNA,
+                           PFAsAAPTot2013$MCQ160D, mean))
+exp(diff13_pfna)
+
+t.test(logSSPFNA ~ MCQ160D, data = PFAsAAPTot2013)$conf.int
+
+ggplot(PFAsAAPTot2013, aes(x = logSSPFNA, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+AAPFits2013BFOA <- aov(logSSBFOA ~ MCQ160D, data = PFAsAAPTot2013)
+summary(AAPFits2013BFOA)
+
+diff13_bfoa <- diff(tapply(PFAsAAPTot2013$logSSBFOA,
+                           PFAsAAPTot2013$MCQ160D, mean))
+exp(diff13_bfoa)
+
+ggplot(PFAsAAPTot2013, aes(x = logSSBFOA, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+AAPFits2013MFOS <- aov(logSSMFOS ~ MCQ160D, data = PFAsAAPTot2013)
+summary(AAPFits2013MFOS)
+
+diff13_mfos <- diff(tapply(PFAsAAPTot2013$logSSMFOS,
+                           PFAsAAPTot2013$MCQ160D, mean))
+exp(diff13_mfos)
+
+ggplot(PFAsAAPTot2013, aes(x = logSSMFOS, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## NFOS
+AAPFits2013NFOS <- aov(logSSNFOS ~ MCQ160D, data = PFAsAAPTot2013)
+summary(AAPFits2013NFOS)
+
+diff13_nfos <- diff(tapply(PFAsAAPTot2013$logSSNFOS,
+                           PFAsAAPTot2013$MCQ160D, mean))
+exp(diff13_nfos)
+
+ggplot(PFAsAAPTot2013, aes(x = logSSNFOS, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+### 2015
+
+PFAsAAPTot2015 <- PFAsTotal2015 |>
+  filter(MCQ160D %in% c(1,2)) |>
+  mutate(MCQ160D = factor(MCQ160D,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsAAPTot2015)
+
+## PFHS
+AAPFits2015PFHS <- aov(logLBXPFHS ~ MCQ160D, data = PFAsAAPTot2015)
+summary(AAPFits2015PFHS)
+
+diff15_pfhs <- diff(tapply(PFAsAAPTot2015$logLBXPFHS,
+                           PFAsAAPTot2015$MCQ160D, mean))
+exp(diff15_pfhs)
+
+t.test(logLBXPFHS ~ MCQ160D, data = PFAsAAPTot2015)$conf.int
+
+ggplot(PFAsAAPTot2015, aes(x = logLBXPFHS, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+AAPFits2015PFNA <- aov(logLBXPFNA ~ MCQ160D, data = PFAsAAPTot2015)
+summary(AAPFits2015PFNA)
+
+diff15_pfna <- diff(tapply(PFAsAAPTot2015$logLBXPFNA,
+                           PFAsAAPTot2015$MCQ160D, mean))
+exp(diff15_pfna)
+
+t.test(logLBXPFNA ~ MCQ160D, data = PFAsAAPTot2015)$conf.int
+
+ggplot(PFAsAAPTot2015, aes(x = logLBXPFNA, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+AAPFits2015BFOA <- aov(logLBXBFOA ~ MCQ160D, data = PFAsAAPTot2015)
+summary(AAPFits2015BFOA)
+
+diff15_bfoa <- diff(tapply(PFAsAAPTot2015$logLBXBFOA,
+                           PFAsAAPTot2015$MCQ160D, mean))
+exp(diff15_bfoa)
+
+t.test(logLBXBFOA ~ MCQ160D, data = PFAsAAPTot2015)$conf.int
+
+ggplot(PFAsAAPTot2015, aes(x = logLBXBFOA, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+AAPFits2015MFOS <- aov(logLBXMFOS ~ MCQ160D, data = PFAsAAPTot2015)
+summary(AAPFits2015MFOS)
+
+diff15_mfos <- diff(tapply(PFAsAAPTot2015$logLBXMFOS,
+                           PFAsAAPTot2015$MCQ160D, mean))
+exp(diff15_mfos)
+
+t.test(logLBXMFOS ~ MCQ160D, data = PFAsAAPTot2015)$conf.int
+
+ggplot(PFAsAAPTot2015, aes(x = logLBXMFOS, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+
+## NFOA
+AAPFits2015NFOA <- aov(logLBXNFOA ~ MCQ160D, data = PFAsAAPTot2015)
+summary(AAPFits2015NFOA)
+
+diff15_nfoa <- diff(tapply(PFAsAAPTot2015$logLBXNFOA,
+                           PFAsAAPTot2015$MCQ160D, mean))
+exp(diff15_nfoa)
+
+t.test(logLBXNFOA ~ MCQ160D, data = PFAsAAPTot2015)$conf.int
+
+ggplot(PFAsAAPTot2015, aes(x = logLBXNFOA, fill = MCQ160D)) +
+  geom_density(alpha = 0.4)
+```
+
+###Heart Attack
+```{r}
+# Heart Attack Differences
+
+### 2011
+PFAsHATot2011 <- PFAsTotal2011 |>
+  filter(MCQ160E %in% c(1,2)) |>
+  mutate(MCQ160E = factor(MCQ160E,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsHATot2011)
+
+## PFHS
+diff11_pfhs <- diff(tapply(PFAsHATot2011$logLBXPFHS,
+                          PFAsHATot2011$MCQ160E, mean))
+exp(diff11_pfhs)
+
+t.test(logLBXPFHS ~ MCQ160E, data = PFAsHATot2011)$conf.int
+
+ggplot(PFAsHATot2011, aes(x = logLBXPFHS, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+diff11_pfna <- diff(tapply(PFAsHATot2011$logLBXPFNA,
+                          PFAsHATot2011$MCQ160E, mean))
+exp(diff11_pfna)
+
+t.test(logLBXPFNA ~ MCQ160E, data = PFAsHATot2011)$conf.int
+
+ggplot(PFAsHATot2011, aes(x = logLBXPFNA, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## PFOA
+diff11_pfoa <- diff(tapply(PFAsHATot2011$logLBXPFOA,
+                          PFAsHATot2011$MCQ160E, mean))
+exp(diff11_pfoa)
+
+t.test(logLBXPFOA ~ MCQ160E, data = PFAsHATot2011)$conf.int
+
+ggplot(PFAsHATot2011, aes(x = logLBXPFOA, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## PFOS
+diff11_pfos <- diff(tapply(PFAsHATot2011$logLBXPFOS,
+                          PFAsHATot2011$MCQ160E, mean))
+exp(diff11_pfos)
+
+t.test(logLBXPFOS ~ MCQ160E, data = PFAsHATot2011)$conf.int
+
+ggplot(PFAsHATot2011, aes(x = logLBXPFOS, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+### 2013
+
+PFAsHATot2013 <- PFAsTotal2013 |>
+  filter(MCQ160E %in% c(1,2)) |>
+  mutate(MCQ160E = factor(MCQ160E,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsHATot2013)
+
+## PFHS
+diff13_pfhs <- diff(tapply(PFAsHATot2013$logSSPFHS,
+                          PFAsHATot2013$MCQ160E, mean))
+exp(diff13_pfhs)
+
+t.test(logSSPFHS ~ MCQ160E, data = PFAsHATot2013)$conf.int
+
+ggplot(PFAsHATot2013, aes(x = logSSPFHS, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+diff13_pfna <- diff(tapply(PFAsHATot2013$logSSPFNA,
+                          PFAsHATot2013$MCQ160E, mean))
+exp(diff13_pfna)
+
+t.test(logSSPFNA ~ MCQ160E, data = PFAsHATot2013)$conf.int
+
+ggplot(PFAsHATot2013, aes(x = logSSPFNA, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+diff13_bfoa <- diff(tapply(PFAsHATot2013$logSSBFOA,
+                          PFAsHATot2013$MCQ160E, mean))
+exp(diff13_bfoa)
+
+ggplot(PFAsHATot2013, aes(x = logSSBFOA, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+diff13_mfos <- diff(tapply(PFAsHATot2013$logSSMFOS,
+                          PFAsHATot2013$MCQ160E, mean))
+exp(diff13_mfos)
+
+ggplot(PFAsHATot2013, aes(x = logSSMFOS, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## NFOS
+diff13_nfos <- diff(tapply(PFAsHATot2013$logSSNFOS,
+                          PFAsHATot2013$MCQ160E, mean))
+exp(diff13_nfos)
+
+ggplot(PFAsHATot2013, aes(x = logSSNFOS, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+### 2015
+PFAsHATot2015 <- PFAsTotal2015 |>
+  filter(MCQ160E %in% c(1,2)) |>
+  mutate(MCQ160E = factor(MCQ160E,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsHATot2015)
+
+## PFHS
+diff15_pfhs <- diff(tapply(PFAsHATot2015$logLBXPFHS,
+                          PFAsHATot2015$MCQ160E, mean))
+exp(diff15_pfhs)
+
+t.test(logLBXPFHS ~ MCQ160E, data = PFAsHATot2015)$conf.int
+
+ggplot(PFAsHATot2015, aes(x = logLBXPFHS, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+diff15_pfna <- diff(tapply(PFAsHATot2015$logLBXPFNA,
+                          PFAsHATot2015$MCQ160E, mean))
+exp(diff15_pfna)
+
+t.test(logLBXPFNA ~ MCQ160E, data = PFAsHATot2015)$conf.int
+
+ggplot(PFAsHATot2015, aes(x = logLBXPFNA, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+diff15_bfoa <- diff(tapply(PFAsHATot2015$logLBXBFOA,
+                          PFAsHATot2015$MCQ160E, mean))
+exp(diff15_bfoa)
+
+t.test(logLBXBFOA ~ MCQ160E, data = PFAsHATot2015)$conf.int
+
+ggplot(PFAsHATot2015, aes(x = logLBXBFOA, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+diff15_mfos <- diff(tapply(PFAsHATot2015$logLBXMFOS,
+                          PFAsHATot2015$MCQ160E, mean))
+exp(diff15_mfos)
+
+t.test(logLBXMFOS ~ MCQ160E, data = PFAsHATot2015)$conf.int
+
+ggplot(PFAsHATot2015, aes(x = logLBXMFOS, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+## NFOA
+diff15_nfoa <- diff(tapply(PFAsHATot2015$logLBXNFOA,
+                          PFAsHATot2015$MCQ160E, mean))
+exp(diff15_nfoa)
+
+t.test(logLBXNFOA ~ MCQ160E, data = PFAsHATot2015)$conf.int
+
+ggplot(PFAsHATot2015, aes(x = logLBXNFOA, fill = MCQ160E)) +
+  geom_density(alpha = 0.4)
+
+```
+
+### Stroke
+```{r}
+# Stroke Differences
+
+### 2011
+
+PFAsSTTot2011 <- PFAsTotal2011 |>
+  filter(MCQ160F %in% c(1,2)) |>
+  mutate(MCQ160F = factor(MCQ160F,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsSTTot2011)
+
+## PFHS
+diff11_pfhs <- diff(tapply(PFAsSTTot2011$logLBXPFHS,
+                          PFAsSTTot2011$MCQ160F, mean))
+exp(diff11_pfhs)
+
+t.test(logLBXPFHS ~ MCQ160F, data = PFAsSTTot2011)$conf.int
+
+ggplot(PFAsSTTot2011, aes(x = logLBXPFHS, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+diff11_pfna <- diff(tapply(PFAsSTTot2011$logLBXPFNA,
+                          PFAsSTTot2011$MCQ160F, mean))
+exp(diff11_pfna)
+
+t.test(logLBXPFNA ~ MCQ160F, data = PFAsSTTot2011)$conf.int
+
+ggplot(PFAsSTTot2011, aes(x = logLBXPFNA, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## PFOA
+diff11_pfoa <- diff(tapply(PFAsSTTot2011$logLBXPFOA,
+                          PFAsSTTot2011$MCQ160F, mean))
+exp(diff11_pfoa)
+
+t.test(logLBXPFOA ~ MCQ160F, data = PFAsSTTot2011)$conf.int
+
+ggplot(PFAsSTTot2011, aes(x = logLBXPFOA, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## PFOS
+diff11_pfos <- diff(tapply(PFAsSTTot2011$logLBXPFOS,
+                          PFAsSTTot2011$MCQ160F, mean))
+exp(diff11_pfos)
+
+t.test(logLBXPFOS ~ MCQ160F, data = PFAsSTTot2011)$conf.int
+
+ggplot(PFAsSTTot2011, aes(x = logLBXPFOS, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+### 2013
+
+PFAsSTTot2013 <- PFAsTotal2013 |>
+  filter(MCQ160F %in% c(1,2)) |>
+  mutate(MCQ160F = factor(MCQ160F,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsSTTot2013)
+
+## PFHS
+diff13_pfhs <- diff(tapply(PFAsSTTot2013$logSSPFHS,
+                          PFAsSTTot2013$MCQ160F, mean))
+exp(diff13_pfhs)
+
+t.test(logSSPFHS ~ MCQ160F, data = PFAsSTTot2013)$conf.int
+
+ggplot(PFAsSTTot2013, aes(x = logSSPFHS, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+diff13_pfna <- diff(tapply(PFAsSTTot2013$logSSPFNA,
+                          PFAsSTTot2013$MCQ160F, mean))
+exp(diff13_pfna)
+
+t.test(logSSPFNA ~ MCQ160F, data = PFAsSTTot2013)$conf.int
+
+ggplot(PFAsSTTot2013, aes(x = logSSPFNA, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+diff13_bfoa <- diff(tapply(PFAsSTTot2013$logSSBFOA,
+                          PFAsSTTot2013$MCQ160F, mean))
+exp(diff13_bfoa)
+
+t.test(logSSBFOA ~ MCQ160F, data = PFAsSTTot2013)$conf.int
+
+ggplot(PFAsSTTot2013, aes(x = logSSBFOA, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+diff13_mfos <- diff(tapply(PFAsSTTot2013$logSSMFOS,
+                          PFAsSTTot2013$MCQ160F, mean))
+exp(diff13_mfos)
+
+#t.test(logSSMFOS ~ MCQ160F, data = PFAsSTTot2013)$conf.int
+
+ggplot(PFAsSTTot2013, aes(x = logSSMFOS, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## NFOS
+diff13_nfos <- diff(tapply(PFAsSTTot2013$logSSNFOS,
+                          PFAsSTTot2013$MCQ160F, mean))
+exp(diff13_nfos)
+
+#t.test(logSSNFOS ~ MCQ160F, data = PFAsSTTot2013)$conf.int
+
+ggplot(PFAsSTTot2013, aes(x = logSSNFOS, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+### 2015
+
+PFAsSTTot2015 <- PFAsTotal2015 |>
+  filter(MCQ160F %in% c(1,2)) |>
+  mutate(MCQ160F = factor(MCQ160F,
+                          levels = c(1,2),
+                          labels = c("Yes","No")))
+
+summary(PFAsSTTot2015)
+
+## PFHS
+diff15_pfhs <- diff(tapply(PFAsSTTot2015$logLBXPFHS,
+                          PFAsSTTot2015$MCQ160F, mean))
+exp(diff15_pfhs)
+
+t.test(logLBXPFHS ~ MCQ160F, data = PFAsSTTot2015)$conf.int
+
+ggplot(PFAsSTTot2015, aes(x = logLBXPFHS, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## PFNA
+diff15_pfna <- diff(tapply(PFAsSTTot2015$logLBXPFNA,
+                          PFAsSTTot2015$MCQ160F, mean))
+exp(diff15_pfna)
+
+t.test(logLBXPFNA ~ MCQ160F, data = PFAsSTTot2015)$conf.int
+
+ggplot(PFAsSTTot2015, aes(x = logLBXPFNA, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## BFOA
+diff15_bfoa <- diff(tapply(PFAsSTTot2015$logLBXBFOA,
+                          PFAsSTTot2015$MCQ160F, mean))
+exp(diff15_bfoa)
+
+t.test(logLBXBFOA ~ MCQ160F, data = PFAsSTTot2015)$conf.int
+
+ggplot(PFAsSTTot2015, aes(x = logLBXBFOA, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## MFOS
+diff15_mfos <- diff(tapply(PFAsSTTot2015$logLBXMFOS,
+                          PFAsSTTot2015$MCQ160F, mean))
+exp(diff15_mfos)
+
+t.test(logLBXMFOS ~ MCQ160F, data = PFAsSTTot2015)$conf.int
+
+ggplot(PFAsSTTot2015, aes(x = logLBXMFOS, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
+
+## NFOA
+diff15_nfoa <- diff(tapply(PFAsSTTot2015$logLBXNFOA,
+                          PFAsSTTot2015$MCQ160F, mean))
+exp(diff15_nfoa)
+
+t.test(logLBXNFOA ~ MCQ160F, data = PFAsSTTot2015)$conf.int
+
+ggplot(PFAsSTTot2015, aes(x = logLBXNFOA, fill = MCQ160F)) +
+  geom_density(alpha = 0.4)
 ```
 
 ## Logistic Regression Models
