@@ -620,12 +620,12 @@ NHANESP2017 <- DemographicsPP2017 |>
   full_join(LabP2017, by = c("SEQN" = "SEQN")) |>
   full_join(QuestionnarieP2017, by = c("SEQN" = "SEQN"))
 
-write_xpt(NHANES2011, "NHANES2011.xpt")
-write_xpt(NHANES2013, "NHANES2013.xpt")
-write_xpt(NHANES2015, "NHANES2015.xpt")
-write_xpt(NHANES2017, "NHANES2017.xpt")
-write_xpt(NHANES2021, "NHANES2021.xpt")
-write_xpt(NHANESP2017, "NHANESP2017.xpt")
+#write_xpt(NHANES2011, "NHANES2011.xpt")
+#write_xpt(NHANES2013, "NHANES2013.xpt")
+#write_xpt(NHANES2015, "NHANES2015.xpt")
+#write_xpt(NHANES2017, "NHANES2017.xpt")
+#write_xpt(NHANES2021, "NHANES2021.xpt")
+#write_xpt(NHANESP2017, "NHANESP2017.xpt")
 ```
 
 
@@ -1176,11 +1176,11 @@ ggplot(data = PFAsCOPDTot2011, aes(x = logLBXNFOA, fill = MCQ160O)) +
 ```{r}
 #DIQ010
 #FNS
-DiabSumm <- summary(PFAsAsthma |> filter(DIQ010 %in% c(1,2,3)))
+DiabSumm <- summary(PFAsTotal2017 |> filter(DIQ010 %in% c(1,2,3)))
 DiabSumm
 
 
-PFAsDiab2 <- PFAsAsthma |>
+PFAsDiab2 <- PFAsTotal2017 |>
   filter(DIQ010 %in% c(1,2,3)) |>
   mutate(
     DIQ010 = factor(DIQ010,
@@ -1272,14 +1272,14 @@ ggplot(data = PFAsDiab2, aes(x = logLBXNFOA, fill = DIQ010)) +
 # Pre-Diabetes Differences
 
 ## FNS
-YesPreDiabSumm <- summary(PFAsAsthma |> filter(DIQ160 == 1))
-NoPreDiabSumm  <- summary(PFAsAsthma |> filter(DIQ160 == 2))
+YesPreDiabSumm <- summary(PFAsTotal2017 |> filter(DIQ160 == 1))
+NoPreDiabSumm  <- summary(PFAsTotal2017 |> filter(DIQ160 == 2))
 
 YesPreDiabSumm
 NoPreDiabSumm
 
 
-PFAsPreDiab2 <- PFAsAsthma |>
+PFAsPreDiab2 <- PFAsTotal2017 |>
   filter(DIQ160 %in% c(1,2)) |>
   mutate(
     DIQ160 = factor(DIQ160,
@@ -1639,14 +1639,14 @@ ggplot(data = PFAsLiver, aes(x = logLBXNFOA, fill = MCQ160L)) +
 # Congestive Heart Failure Differences
 
 ## FNS
-YesCHFSumm <- summary(PFAsAsthma |> filter(MCQ160B == 1))
-NoCHFSumm  <- summary(PFAsAsthma |> filter(MCQ160B == 2))
+YesCHFSumm <- summary(PFAsTotal2017 |> filter(MCQ160B == 1))
+NoCHFSumm  <- summary(PFAsTotal2017 |> filter(MCQ160B == 2))
 
 YesCHFSumm
 NoCHFSumm
 
 
-PFAsCHF2 <- PFAsAsthma |>
+PFAsCHF2 <- PFAsTotal2017 |>
   filter(MCQ160B %in% c(1,2)) |>
   mutate(
     MCQ160B = factor(MCQ160B,
@@ -1752,14 +1752,14 @@ ggplot(data = PFAsCHF2, aes(x = logLBXNFOA, fill = MCQ160B)) +
 # Coronary Heart Disease Differences
 
 ## FNS
-YesCHDSumm <- summary(PFAsAsthma |> filter(MCQ160C == 1))
-NoCHDSumm  <- summary(PFAsAsthma |> filter(MCQ160C == 2))
+YesCHDSumm <- summary(PFAsTotal2017 |> filter(MCQ160C == 1))
+NoCHDSumm  <- summary(PFAsTotal2017 |> filter(MCQ160C == 2))
 
 YesCHDSumm
 NoCHDSumm
 
 
-PFAsCHD2 <- PFAsAsthma |>
+PFAsCHD2 <- PFAsTotal2017 |>
   filter(MCQ160C %in% c(1,2)) |>
   mutate(
     MCQ160C = factor(MCQ160C,
@@ -1871,14 +1871,14 @@ ggplot(data = PFAsCHD2, aes(x = logLBXNFOA, fill = MCQ160C)) +
 # Angina/ Angina Pectoris Differences
 
 ## FNS
-YesAAPSumm <- summary(PFAsAsthma |> filter(MCQ160D == 1))
-NoAAPSumm  <- summary(PFAsAsthma |> filter(MCQ160D == 2))
+YesAAPSumm <- summary(PFAsTotal2017 |> filter(MCQ160D == 1))
+NoAAPSumm  <- summary(PFAsTotal2017 |> filter(MCQ160D == 2))
 
 YesAAPSumm
 NoAAPSumm
 
 
-PFAsAAP2 <- PFAsAsthma |>
+PFAsAAP2 <- PFAsTotal2017 |>
   filter(MCQ160D %in% c(1,2)) |>
   mutate(
     MCQ160D = factor(MCQ160D,
@@ -1989,14 +1989,14 @@ ggplot(data = PFAsAAP2, aes(x = logLBXNFOA, fill = MCQ160D)) +
 # Heart Attack Differences
 
 ## FNS
-YesHASumm <- summary(PFAsAsthma |> filter(MCQ160E == 1))
-NoHASumm  <- summary(PFAsAsthma |> filter(MCQ160E == 2))
+YesHASumm <- summary(PFAsTotal2017 |> filter(MCQ160E == 1))
+NoHASumm  <- summary(PFAsTotal2017 |> filter(MCQ160E == 2))
 
 YesHASumm
 NoHASumm
 
 
-PFAsHA2 <- PFAsAsthma |>
+PFAsHA2 <- PFAsTotal2017 |>
   filter(MCQ160E %in% c(1,2)) |>
   mutate(
     MCQ160E = factor(MCQ160E,
@@ -2105,14 +2105,14 @@ ggplot(data = PFAsHA2, aes(x = logLBXNFOA, fill = MCQ160E)) +
 # Stroke Differences
 
 ## FNS
-YesSSumm <- summary(PFAsAsthma |> filter(MCQ160F == 1))
-NoSSumm  <- summary(PFAsAsthma |> filter(MCQ160F == 2))
+YesSSumm <- summary(PFAsTotal2017 |> filter(MCQ160F == 1))
+NoSSumm  <- summary(PFAsTotal2017 |> filter(MCQ160F == 2))
 
 YesSSumm
 NoSSumm
 
 
-PFAsS2 <- PFAsAsthma |>
+PFAsS2 <- PFAsTotal2017 |>
   filter(MCQ160F %in% c(1,2)) |>
   mutate(
     MCQ160F = factor(MCQ160F,
@@ -2846,9 +2846,7 @@ diffe13d <- diff(tapply(PFAsEmphyTot2013$logSSMFOS, PFAsEmphyTot2013$MCQ160G, me
 EmphyDifference2013PFOS <- exp(diffe13d)
 EmphyDifference2013PFOS
 
-### Confidence Interval
-EmphyConfInt2013PFOS <- t.test(logSSMFOS ~ MCQ160G, data = PFAsEmphyTot2013)$conf.int
-EmphyConfInt2013PFOS
+### Confidence Interval cannot be done
 
 ### Plot
 ggplot(data = PFAsEmphyTot2013, aes(x = logSSMFOS, fill = MCQ160G)) + 
@@ -3063,62 +3061,42 @@ ggplot(data = PFAsBronTot2011, aes(x = logLBXPFNA, fill = MCQ160K)) +
   geom_density(alpha = 0.4)
 
 
-## Sb-PFOA (BFOA)
+## PFOA
 ### ANOVA
-BronFits2011BFOA <- aov(logLBXBFOA ~ MCQ160K, data = PFAsTotal2011)
-summary(BronFits2015BFOA)
+BronFits2011PFOA <- aov(logLBXPFOA ~ MCQ160K, data = PFAsTotal2011)
+summary(BronFits2011PFOA)
 
 ### Mean Difference
-diffb15c <- diff(tapply(PFAsBronTot2011$logLBXBFOA, PFAsBronTot2011$MCQ160K, mean))
-BronDifference2015BFOA <- exp(diffb15c)
-BronDifference2015BFOA
+diffe11c <- diff(tapply(PFAsBronTot2011$logLBXPFOA, PFAsBronTot2011$MCQ160K, mean))
+BronDifference2011PFOA <- exp(diffe11c)
+BronDifference2011PFOA
 
 ### Confidence Interval
-BronConfInt2015BFOA <- t.test(logLBXBFOA ~ MCQ160K, data = PFAsBronTot2011)$conf.int
-BronConfInt2015BFOA
+BronConfInt2011PFOA <- t.test(logLBXPFOA ~ MCQ160K, data = PFAsBronTot2011)$conf.int
+BronConfInt2011PFOA
 
 ### Plot
-ggplot(data = PFAsBronTot2011, aes(x = logLBXBFOA, fill = MCQ160K)) + 
+ggplot(data = PFAsBronTot2011, aes(x = logLBXPFOA, fill = MCQ160K)) + 
   scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
   geom_density(alpha = 0.4)
 
 
-## Sm-PFOS (MFOS)
+## PFOS
 ### ANOVA
-BronFits2015MFOS <- aov(logLBXMFOS ~ MCQ160K, data = PFAsTotal2015)
-summary(BronFits2015MFOS)
+BronFits2011PFOS <- aov(logLBXPFOS ~ MCQ160K, data = PFAsTotal2011)
+summary(EmphyFits2011PFOS)
 
 ### Mean Difference
-diffb15d <- diff(tapply(PFAsBronTot2011$logLBXMFOS, PFAsBronTot2011$MCQ160K, mean))
-BronDifference2015MFOS <- exp(diffb15d)
-BronDifference2015MFOS
+diffb11d <- diff(tapply(PFAsBronTot2011$logLBXPFOS, PFAsBronTot2011$MCQ160K, mean))
+BronDifference2011PFOS <- exp(diffb11d)
+BronDifference2011PFOS
 
 ### Confidence Interval
-BronConfInt2015MFOS <- t.test(logLBXMFOS ~ MCQ160K, data = PFAsBronTot2011)$conf.int
-BronConfInt2015MFOS
+BronConfInt2011PFOS <- t.test(logLBXPFOS ~ MCQ160K, data = PFAsBronTot2011)$conf.int
+BronConfInt2011PFOS
 
 ### Plot
-ggplot(data = PFAsBronTot2011, aes(x = logLBXMFOS, fill = MCQ160K)) + 
-  scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
-  geom_density(alpha = 0.4)
-
-
-## n-PFOA (NFOA)
-### ANOVA
-BronFits2015NFOA <- aov(logLBXNFOA ~ MCQ160K, data = PFAsTotal2011)
-summary(BronFits2015NFOA)
-
-### Mean Difference
-diffb15e <- diff(tapply(PFAsBronTot2011$logLBXNFOA, PFAsBronTot2011$MCQ160K, mean))
-BronDifference2015NFOA <- exp(diffb15e)
-BronDifference2015NFOA
-
-### Confidence Interval
-BronConfInt2011NFOA <- t.test(logLBXNFOA ~ MCQ160K, data = PFAsBronTot2011)$conf.int
-BronConfInt2015NFOA
-
-### Plot
-ggplot(data = PFAsBronTot2011, aes(x = logLBXNFOA, fill = MCQ160K)) + 
+ggplot(data = PFAsBronTot2011, aes(x = logLBXPFOS, fill = MCQ160G)) + 
   scale_fill_manual(values = c("#0072B2", "#E69F00", "#009E73")) +
   geom_density(alpha = 0.4)
 
@@ -4147,7 +4125,7 @@ exp(diff13_pfna)
 
 #t.test(logSSPFNA ~ DIQ010, data = PFAsDiab2013)$conf.int
 
-ggplot(PFAsDiab2013, aes(x = logSSPFNA, fill = DIQ010))) +
+ggplot(PFAsDiab2013, aes(x = logSSPFNA, fill = DIQ010)) +
   geom_density(alpha = 0.4)
 
 ## BFOA
