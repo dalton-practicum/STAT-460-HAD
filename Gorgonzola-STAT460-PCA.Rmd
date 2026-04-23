@@ -1,0 +1,410 @@
+---
+title: "STAT460 PCA"
+author: "Dalton Ewy & Madilin Herzog"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    number_sections: false
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+  pdf_document:
+    toc: true
+subtitle: Dalton & Madilin Super Document 2
+mainfont: TimesNewRoman
+sansfont: TimesNewRoman
+monofont: TimesNewRoman
+---
+
+# Load Relevant R Libraries
+
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown); library(knitr); library(moments);library(mdsr);library(nnet)
+library(scatterplot3d); library(corrplot); library(pso);library(usethis)
+library(psych); library(GPArotation); library(lavaan);library(here)
+library(haven);library(tidyverse);library(tidyverse);library(ggplot2)
+```
+
+# Importing DO NOT MOVE TO MAIN
+
+```{r}
+NHANES2011 <- read_xpt("NHANES2011.xpt")
+NHANES2013 <- read_xpt("NHANES2013.xpt") 
+NHANES2015 <- read_xpt("NHANES2015.xpt") 
+NHANES2017 <- read_xpt("NHANES2017.xpt") 
+NHANES2021 <- read_xpt("NHANES2021.xpt") 
+NHANESP2017 <- read_xpt("NHANESP2017.xpt") 
+```
+
+# Table Building DO NOT MOVE TO MAIN
+
+```{r}
+## 2017 Table
+PFAsVars2017 <- NHANES2017 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "INDFMPIR", # Economic status
+         # Blood
+         "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+         "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4",
+         
+         # Chol
+         "LBXTC", "LBDHDD",
+         
+         "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
+         
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", "MCQ500", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
+         
+         # Possible Other Confounders
+         "SMQ020", "SMQ040", "PAQ650", "PAQ655", "PAQ665"
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(MCQ160L = coalesce(MCQ160L, MCQ500)) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXBFOA = log(LBXBFOA)) |>
+  mutate(logLBXMFOS = log(LBXMFOS)) |>
+  mutate(logLBXNFOA = log(LBXNFOA)) |>
+  mutate(
+    SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE))   |>
+  mutate(
+    RIDRETH3 = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9,
+         MCQ160B != 7 & MCQ160B != 9,
+       MCQ160C != 7 & MCQ160C != 9,
+       MCQ160D != 7 & MCQ160D != 9,
+       MCQ160E != 7 & MCQ160E != 9,
+       MCQ160F != 7 & MCQ160F != 9,
+       DIQ160 != 7 & DIQ160 != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0),
+         DIQ160 = ifelse(DIQ160 == 1, 1, 0),
+         MCQ160B= ifelse(MCQ160B == 1, 1, 0),
+         MCQ160C= ifelse(MCQ160C == 1, 1, 0),
+         MCQ160D= ifelse(MCQ160D == 1, 1, 0),
+         MCQ160E= ifelse(MCQ160E == 1, 1, 0),
+         MCQ160F= ifelse(MCQ160F == 1, 1, 0)) |>
+  filter(!is.na(LBXPFHS))
+
+## 2015 Table
+PFAsVars2015 <- NHANES2015 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "INDFMPIR", # Economic status
+         # Blood
+         "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+         "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", 
+         
+         # Chol
+         "LBXTC", "LBDHDD",
+         
+         "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
+         
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
+         
+         # Possible Other Confounders
+         "SMQ020", "SMQ040", "PAQ650", "PAQ655", "PAQ665"
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXBFOA = log(LBXBFOA)) |>
+  mutate(logLBXMFOS = log(LBXMFOS)) |>
+  mutate(logLBXNFOA = log(LBXNFOA)) |>
+  mutate(
+    SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE))   |>
+  mutate(
+    RIDRETH3 = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9,
+         MCQ160B != 7 & MCQ160B != 9,
+       MCQ160C != 7 & MCQ160C != 9,
+       MCQ160D != 7 & MCQ160D != 9,
+       MCQ160E != 7 & MCQ160E != 9,
+       MCQ160F != 7 & MCQ160F != 9,
+       DIQ160 != 7 & DIQ160 != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0),
+         DIQ160 = ifelse(DIQ160 == 1, 1, 0),
+         MCQ160B= ifelse(MCQ160B == 1, 1, 0),
+         MCQ160C= ifelse(MCQ160C == 1, 1, 0),
+         MCQ160D= ifelse(MCQ160D == 1, 1, 0),
+         MCQ160E= ifelse(MCQ160E == 1, 1, 0),
+         MCQ160F= ifelse(MCQ160F == 1, 1, 0)) |>
+  filter(!is.na(LBXPFHS))
+
+## 2013 Table Building
+PFAsVars2013 <- NHANES2013 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "INDFMPIR", # Economic status
+         # Blood
+         "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+         "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", 
+         
+         # Chol
+         "LBXTC", "LBDHDD",
+         
+         "SSPFHS", "SSPFNA", "SSBFOA", "SSMFOS", "SSNFOS", #PFAs
+         
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
+         
+         # Possible Other Confounders
+         "SMQ020", "SMQ040", "PAQ650", "PAQ655", "PAQ665"
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logSSPFHS = log(SSPFHS)) |>
+  mutate(logSSPFNA = log(SSPFNA)) |>
+  mutate(logSSBFOA = log(SSBFOA)) |>
+  mutate(logSSMFOS = log(SSMFOS)) |>
+  mutate(logSSNFOS = log(SSNFOS)) |>
+  mutate(
+    SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE))  |>
+  mutate(
+    RIDRETH3 = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9,
+         MCQ160B != 7 & MCQ160B != 9,
+       MCQ160C != 7 & MCQ160C != 9,
+       MCQ160D != 7 & MCQ160D != 9,
+       MCQ160E != 7 & MCQ160E != 9,
+       MCQ160F != 7 & MCQ160F != 9,
+       DIQ160 != 7 & DIQ160 != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0),
+         DIQ160 = ifelse(DIQ160 == 1, 1, 0),
+         MCQ160B= ifelse(MCQ160B == 1, 1, 0),
+         MCQ160C= ifelse(MCQ160C == 1, 1, 0),
+         MCQ160D= ifelse(MCQ160D == 1, 1, 0),
+         MCQ160E= ifelse(MCQ160E == 1, 1, 0),
+         MCQ160F= ifelse(MCQ160F == 1, 1, 0)) |>
+  filter(!is.na(SSPFHS))
+
+## 2011 Table Building
+PFAsVars2011 <- NHANES2011 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "INDFMPIR", # Economic status
+         # Blood
+         "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+         "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", 
+         
+         # Chol
+         "LBXTC", "LBDHDD",
+         
+         "LBXPFHS", "LBXPFNA", "LBXPFOA", "LBXPFOS", #PFAs
+         
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
+         
+         # Possible Other Confounders
+         "SMQ020", "SMQ040", "PAQ650", "PAQ655", "PAQ665"
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXPFOA = log(LBXPFOA)) |>
+  mutate(logLBXPFOS = log(LBXPFOS)) |>
+  mutate(
+    SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE)) |>
+  mutate(
+    RIDRETH3 = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9,
+         MCQ160B != 7 & MCQ160B != 9,
+       MCQ160C != 7 & MCQ160C != 9,
+       MCQ160D != 7 & MCQ160D != 9,
+       MCQ160E != 7 & MCQ160E != 9,
+       MCQ160F != 7 & MCQ160F != 9,
+       DIQ160 != 7 & DIQ160 != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0),
+         DIQ160 = ifelse(DIQ160 == 1, 1, 0),
+         MCQ160B= ifelse(MCQ160B == 1, 1, 0),
+         MCQ160C= ifelse(MCQ160C == 1, 1, 0),
+         MCQ160D= ifelse(MCQ160D == 1, 1, 0),
+         MCQ160E= ifelse(MCQ160E == 1, 1, 0),
+         MCQ160F= ifelse(MCQ160F == 1, 1, 0)) |>
+  filter(!is.na(LBXPFHS))
+```
+
+# PCA
+
+```{r}
+
+
+```
+
+
+
+
