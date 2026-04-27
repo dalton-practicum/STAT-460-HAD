@@ -6286,7 +6286,6 @@ summary(logRegStroke2017)
 
 
 
-
 # TDA?
 
 ```{r}
