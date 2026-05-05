@@ -871,33 +871,30 @@ PFAsResp2011Facts <- sum((PFAsResp2011lambda > 0.7))
 ### Factor Rotations
 #### Predictor Variables
 
-PFAsPredVM2017 <- pca(r = PFAsPredCorr2017, nfactors = PFAsPred2017Facts, rotate = "varimax")$loadings[]
+PFAsPredVM2017 <- pca(r = PFAsPredCorr2017, nfactors = PFAsPred2017Facts, rotate = "varimax") # winner
 PFAsPredVM2017
 
-PFAsPredOB2017 <- pca(r = PFAsPredCorr2017, nfactors = PFAsPred2017Facts, rotate = "oblimin")$loadings[]
+PFAsPredOB2017 <- pca(r = PFAsPredCorr2017, nfactors = PFAsPred2017Facts, rotate = "oblimin")
 PFAsPredOB2017
 
-rowSums(PFAsPredVM2017^2)
-rowSums(PFAsPredOB2017^2)
+rowSums(PFAsPredVM2017$loadings^2)
+rowSums(PFAsPredOB2017$loadings^2)
 
 #### Response Variables
 
-PFAsRespVM2017 <- pca(r = PFAsRespCorr2017, nfactors = PFAsResp2017Facts, rotate = "varimax")$loadings[]
+PFAsRespVM2017 <- pca(r = PFAsRespCorr2017, nfactors = PFAsResp2017Facts, rotate = "varimax") # winner
 PFAsRespVM2017
 
-PFAsRespOB2017 <- pca(r = PFAsRespCorr2017, nfactors = PFAsResp2017Facts, rotate = "oblimin")$loadings[]
+PFAsRespOB2017 <- pca(r = PFAsRespCorr2017, nfactors = PFAsResp2017Facts, rotate = "oblimin")
 PFAsRespOB2017
 
-rowSums(PFAsRespVM2017^2)
-rowSums(PFAsRespOB2017^2)
+rowSums(PFAsRespVM2017$loadings^2)
+rowSums(PFAsRespOB2017$loadings^2)
 
 ### Factor Visualizations
 
 corrplot(PFAsPredVM2017, method = "color") # Varimax
 corrplot(PFAsRespVM2017, method = "color") # Varimax
-
-corrplot(PFAsPredOB2017, method = "color") # Oblique
-corrplot(PFAsRespOB2017, method = "color") # Oblique
 
 
 #################################################################
@@ -906,33 +903,30 @@ corrplot(PFAsRespOB2017, method = "color") # Oblique
 ### Factor Rotations  
 #### Predictor Variables
 
-PFAsPredVM2015 <- pca(r = PFAsPredCorr2015, nfactors = PFAsPred2015Facts, rotate = "varimax")$loadings[]
+PFAsPredVM2015 <- pca(r = PFAsPredCorr2015, nfactors = PFAsPred2015Facts, rotate = "varimax") # winner
 PFAsPredVM2015
 
-PFAsPredOB2015 <- pca(r = PFAsPredCorr2015, nfactors = PFAsPred2015Facts, rotate = "oblimin")$loadings[]
+PFAsPredOB2015 <- pca(r = PFAsPredCorr2015, nfactors = PFAsPred2015Facts, rotate = "oblimin")
 PFAsPredOB2015
 
-rowSums(PFAsPredVM2015^2)
-rowSums(PFAsPredOB2015^2)
+rowSums(PFAsPredVM2015$loadings^2)
+rowSums(PFAsPredOB2015$loadings^2)
 
 #### Response Variables
 
-PFAsRespVM2015 <- pca(r = PFAsRespCorr2015, nfactors = PFAsResp2015Facts, rotate = "varimax")$loadings[]
+PFAsRespVM2015 <- pca(r = PFAsRespCorr2015, nfactors = PFAsResp2015Facts, rotate = "varimax") # winner
 PFAsRespVM2015
 
-PFAsRespOB2015 <- pca(r = PFAsRespCorr2015, nfactors = PFAsResp2015Facts, rotate = "oblimin")$loadings[]
+PFAsRespOB2015 <- pca(r = PFAsRespCorr2015, nfactors = PFAsResp2015Facts, rotate = "oblimin")
 PFAsRespOB2015
 
-rowSums(PFAsRespVM2015^2)
-rowSums(PFAsRespOB2015^2)
+rowSums(PFAsRespVM2015$loadings^2)
+rowSums(PFAsRespOB2015$loadings^2)
 
 ### Factor Visualizations
 
 corrplot(PFAsPredVM2015, method = "color")
 corrplot(PFAsRespVM2015, method = "color")
-
-corrplot(PFAsPredOB2015, method = "color")
-corrplot(PFAsRespOB2015, method = "color")
 
 
 #################################################################
@@ -941,25 +935,25 @@ corrplot(PFAsRespOB2015, method = "color")
 ### Factor Rotations  
 #### Predictor Variables
 
-PFAsPredVM2013 <- pca(r = PFAsPredCorr2013, nfactors = PFAsPred2013Facts, rotate = "varimax")$loadings[]
+PFAsPredVM2013 <- pca(r = PFAsPredCorr2013, nfactors = PFAsPred2013Facts, rotate = "varimax") # "winner"
 PFAsPredVM2013
 
-PFAsPredOB2013 <- pca(r = PFAsPredCorr2013, nfactors = PFAsPred2013Facts, rotate = "oblimin")$loadings[]
+PFAsPredOB2013 <- pca(r = PFAsPredCorr2013, nfactors = PFAsPred2013Facts, rotate = "oblimin")
 PFAsPredOB2013
 
-rowSums(PFAsPredVM2013^2)
-rowSums(PFAsPredOB2013^2)
+rowSums(PFAsPredVM2013$loadings^2)
+rowSums(PFAsPredOB2013$loadings^2)
 
 #### Response Variables
 
-PFAsRespVM2013 <- pca(r = PFAsRespCorr2013, nfactors = PFAsResp2013Facts, rotate = "varimax")$loadings[]
+PFAsRespVM2013 <- pca(r = PFAsRespCorr2013, nfactors = PFAsResp2013Facts, rotate = "varimax") # "winner"
 PFAsRespVM2013
 
-PFAsRespOB2013 <- pca(r = PFAsRespCorr2013, nfactors = PFAsResp2013Facts, rotate = "oblimin")$loadings[]
+PFAsRespOB2013 <- pca(r = PFAsRespCorr2013, nfactors = PFAsResp2013Facts, rotate = "oblimin")
 PFAsRespOB2013
 
-rowSums(PFAsRespVM2013^2)
-rowSums(PFAsRespOB2013^2)
+rowSums(PFAsRespVM2013$loadings^2)
+rowSums(PFAsRespOB2013$loadings^2)
 
 ### Factor Visualizations
 
@@ -976,52 +970,240 @@ corrplot(PFAsRespOB2013, method = "color")
 ### Factor Rotations  
 #### Predictor Variables 
 
-PFAsPredVM2011 <- pca(r = PFAsPredCorr2011, nfactors = PFAsPred2011Facts, rotate = "varimax")$loadings[]
+PFAsPredVM2011 <- pca(r = PFAsPredCorr2011, nfactors = PFAsPred2011Facts, rotate = "varimax") # winner
 PFAsPredVM2011
 
-PFAsPredOB2011 <- pca(r = PFAsPredCorr2011, nfactors = PFAsPred2011Facts, rotate = "oblimin")$loadings[]
+PFAsPredOB2011 <- pca(r = PFAsPredCorr2011, nfactors = PFAsPred2011Facts, rotate = "oblimin")
 PFAsPredOB2011 
 
-rowSums(PFAsPredVM2011^2)
-rowSums(PFAsPredOB2011^2)
+rowSums(PFAsPredVM2011$loadings^2)
+rowSums(PFAsPredOB2011$loadings^2)
 
 #### Response Variables
 
-PFAsRespVM2011 <- pca(r = PFAsRespCorr2011, nfactors = PFAsResp2011Facts, rotate = "varimax")$loadings[]
+PFAsRespVM2011 <- pca(r = PFAsRespCorr2011, nfactors = PFAsResp2011Facts, rotate = "varimax") # winner
 PFAsRespVM2011
 
-PFAsRespOB2011 <- pca(r = PFAsRespCorr2011, nfactors = PFAsResp2011Facts, rotate = "oblimin")$loadings[]
+PFAsRespOB2011 <- pca(r = PFAsRespCorr2011, nfactors = PFAsResp2011Facts, rotate = "oblimin")
 PFAsRespOB2011
 
-rowSums(PFAsRespVM2011^2)
-rowSums(PFAsRespOB2011^2)
+rowSums(PFAsRespVM2011$loadings^2)
+rowSums(PFAsRespOB2011$loadings^2)
 
 ### Factor Visualizations
 
 corrplot(PFAsPredVM2011, method = "color")
 corrplot(PFAsRespVM2011, method = "color")
 
-corrplot(PFAsPredOB2011, method = "color")
-corrplot(PFAsRespOB2011, method = "color")
-
+# Justifying by the factor correlation matrix and the mean complexity, we are
+# safe to use varimax rotation to maintain orthogonality.
 
 #################################################################
 ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ## ##
 #################################################################
-
-# PART 3
-
-###
 
 ```
 
 ## 3 SEM
 
 ```{r}
+# Predictor Factor Construction
 
+## Loadings
+
+abs(PFAsPredVM2017$loadings[,]) > 0.3
+# RC1 =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA
+# RC2 =~ BMXBMI + BMXWAIST
+# RC3 =~ RIAGENDR + LBDHDD
+# RC4 =~ RIDAGEYR + PAQ650 + PAQ665
+# RC5 =~ SBP + DBP
+# RC6 =~ LBDLDL ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ RIDRETH3 ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ logLBXBFOA ## DO NOT MAKE THESE AS FACTORS
+# RC9 =~ RIDAGEYR + SMQ020
+# RC10 =~ RIDAGEYR + INDFMPIR
+
+(abs(PFAsPredVM2015$loadings[,]) > 0.3)
+# RC1 =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA
+# RC2 =~ MXBMI + BMXWAIST + LBDHDD
+# RC3 =~ RIDAGEYR + PAQ650 + PAQ665
+# RC4 =~ RIAGENDR + LBDHDD
+# RC5 =~ SBP + DBP
+# RC6 =~ LBDLDL ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ RIDRETH3 ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ RIDAGEYR + SMQ020
+# RC9 =~ logLBXBFOA ## DO NOT MAKE THESE AS FACTORS
+# RC10 =~ INDFMPIR
+
+abs(PFAsPredVM2013$loadings[,]) > 0.3
+# RC1 =~ BMXBMI + BMXWAIST
+# RC2 =~ logSSMFOS + logSSNFOS
+# RC3 =~ SBP + DBP
+# RC4 =~ INDFMPIR + PAQ650
+# RC5 =~ RIAGENDR + LBDHDD
+# RC6 =~ RIDAGEYR + INDFMPIR + SBP
+# RC7 =~ RIDRETH3 ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ logSSPFNA ## DO NOT MAKE THESE AS FACTORS
+# RC9 =~ logSSPFHS  ## DO NOT MAKE THESE AS FACTORS
+# RC10 =~ logSSBFOA ## DO NOT MAKE THESE AS FACTORS
+# RC11 =~ INDFMPIR + SMQ020
+
+which(abs(PFAsPredVM2011$loadings[,]) > 0.3)
+# RC1 =~ logLBXPFHS + logLBXPFNA + logLBXPFOA + logLBXPFOS
+# RC2 =~ BMXBMI + BMXWAIST
+# RC3 =~ PAQ665 ## DO NOT MAKE THESE AS FACTORS
+# RC4 =~ RIAGENDR + LBDHDD
+# RC5 =~ SBP + DBP
+# RC6 =~ RIDRETH3 ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ LBDLDL ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ SMQ020 ## DO NOT MAKE THESE AS FACTORS
+# RC9 =~ RIDAGEYR + PAQ650 + SBP
+# RC10 =~ INDFMPIR + PAQ650
+
+## Naming Factors
+
+
+
+# Response Factor Construction
+
+abs(PFAsRespVM2017$loadings[,]) > 0.3
+# RC1 =~ MCQ160B + MCQ160C + MCQ160E
+# RC2 =~ MCQ010 + MCQ160K
+# RC3 =~ MCQ160O ## DO NOT MAKE THESE AS FACTORS
+# RC4 =~ MCQ160L ## DO NOT MAKE THESE AS FACTORS
+# RC5 =~ MCQ160M ## DO NOT MAKE THESE AS FACTORS
+# RC6 =~ MCQ160F ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ DIQ010 ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ MCQ160C + MCQ160D
+# RC9 =~ MCQ160G
+
+(abs(PFAsRespVM2015$loadings[,]) > 0.3)
+# RC1 =~ MCQ160B + MCQ160C + MCQ160D + MCQ160E
+# RC2 =~ MCQ010 + MCQ160K
+# RC3 =~ MCQ160L + MCQ160D
+# RC4 =~ DIQ010 ## DO NOT MAKE THESE AS FACTORS
+# RC5 =~ MCQ160M ## DO NOT MAKE THESE AS FACTORS
+# RC6 =~ MCQ160F ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ MCQ160G + MCQ160B
+# RC8 =~ MCQ160O ## DO NOT MAKE THESE AS FACTORS
+
+(abs(PFAsRespVM2013$loadings[,]) > 0.3)
+# RC1 =~ MCQ160C + MCQ160D + MCQ160E
+# RC2 =~ MCQ010 + MCQ160B
+# RC3 =~ MCQ160G + MCQ160O + MCQ160B
+# RC4 =~ MCQ160G + MCQ160B + MCQ160F
+# RC5 =~ DIQ010 ## DO NOT MAKE THESE AS FACTORS
+# RC6 =~ MCQ160K ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ MCQ160M ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ MCQ160L + MCQ160D
+
+which(abs(PFAsRespVM2011$loadings[,"RC8"]) > 0.3)
+# RC1 =~ MCQ160B + MCQ160C + MCQ160D + MCQ160E 
+# RC2 =~ MCQ010 + MCQ160B
+# RC3 =~ MCQ160F ## DO NOT MAKE THESE AS FACTORS
+# RC4 =~ MCQ160M ## DO NOT MAKE THESE AS FACTORS
+# RC5 =~ MCQ160L ## DO NOT MAKE THESE AS FACTORS
+# RC6 =~ DIQ010 ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ MCQ160G ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ MCQ160K ## DO NOT MAKE THESE AS FACTORS
+
+# Data Points and Checking Fit
+
+dataPts2017 <- (dim(PFAs2017PCA)[2] * (dim(PFAs2017PCA)[2] + 1)) / 2
+dataPts2017
+
+dataPts2015 <- (dim(PFAs2015PCA)[2] * (dim(PFAs2015PCA)[2] + 1)) / 2
+dataPts2015
+
+dataPts2013 <- (dim(PFAs2013PCA)[2] * (dim(PFAs2013PCA)[2] + 1)) / 2
+dataPts2013
+
+dataPts2011 <- (dim(PFAs2011PCA)[2] * (dim(PFAs2011PCA)[2] + 1)) / 2
+dataPts2011
+
+```
+
+## 4 something
+
+```{r}
+## Creating Equations
+EQN2017 <- '
+            # Measurement Model (Factor Definition)
+            PFAs =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA
+            BodyMeasurements =~ BMXBMI + BMXWAIST
+            HormoneSexInt =~ LBDHDD + RIAGENDR
+            BloodPressures =~ SBP + DBP
+            Fitness =~ PAQ650 + PAQ665
+            SevereHeartCond =~ MCQ160B + MCQ160E
+            LungDisease =~ MCQ010 + MCQ160K
+            
+            # Measurement Model (Covariance Specification) 
+            RIDAGEYR ~~ Fitness
+            RIDAGEYR ~~ SMQ020
+            RIDAGEYR ~~ INDFMPIR
+            MCQ160C ~~ MCQ160D
+            MCQ160C ~~ SevereHeartCond
+            
+            # Structural Model
+            SevereHeartCond ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            
+            MCQ160C ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            
+            LungDisease ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            
+            MCQ160O ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            
+            MCQ160L ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            
+            MCQ160M ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            
+            MCQ160F ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            
+            DIQ010 ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            
+            MCQ160G ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+          '
+
+MOD2017 <- sem(model = EQN2017, data = PFAs2017PCA, sample.nobs = 3317)
+
+MOD2017
+
+parameterEstimates(MOD2017)
 
 ```
 
 
 
+```{r}
 
+EQN2015 <- '
+            # Measurement Model (Factor Definition) =~
+            
+            # Measurement Model (Covariance Specification) ~~
+            
+            # Structural Model ~
+'
+
+EQN2013 <- '
+            # Measurement Model (Factor Definition) =~
+            
+            # Measurement Model (Covariance Specification) ~~
+            
+            # Structural Model ~
+'
+
+EQN2011 <- '
+            # Measurement Model (Factor Definition) =~
+            
+            # Measurement Model (Covariance Specification) ~~
+            
+            # Structural Model ~
+'
+```
+
+
+
+```{r}
+
+
+```
