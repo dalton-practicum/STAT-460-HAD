@@ -453,6 +453,7 @@ WeightHistoryQP2017 <- WeightHistoryQP2017 |>
 ```
 
 
+
 ## Merging
 ```{r}
 # Examination
@@ -585,8 +586,6 @@ QuestionnarieP2017 <- DiabetesQP2017 |>
   full_join(WeightHistoryQP2017, by = c("SEQN" = "SEQN"))
 ```
 
-
-
 ## Merge and Export
 ```{r}
 NHANES2011 <- Demographics2011 |>
@@ -627,6 +626,7 @@ NHANESP2017 <- DemographicsPP2017 |>
 #write_xpt(NHANES2021, "NHANES2021.xpt")
 #write_xpt(NHANESP2017, "NHANESP2017.xpt")
 ```
+
 
 
 # Distribution Analysis
@@ -6272,26 +6272,1245 @@ summary(logRegStroke2017)
 
 # CB-SEM and PCA
 
+# Table Building 2
+
 ```{r}
+## 2017 Table
+PFAsVars2017 <- NHANES2017 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "INDFMPIR", # Economic status
+         # Blood
+         "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+         "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4",
+         
+         # Chol
+         "LBXTC", "LBDHDD", "LBDLDL",
+         
+         "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
+         
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", "MCQ500", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
+         
+         # Possible Other Confounders
+         "SMQ020", "SMQ040", "PAQ650", "PAQ655", "PAQ665"
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(MCQ160L = coalesce(MCQ160L, MCQ500)) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXBFOA = log(LBXBFOA)) |>
+  mutate(logLBXMFOS = log(LBXMFOS)) |>
+  mutate(logLBXNFOA = log(LBXNFOA)) |>
+  mutate(
+    SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE))   |>
+  mutate(
+    RIDRETH3_cat = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9,
+         MCQ160B != 7 & MCQ160B != 9,
+       MCQ160C != 7 & MCQ160C != 9,
+       MCQ160D != 7 & MCQ160D != 9,
+       MCQ160E != 7 & MCQ160E != 9,
+       MCQ160F != 7 & MCQ160F != 9,
+       DIQ010 != 7 & DIQ010 != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0),
+         DIQ160 = ifelse(DIQ160 == 1, 1, 0),
+         MCQ160B= ifelse(MCQ160B == 1, 1, 0),
+         MCQ160C= ifelse(MCQ160C == 1, 1, 0),
+         MCQ160D= ifelse(MCQ160D == 1, 1, 0),
+         MCQ160E= ifelse(MCQ160E == 1, 1, 0),
+         MCQ160F= ifelse(MCQ160F == 1, 1, 0)) |>
+  filter(!is.na(LBXPFHS))
+
+## 2015 Table
+PFAsVars2015 <- NHANES2015 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "INDFMPIR", # Economic status
+         # Blood
+         "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+         "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", 
+         
+         # Chol
+         "LBXTC", "LBDHDD", "LBDLDL",
+         
+         "LBXPFHS", "LBXPFNA", "LBXBFOA", "LBXMFOS", "LBXNFOA", #PFAs
+         
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
+         
+         # Possible Other Confounders
+         "SMQ020", "SMQ040", "PAQ650", "PAQ655", "PAQ665"
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXBFOA = log(LBXBFOA)) |>
+  mutate(logLBXMFOS = log(LBXMFOS)) |>
+  mutate(logLBXNFOA = log(LBXNFOA)) |>
+  mutate(
+    SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE))   |>
+  mutate(
+    RIDRETH3_cat = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9,
+         MCQ160B != 7 & MCQ160B != 9,
+       MCQ160C != 7 & MCQ160C != 9,
+       MCQ160D != 7 & MCQ160D != 9,
+       MCQ160E != 7 & MCQ160E != 9,
+       MCQ160F != 7 & MCQ160F != 9,
+       DIQ010 != 7 & DIQ010 != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0),
+         DIQ160 = ifelse(DIQ160 == 1, 1, 0),
+         MCQ160B= ifelse(MCQ160B == 1, 1, 0),
+         MCQ160C= ifelse(MCQ160C == 1, 1, 0),
+         MCQ160D= ifelse(MCQ160D == 1, 1, 0),
+         MCQ160E= ifelse(MCQ160E == 1, 1, 0),
+         MCQ160F= ifelse(MCQ160F == 1, 1, 0)) |>
+  filter(!is.na(LBXPFHS))
+
+## 2013 Table Building
+PFAsVars2013 <- NHANES2013 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "INDFMPIR", # Economic status
+         # Blood
+         "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+         "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", 
+         
+         # Chol
+         "LBXTC", "LBDHDD", "LBDLDL",
+         
+         "SSPFHS", "SSPFNA", "SSBFOA", "SSMFOS", "SSNFOS", #PFAs
+         
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", "MCQ160O", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
+         
+         # Possible Other Confounders
+         "SMQ020", "SMQ040", "PAQ650", "PAQ655", "PAQ665"
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logSSPFHS = log(SSPFHS)) |>
+  mutate(logSSPFNA = log(SSPFNA)) |>
+  mutate(logSSBFOA = log(SSBFOA)) |>
+  mutate(logSSMFOS = log(SSMFOS)) |>
+  mutate(logSSNFOS = log(SSNFOS)) |>
+  mutate(
+    SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE))  |>
+  mutate(
+    RIDRETH3_cat = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9,
+         MCQ160B != 7 & MCQ160B != 9,
+       MCQ160C != 7 & MCQ160C != 9,
+       MCQ160D != 7 & MCQ160D != 9,
+       MCQ160E != 7 & MCQ160E != 9,
+       MCQ160F != 7 & MCQ160F != 9,
+       DIQ010 != 7 & DIQ010 != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0),
+         DIQ160 = ifelse(DIQ160 == 1, 1, 0),
+         MCQ160B= ifelse(MCQ160B == 1, 1, 0),
+         MCQ160C= ifelse(MCQ160C == 1, 1, 0),
+         MCQ160D= ifelse(MCQ160D == 1, 1, 0),
+         MCQ160E= ifelse(MCQ160E == 1, 1, 0),
+         MCQ160F= ifelse(MCQ160F == 1, 1, 0)) |>
+  filter(!is.na(SSPFHS))
+
+## 2011 Table Building
+PFAsVars2011 <- NHANES2011 |>
+  select("SEQN", "RIDAGEYR", "RIDRETH3", "RIAGENDR", # Individual and age/ethnicity
+         "BMXWT", "BMXHT", "BMXBMI", "BMXWAIST",  # Body measurement
+         "INDFMPIR", # Economic status
+         # Blood
+         "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+         "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", 
+         
+         # Chol
+         "LBXTC", "LBDHDD", "LBDLDL",
+         
+         "LBXPFHS", "LBXPFNA", "LBXPFOA", "LBXPFOS", #PFAs
+         
+         # Medical Questions
+         "MCQ010", "MCQ160G", "MCQ160K", # Respiratory & IMMUNE
+         "DIQ010", "DIQ160", # METABOLIC
+         "MCQ160M", "MCQ160L", # Endo/Liver
+         "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F", # Cardiovascular
+         
+         # Possible Other Confounders
+         "SMQ020", "SMQ040", "PAQ650", "PAQ655", "PAQ665"
+         ) |> 
+  filter(RIDAGEYR >= 12 & RIDAGEYR <= 75) |>
+  mutate(logLBXPFHS = log(LBXPFHS)) |>
+  mutate(logLBXPFNA = log(LBXPFNA)) |>
+  mutate(logLBXPFOA = log(LBXPFOA)) |>
+  mutate(logLBXPFOS = log(LBXPFOS)) |>
+  mutate(
+    SBP = rowMeans(across(BPXSY1:BPXSY4), na.rm = TRUE),
+    DBP = rowMeans(across(BPXDI1:BPXDI4), na.rm = TRUE)) |>
+  mutate(
+    RIDRETH3_cat = factor(RIDRETH3,
+      levels = c(3, 4, 1, 2, 6, 7),
+      labels = c(
+        "Non-Hispanic White",
+        "Non-Hispanic Black",
+        "Mexican American",
+        "Other Hispanic",
+        "Non-Hispanic Asian",
+        "Other/Multi-Racial")))|>
+  mutate(DIQ010_cat = factor(DIQ010,
+    levels = c(2, 3, 1), 
+    labels = c("No", "Borderline", "Yes"))) |>
+  mutate(
+    DIQ010_yes = case_when(
+      DIQ010 == 1 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  mutate(
+    RIAGENDR_cat = factor(RIAGENDR,
+      levels = c(2, 1),
+      labels = c("Female", "Male"))) |>
+  mutate(
+    DIQ010_borderline = case_when(
+      DIQ010 == 3 ~ 1,
+      DIQ010 == 2 ~ 0,
+      TRUE ~ NA_real_
+    )) |>
+  filter(MCQ010 != 7 & MCQ010 != 9,
+         MCQ160G != 7 & MCQ160G != 9,
+         MCQ160K != 7 & MCQ160K != 9,
+         SMQ020 != 7 & SMQ020 != 9,
+         PAQ650 != 7 & PAQ650 != 9,
+         MCQ160M != 7 & MCQ160M != 9,
+         MCQ160B != 7 & MCQ160B != 9,
+       MCQ160C != 7 & MCQ160C != 9,
+       MCQ160D != 7 & MCQ160D != 9,
+       MCQ160E != 7 & MCQ160E != 9,
+       MCQ160F != 7 & MCQ160F != 9,
+       DIQ010 != 7 & DIQ010 != 9) |>
+  mutate(MCQ010 = ifelse(MCQ010 == 1, 1, 0),
+         MCQ160G = ifelse(MCQ160G == 1, 1, 0),
+         MCQ160K = ifelse(MCQ160K == 1, 1, 0),
+         SMQ020 = ifelse(SMQ020 == 1, 1, 0),
+         PAQ650 = ifelse(PAQ650 == 1, 1, 0),
+         MCQ160M = ifelse(MCQ160M == 1, 1, 0),
+         MCQ160L = ifelse(MCQ160L == 1, 1, 0),
+         RIAGENDR = ifelse(RIAGENDR == 1, 1, 0),
+         DIQ160 = ifelse(DIQ160 == 1, 1, 0),
+         MCQ160B= ifelse(MCQ160B == 1, 1, 0),
+         MCQ160C= ifelse(MCQ160C == 1, 1, 0),
+         MCQ160D= ifelse(MCQ160D == 1, 1, 0),
+         MCQ160E= ifelse(MCQ160E == 1, 1, 0),
+         MCQ160F= ifelse(MCQ160F == 1, 1, 0)) |>
+  filter(!is.na(LBXPFHS))
+```
+
+# PCA
+
+## 1 EDA
+
+```{r}
+# PART 1
+
+## 2017
+
+univariateAnal2017 <- data.frame(
+  row.names = c("Mean", "Median", "SD", "Skewness", "Kurtosis")
+)
+
+for (col in names(PFAsVars2017)) {
+  column <- PFAsVars2017[[col]]
+  
+  if (!is.numeric(column)) next
+  
+  column <- na.omit(column)
+  
+  univariateAnal2017[[col]] <- c(
+    mean(column),
+    median(column),
+    sd(column),
+    skewness(column),
+    kurtosis(column))
+}
+
+bad_actors2017 <- c("SEQN", "MCQ500", "DIQ010", "DIQ010_yes", "DIQ010_borderline")
+
+univariateAnal2017 <- univariateAnal2017 |>
+  select(-bad_actors2017)
+
+uniAnal2017 <- as.data.frame(t(univariateAnal2017))
+
+notNorm <- which(uniAnal2017[,5] > 3.6 | uniAnal2017[,5] < 2.4)
+sortaNorm <- which(uniAnal2017[,5] < 3.6 & uniAnal2017[,5] > 2.4)
+
+write.csv(uniAnal2017, "uniAnalysis2017.csv")
+
+###############################################################
+
+## 2015
+
+univariateAnal2015 <- data.frame(
+  row.names = c("Mean", "Median", "SD", "Skewness", "Kurtosis")
+)
+
+for (col in names(PFAsVars2015)) {
+  column <- PFAsVars2015[[col]]
+  
+  if (!is.numeric(column)) next
+  
+  column <- na.omit(column)
+  
+  univariateAnal2015[[col]] <- c(
+    mean(column),
+    median(column),
+    sd(column),
+    skewness(column),
+    kurtosis(column))
+}
+
+bad_actors2015 <- c("SEQN", "DIQ010", "DIQ010_yes", "DIQ010_borderline")
+
+univariateAnal2015 <- univariateAnal2015 |>
+  select(-bad_actors2015)
+
+uniAnal2015 <- as.data.frame(t(univariateAnal2015))
+
+notNorm2015 <- which(uniAnal2015[,5] > 3.6 | uniAnal2015[,5] < 2.4)
+sortaNorm2015 <- which(uniAnal2015[,5] < 3.6 & uniAnal2015[,5] > 2.4)
+
+# Well, nothing crazy here. Binary variables are, again, the only not normal ones but what can you do about that, huh?
+
+###############################################################
+
+## 2013
+
+univariateAnal2013 <- data.frame(
+  row.names = c("Mean", "Median", "SD", "Skewness", "Kurtosis")
+)
+
+for (col in names(PFAsVars2013)) {
+  column <- PFAsVars2013[[col]]
+  
+  if (!is.numeric(column)) next
+  
+  column <- na.omit(column)
+  
+  univariateAnal2013[[col]] <- c(
+    mean(column),
+    median(column),
+    sd(column),
+    skewness(column),
+    kurtosis(column))
+}
+
+bad_actors2013 <- c("SSPFNA", "SSBFOA", "SSMFOS", "SSNFOS", # who could have guessed?
+                    "SEQN", "DIQ010", "DIQ010_yes", "DIQ010_borderline",
+                    "logSSPFNA", "logSSBFOA", "logSSMFOS", "logSSNFOS")
+
+univariateAnal2013 <- univariateAnal2013 |>
+  select(-bad_actors2013)
+
+uniAnal2013 <- as.data.frame(t(univariateAnal2013))
+
+notNorm2013 <- which(uniAnal2013[,5] > 3.6 | uniAnal2013[,5] < 2.4)
+sortaNorm2013 <- which(uniAnal2013[,5] < 3.6 & uniAnal2013[,5] > 2.4)
+
+# Very bad performance from the PFAs. I'm shocked.
+
+###############################################################
+
+## 2011
+
+univariateAnal2011 <- data.frame(
+  row.names = c("Mean", "Median", "SD", "Skewness", "Kurtosis")
+)
+
+for (col in names(PFAsVars2011)) {
+  column <- PFAsVars2011[[col]]
+  
+  if (!is.numeric(column)) next
+  
+  column <- na.omit(column)
+  
+  univariateAnal2011[[col]] <- c(
+    mean(column),
+    median(column),
+    sd(column),
+    skewness(column),
+    kurtosis(column))
+}
+
+bad_actors2011 <- c("SEQN", "DIQ010", "DIQ010_yes", "DIQ010_borderline")
+
+univariateAnal2011 <- univariateAnal2011 |>
+  select(-bad_actors2011)
+
+uniAnal2011 <- as.data.frame(t(univariateAnal2011))
+
+notNorm2011 <- which(uniAnal2011[,5] > 3.6 | uniAnal2011[,5] < 2.4)
+sortaNorm2011 <- which(uniAnal2011[,5] < 3.6 & uniAnal2011[,5] > 2.4)
+
+# Not too bad anywhere in particular. Very cool.
+
+#################################################################
+##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ## ##
+#################################################################
+
+# PART 2
+
+## 2017
+
+### Predictor Variables
+
+PFAsPredictorLists2017 <- c("RIDAGEYR", "RIDRETH3", "RIAGENDR", "BMXBMI", "BMXWAIST", "INDFMPIR", "LBDHDD", "LBDLDL", "logLBXPFHS", "logLBXPFNA", "logLBXBFOA", "logLBXMFOS", "logLBXNFOA", "SMQ020", "PAQ650", "PAQ665", "SBP", "DBP")
+
+# For some reason SMQ040 and PAQ655 are being odd with the other SMQ or PAQ questions (respectively) in the correlation matrix.
+
+PFAsPredictors2017 <- PFAsVars2017 |>
+  select(PFAsPredictorLists2017)
+
+PFAsPredCov2017 <- cov(PFAsPredictors2017, use = "pairwise.complete.obs")
+
+PFAsPredCorr2017 <- cor(PFAsPredictors2017, use = "pairwise.complete.obs")
+
+corrplot(PFAsPredCorr2017, type = "upper", method = "color", order = "hclust")
+
+pairs(PFAsPredictors2017, lower.panel = NULL, pch = 16)
+
+### Response Variables
+
+PFAsResponseLists2017 <- c("MCQ010", "MCQ160G", "MCQ160K", "MCQ160O",
+                           "DIQ010", #"DIQ160",
+                           "MCQ160M", "MCQ160L",
+                           "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
+
+PFAsResponses2017 <- PFAsVars2017 |>
+  select(PFAsResponseLists2017)
+
+PFAsRespCov2017 <- cov(PFAsResponses2017, use = "pairwise.complete.obs")
+
+PFAsRespCorr2017 <- cor(PFAsResponses2017, use = "pairwise.complete.obs")
+
+pairs(PFAsResponses2017, lower.panel = NULL, pch = 16) # I don't know what I was expecting...
+
+corrplot(PFAsRespCorr2017, type = "upper", method = "color", order = "hclust")
+
+### All Variables
+
+PFAs2017PCA <- PFAsVars2017 |>
+  select(PFAsPredictorLists2017, PFAsResponseLists2017)
+
+PFAsCov2017 <- cov(PFAs2017PCA, use = "pairwise.complete.obs")
+
+PFAsCorr2017 <- cor(PFAs2017PCA, use = "pairwise.complete.obs")
+
+corrplot(PFAsCorr2017, type = "upper", method = "color", order = "hclust")
+
+#################################################################
+
+## 2015
+
+### Predictor Variables
+
+PFAsPredictorLists2015 <- c("RIDAGEYR", "RIDRETH3", "RIAGENDR", "BMXBMI", "BMXWAIST", "INDFMPIR",  "LBDHDD", "LBDLDL", "SMQ020", "PAQ650", "PAQ665", "logLBXPFHS", "logLBXPFNA", "logLBXBFOA", "logLBXMFOS", "logLBXNFOA", "SBP",  "DBP")
+
+# Same reason for 2017, but I will need to remove SMQ040 and PAQ655.
+
+PFAsPredictors2015 <- PFAsVars2015 |>
+  select(PFAsPredictorLists2015)
+
+PFAsPredCov2015 <- cov(PFAsPredictors2015, use = "pairwise.complete.obs")
+
+PFAsPredCorr2015 <- cor(PFAsPredictors2015, use = "pairwise.complete.obs")
+
+corrplot(PFAsPredCorr2015, type = "upper", method = "color", order = "hclust")
+
+pairs(PFAsPredictors2015, lower.panel = NULL, pch = 16)
+
+### Response Variables
+
+PFAsResponseLists2015 <- c("MCQ010", "MCQ160G", "MCQ160K", "MCQ160O",
+                           "DIQ010", #"DIQ160",
+                           "MCQ160M", "MCQ160L",
+                           "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
+
+PFAsResponses2015 <- PFAsVars2015 |>
+  select(PFAsResponseLists2015)
+
+PFAsRespCov2015 <- cov(PFAsResponses2015, use = "pairwise.complete.obs")
+
+PFAsRespCorr2015 <- cor(PFAsResponses2015, use = "pairwise.complete.obs")
+
+pairs(PFAsResponses2015, lower.panel = NULL, pch = 16)
+
+corrplot(PFAsRespCorr2015, type = "upper", method = "color", order = "hclust")
+
+### All Variables
+
+PFAs2015PCA <- PFAsVars2015 |>
+  select(PFAsPredictorLists2015, PFAsResponseLists2015)
+
+PFAsCov2015 <- cov(PFAs2015PCA, use = "pairwise.complete.obs")
+
+PFAsCorr2015 <- cor(PFAs2015PCA, use = "pairwise.complete.obs")
+
+corrplot(PFAsCorr2015, type = "upper", method = "color", order = "hclust")
+
+#################################################################
+
+## 2013
+
+### Predictor Variables
+
+PFAsPredictorLists2013 <- c("RIDAGEYR", "RIDRETH3", "RIAGENDR", "BMXBMI", "BMXWAIST", "INDFMPIR", "LBDHDD", "logSSPFHS", "logSSPFNA", "logSSBFOA", "logSSMFOS", "logSSNFOS", "SMQ020", "PAQ650", "PAQ665", "SBP", "DBP")
+
+# Same reason for 2017, but I will need to remove SMQ040 and PAQ655.
+# Now LDL is being odd. For the fact this is just awful to begin with, I'll remove it because we aren't gonna salvage this.
+
+PFAsPredictors2013 <- PFAsVars2013 |>
+  select(PFAsPredictorLists2013)
+
+# Can't wait to see this shit
+
+PFAsPredCov2013 <- cov(PFAsPredictors2013, use = "pairwise.complete.obs")
+
+PFAsPredCorr2013 <- cor(PFAsPredictors2013, use = "pairwise.complete.obs")
+
+# LDL is having issues with the PFAs?? Sure.
+
+corrplot(PFAsPredCorr2013, type = "upper", method = "color", order = "hclust")
+
+pairs(PFAsPredictors2013, lower.panel = NULL, pch = 16)
+
+### Response Variables
+
+PFAsResponseLists2013 <- c("MCQ010", "MCQ160G", "MCQ160K", "MCQ160O",
+                           "DIQ010", #"DIQ160",
+                           "MCQ160M", "MCQ160L",
+                           "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
+
+PFAsResponses2013 <- PFAsVars2013 |>
+  select(PFAsResponseLists2013)
+
+PFAsRespCov2013 <- cov(PFAsResponses2013, use = "pairwise.complete.obs")
+
+PFAsRespCorr2013 <- cor(PFAsResponses2013, use = "pairwise.complete.obs")
+
+pairs(PFAsResponses2013, lower.panel = NULL, pch = 16)
+
+corrplot(PFAsRespCorr2013, type = "upper", method = "color", order = "hclust")
+
+### All Variables
+
+PFAs2013PCA <- PFAsVars2013 |>
+  select(PFAsPredictorLists2013, PFAsResponseLists2013)
+
+PFAsCov2013 <- cov(PFAs2013PCA, use = "pairwise.complete.obs")
+
+PFAsCorr2013 <- cor(PFAs2013PCA, use = "pairwise.complete.obs")
+
+corrplot(PFAsCorr2013, type = "upper", method = "color", order = "hclust")
+
+#################################################################
+
+## 2011
+
+### Predictor Variables
+
+PFAsPredictorLists2011 <- c("RIDAGEYR", "RIDRETH3", "RIAGENDR", "BMXBMI", "BMXWAIST", "INDFMPIR",  "LBDHDD", "LBDLDL", "logLBXPFHS", "logLBXPFNA", "logLBXPFOA", "logLBXPFOS", "SMQ020", "PAQ650", "PAQ665", "SBP", "DBP")
+
+# Same reason for 2017, but I will need to remove SMQ040 and PAQ655.
+
+PFAsPredictors2011 <- PFAsVars2011 |>
+  select(PFAsPredictorLists2011)
+
+PFAsPredCov2011 <- cov(PFAsPredictors2011, use = "pairwise.complete.obs")
+
+PFAsPredCorr2011 <- cor(PFAsPredictors2011, use = "pairwise.complete.obs")
+
+corrplot(PFAsPredCorr2011, type = "upper", method = "color", order = "hclust")
+
+pairs(PFAsPredictors2011, lower.panel = NULL, pch = 16)
+
+### Response Variables
+
+PFAsResponseLists2011 <- c("MCQ010", "MCQ160G", "MCQ160K",
+                           "DIQ010", #"DIQ160",
+                           "MCQ160M", "MCQ160L",
+                           "MCQ160B", "MCQ160C", "MCQ160D", "MCQ160E", "MCQ160F")
+
+PFAsResponses2011 <- PFAsVars2011 |>
+  select(PFAsResponseLists2011)
+
+PFAsRespCov2011 <- cov(PFAsResponses2011, use = "pairwise.complete.obs")
+
+PFAsRespCorr2011 <- cor(PFAsResponses2011, use = "pairwise.complete.obs")
+
+pairs(PFAsResponses2011, lower.panel = NULL, pch = 16)
+
+corrplot(PFAsRespCorr2011, type = "upper", method = "color", order = "hclust")
+
+### All Variables
+
+PFAs2011PCA <- PFAsVars2011 |>
+  select(PFAsPredictorLists2011, PFAsResponseLists2011)
+
+PFAsCov2011 <- cov(PFAs2011PCA, use = "pairwise.complete.obs")
+
+PFAsCorr2011 <- cor(PFAs2011PCA, use = "pairwise.complete.obs")
+
+corrplot(PFAsCorr2011, type = "upper", method = "color", order = "hclust")
+
+#################################################################
+##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ## ##
+#################################################################
+
+# PART 3
+
+### Outliers
+
+# Well, going through the data charts and distributions, we don't really have any detectable outliers in our data.
+# If we did find one, I highly doubt that the individual would really be influential to any degree.
+# And we really have no reason to check 2013.
+
 
 ```
 
-
-
-# Neural Network
+## 2 EFA
 
 ```{r}
 
+# PART 1
+
+## 2017
+
+### Eigenvalues for All
+
+PFAs2017lambda <- eigen(PFAsCorr2017)$values
+sum((PFAs2017lambda > 0.7))
+
+### Eigenvalues for Predictors
+
+PFAsPred2017lambda <- eigen(PFAsPredCorr2017)$values
+PFAsPred2017Facts <- sum((PFAsPred2017lambda > 0.7))
+
+### Eigenvalues for Responses
+
+PFAsResp2017lambda <- eigen(PFAsRespCorr2017)$values
+PFAsResp2017Facts <- sum((PFAsResp2017lambda > 0.7))
+
+
+#################################################################
+
+## 2015
+
+### Eigenvalues for All
+
+PFAs2015lambda <- eigen(PFAsCorr2015)$values
+sum((PFAs2015lambda > 0.7))
+
+### Eigenvalues for Predictors
+
+PFAsPred2015lambda <- eigen(PFAsPredCorr2015)$values
+PFAsPred2015Facts <- sum((PFAsPred2015lambda > 0.7))
+
+### Eigenvalues for Responses
+
+PFAsResp2015lambda <- eigen(PFAsRespCorr2015)$values
+PFAsResp2015Facts <- sum((PFAsResp2015lambda > 0.7))
+
+
+#################################################################
+
+## 2013
+
+### Eigenvalues for All
+
+PFAs2013lambda <- eigen(PFAsCorr2013)$values
+sum((PFAs2013lambda > 0.7))
+
+### Eigenvalues for Predictors
+
+PFAsPred2013lambda <- eigen(PFAsPredCorr2013)$values
+PFAsPred2013Facts <- sum((PFAsPred2013lambda > 0.7))
+
+### Eigenvalues for Responses
+
+PFAsResp2013lambda <- eigen(PFAsRespCorr2013)$values
+PFAsResp2013Facts <- sum((PFAsResp2013lambda > 0.7))
+
+
+#################################################################
+
+## 2011
+
+### Eigenvalues for All
+
+PFAs2011lambda <- eigen(PFAsCorr2011)$values
+sum((PFAs2011lambda > 0.7))
+
+### Eigenvalues for Predictors
+
+PFAsPred2011lambda <- eigen(PFAsPredCorr2011)$values
+PFAsPred2011Facts <- sum((PFAsPred2011lambda > 0.7))
+
+### Eigenvalues for Responses
+
+PFAsResp2011lambda <- eigen(PFAsRespCorr2011)$values
+PFAsResp2011Facts <- sum((PFAsResp2011lambda > 0.7))
+
+
+#################################################################
+##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ## ##
+#################################################################
+
+# PART 2
+
+## 2017
+### Factor Rotations
+#### Predictor Variables
+
+PFAsPredVM2017 <- pca(r = PFAsPredCorr2017, nfactors = PFAsPred2017Facts, rotate = "varimax") # winner
+PFAsPredVM2017
+
+PFAsPredOB2017 <- pca(r = PFAsPredCorr2017, nfactors = PFAsPred2017Facts, rotate = "oblimin")
+PFAsPredOB2017
+
+rowSums(PFAsPredVM2017$loadings^2)
+rowSums(PFAsPredOB2017$loadings^2)
+
+#### Response Variables
+
+PFAsRespVM2017 <- pca(r = PFAsRespCorr2017, nfactors = PFAsResp2017Facts, rotate = "varimax") # winner
+PFAsRespVM2017
+
+PFAsRespOB2017 <- pca(r = PFAsRespCorr2017, nfactors = PFAsResp2017Facts, rotate = "oblimin")
+PFAsRespOB2017
+
+rowSums(PFAsRespVM2017$loadings^2)
+rowSums(PFAsRespOB2017$loadings^2)
+
+### Factor Visualizations
+
+corrplot(PFAsPredVM2017, method = "color") # Varimax
+corrplot(PFAsRespVM2017, method = "color") # Varimax
+
+
+#################################################################
+
+## 2015
+### Factor Rotations  
+#### Predictor Variables
+
+PFAsPredVM2015 <- pca(r = PFAsPredCorr2015, nfactors = PFAsPred2015Facts, rotate = "varimax") # winner
+PFAsPredVM2015
+
+PFAsPredOB2015 <- pca(r = PFAsPredCorr2015, nfactors = PFAsPred2015Facts, rotate = "oblimin")
+PFAsPredOB2015
+
+rowSums(PFAsPredVM2015$loadings^2)
+rowSums(PFAsPredOB2015$loadings^2)
+
+#### Response Variables
+
+PFAsRespVM2015 <- pca(r = PFAsRespCorr2015, nfactors = PFAsResp2015Facts, rotate = "varimax") # winner
+PFAsRespVM2015
+
+PFAsRespOB2015 <- pca(r = PFAsRespCorr2015, nfactors = PFAsResp2015Facts, rotate = "oblimin")
+PFAsRespOB2015
+
+rowSums(PFAsRespVM2015$loadings^2)
+rowSums(PFAsRespOB2015$loadings^2)
+
+### Factor Visualizations
+
+corrplot(PFAsPredVM2015, method = "color")
+corrplot(PFAsRespVM2015, method = "color")
+
+
+#################################################################
+
+## 2013
+### Factor Rotations  
+#### Predictor Variables
+
+PFAsPredVM2013 <- pca(r = PFAsPredCorr2013, nfactors = PFAsPred2013Facts, rotate = "varimax") # "winner"
+PFAsPredVM2013
+
+PFAsPredOB2013 <- pca(r = PFAsPredCorr2013, nfactors = PFAsPred2013Facts, rotate = "oblimin")
+PFAsPredOB2013
+
+rowSums(PFAsPredVM2013$loadings^2)
+rowSums(PFAsPredOB2013$loadings^2)
+
+#### Response Variables
+
+PFAsRespVM2013 <- pca(r = PFAsRespCorr2013, nfactors = PFAsResp2013Facts, rotate = "varimax") # "winner"
+PFAsRespVM2013
+
+PFAsRespOB2013 <- pca(r = PFAsRespCorr2013, nfactors = PFAsResp2013Facts, rotate = "oblimin")
+PFAsRespOB2013
+
+rowSums(PFAsRespVM2013$loadings^2)
+rowSums(PFAsRespOB2013$loadings^2)
+
+### Factor Visualizations
+
+corrplot(PFAsPredVM2013, method = "color")
+corrplot(PFAsRespVM2013, method = "color")
+
+corrplot(PFAsPredOB2013, method = "color")
+corrplot(PFAsRespOB2013, method = "color")
+
+
+#################################################################
+
+## 2011
+### Factor Rotations  
+#### Predictor Variables 
+
+PFAsPredVM2011 <- pca(r = PFAsPredCorr2011, nfactors = PFAsPred2011Facts, rotate = "varimax") # winner
+PFAsPredVM2011
+
+PFAsPredOB2011 <- pca(r = PFAsPredCorr2011, nfactors = PFAsPred2011Facts, rotate = "oblimin")
+PFAsPredOB2011 
+
+rowSums(PFAsPredVM2011$loadings^2)
+rowSums(PFAsPredOB2011$loadings^2)
+
+#### Response Variables
+
+PFAsRespVM2011 <- pca(r = PFAsRespCorr2011, nfactors = PFAsResp2011Facts, rotate = "varimax") # winner
+PFAsRespVM2011
+
+PFAsRespOB2011 <- pca(r = PFAsRespCorr2011, nfactors = PFAsResp2011Facts, rotate = "oblimin")
+PFAsRespOB2011
+
+rowSums(PFAsRespVM2011$loadings^2)
+rowSums(PFAsRespOB2011$loadings^2)
+
+### Factor Visualizations
+
+corrplot(PFAsPredVM2011, method = "color")
+corrplot(PFAsRespVM2011, method = "color")
+
+# Justifying by the factor correlation matrix and the mean complexity, we are
+# safe to use varimax rotation to maintain orthogonality.
+
+#################################################################
+##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ## ##
+#################################################################
+
 ```
 
+## 3 SEM
+
+```{r}
+# Predictor Factor Construction
+
+## Loadings
+
+abs(PFAsPredVM2017$loadings[,]) > 0.3
+# RC1 =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA
+# RC2 =~ BMXBMI + BMXWAIST
+# RC3 =~ RIAGENDR + LBDHDD
+# RC4 =~ RIDAGEYR + PAQ650 + PAQ665
+# RC5 =~ SBP + DBP
+# RC6 =~ LBDLDL ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ RIDRETH3 ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ logLBXBFOA ## DO NOT MAKE THESE AS FACTORS
+# RC9 =~ RIDAGEYR + SMQ020
+# RC10 =~ RIDAGEYR + INDFMPIR
+
+(abs(PFAsPredVM2015$loadings[,]) > 0.3)
+# RC1 =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA
+# RC2 =~ MXBMI + BMXWAIST + LBDHDD
+# RC3 =~ RIDAGEYR + PAQ650 + PAQ665
+# RC4 =~ RIAGENDR + LBDHDD
+# RC5 =~ SBP + DBP
+# RC6 =~ LBDLDL ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ RIDRETH3 ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ RIDAGEYR + SMQ020
+# RC9 =~ logLBXBFOA ## DO NOT MAKE THESE AS FACTORS
+# RC10 =~ INDFMPIR
+
+abs(PFAsPredVM2013$loadings[,]) > 0.3
+# RC1 =~ BMXBMI + BMXWAIST
+# RC2 =~ logSSMFOS + logSSNFOS
+# RC3 =~ SBP + DBP
+# RC4 =~ INDFMPIR + PAQ650
+# RC5 =~ RIAGENDR + LBDHDD
+# RC6 =~ RIDAGEYR + INDFMPIR + SBP
+# RC7 =~ RIDRETH3 ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ logSSPFNA ## DO NOT MAKE THESE AS FACTORS
+# RC9 =~ logSSPFHS  ## DO NOT MAKE THESE AS FACTORS
+# RC10 =~ logSSBFOA ## DO NOT MAKE THESE AS FACTORS
+# RC11 =~ INDFMPIR + SMQ020
+
+which(abs(PFAsPredVM2011$loadings[,]) > 0.3)
+# RC1 =~ logLBXPFHS + logLBXPFNA + logLBXPFOA + logLBXPFOS
+# RC2 =~ BMXBMI + BMXWAIST
+# RC3 =~ PAQ665 ## DO NOT MAKE THESE AS FACTORS
+# RC4 =~ RIAGENDR + LBDHDD
+# RC5 =~ SBP + DBP
+# RC6 =~ RIDRETH3 ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ LBDLDL ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ SMQ020 ## DO NOT MAKE THESE AS FACTORS
+# RC9 =~ RIDAGEYR + PAQ650 + SBP
+# RC10 =~ INDFMPIR + PAQ650
+
+## Naming Factors
 
 
-# TDA?
+
+# Response Factor Construction
+
+abs(PFAsRespVM2017$loadings[,]) > 0.3
+# RC1 =~ MCQ160B + MCQ160C + MCQ160E
+# RC2 =~ MCQ010 + MCQ160K
+# RC3 =~ MCQ160O ## DO NOT MAKE THESE AS FACTORS
+# RC4 =~ MCQ160L ## DO NOT MAKE THESE AS FACTORS
+# RC5 =~ MCQ160M ## DO NOT MAKE THESE AS FACTORS
+# RC6 =~ MCQ160F ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ DIQ010 ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ MCQ160C + MCQ160D
+# RC9 =~ MCQ160G
+
+(abs(PFAsRespVM2015$loadings[,]) > 0.3)
+# RC1 =~ MCQ160B + MCQ160C + MCQ160D + MCQ160E
+# RC2 =~ MCQ010 + MCQ160K
+# RC3 =~ MCQ160L + MCQ160D
+# RC4 =~ DIQ010 ## DO NOT MAKE THESE AS FACTORS
+# RC5 =~ MCQ160M ## DO NOT MAKE THESE AS FACTORS
+# RC6 =~ MCQ160F ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ MCQ160G + MCQ160B
+# RC8 =~ MCQ160O ## DO NOT MAKE THESE AS FACTORS
+
+(abs(PFAsRespVM2013$loadings[,]) > 0.3)
+# RC1 =~ MCQ160C + MCQ160D + MCQ160E
+# RC2 =~ MCQ010 + MCQ160B
+# RC3 =~ MCQ160G + MCQ160O + MCQ160B
+# RC4 =~ MCQ160G + MCQ160B + MCQ160F
+# RC5 =~ DIQ010 ## DO NOT MAKE THESE AS FACTORS
+# RC6 =~ MCQ160K ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ MCQ160M ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ MCQ160L + MCQ160D
+
+which(abs(PFAsRespVM2011$loadings[,"RC8"]) > 0.3)
+# RC1 =~ MCQ160B + MCQ160C + MCQ160D + MCQ160E 
+# RC2 =~ MCQ010 + MCQ160B
+# RC3 =~ MCQ160F ## DO NOT MAKE THESE AS FACTORS
+# RC4 =~ MCQ160M ## DO NOT MAKE THESE AS FACTORS
+# RC5 =~ MCQ160L ## DO NOT MAKE THESE AS FACTORS
+# RC6 =~ DIQ010 ## DO NOT MAKE THESE AS FACTORS
+# RC7 =~ MCQ160G ## DO NOT MAKE THESE AS FACTORS
+# RC8 =~ MCQ160K ## DO NOT MAKE THESE AS FACTORS
+
+# Data Points and Checking Fit
+
+dataPts2017 <- (dim(PFAs2017PCA)[2] * (dim(PFAs2017PCA)[2] + 1)) / 2
+dataPts2017
+
+dataPts2015 <- (dim(PFAs2015PCA)[2] * (dim(PFAs2015PCA)[2] + 1)) / 2
+dataPts2015
+
+dataPts2013 <- (dim(PFAs2013PCA)[2] * (dim(PFAs2013PCA)[2] + 1)) / 2
+dataPts2013
+
+dataPts2011 <- (dim(PFAs2011PCA)[2] * (dim(PFAs2011PCA)[2] + 1)) / 2
+dataPts2011
+
+```
+
+## 4 Equations
+
+### 2017
+
+```{r}
+## Creating Equations
+EQN2017 <- '
+            # Measurement Model (Factor Definition)
+            ## Predictors
+            PFAs =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA + logLBXBFOA
+            HormoneSexInt =~ RIAGENDR + LBDHDD + LBDLDL
+
+            ## Responses
+            SevereHeartCond =~ MCQ160E + MCQ160B + MCQ160C + MCQ160D
+            LungDisease =~ MCQ010 + MCQ160G + MCQ160K + MCQ160O
+            ThyroidLiverHealth =~ MCQ160M + MCQ160L
+
+            # Measurement Model (Covariance Specification) 
+            
+            
+            # Structural Model
+            SevereHeartCond ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
+            
+            LungDisease ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
+            
+            ThyroidLiverHealth ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
+            
+            MCQ160F ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
+            
+            DIQ010 ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
+          '
+
+#semPaths(semPlotModel_lavaanModel(EQN2017))
+```
+
+```{r}
+#MOD2017 <- sem(model = EQN2017, data = scale(PFAs2017PCA))
+MOD2017 <- sem(model = EQN2017, data = PFAs2017PCA, sample.nobs = 3317)
+
+#MOD2017 <- sem(model = EQN2017, sample.cov = cor(PFAs2017PCA, use = "pairwise.complete.obs"), sample.nobs = 3317)
+
+MOD2017
+
+parameterEstimates(MOD2017)
+
+```
+
+### 2015
 
 ```{r}
 
+EQN2015 <- '
+            # Measurement Model (Factor Definition) =~
+            ## Predictors
+            PFAs =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA
+            BodyMeasurements =~ BMXBMI + BMXWAIST
+            PhysicalAttributes =~ PAQ650 + PAQ665
+            BloodPressures =~ DBP + SBP
+            
+            ## Responses
+            SevereHeartCond =~ MCQ160E + MCQ160C
+            LungDisease =~ MCQ010 + MCQ160K
+            
+            # Measurement Model (Covariance Specification) ~~
+            ## Predictors
+            LBDHDD ~~ BodyMeasurements
+            LBDHDD ~~ RIAGENDR
+            RIDAGEYR ~~ PhysicalAttributes
+            RIDAGEYR ~~ SMQ020
+            
+            ## Responses
+            MCQ160B ~~ MCQ160G
+            MCQ160B ~~ SevereHeartCond
+            MCQ160D ~~ MCQ160L
+            MCQ160D ~~ SevereHeartCond
+            
+            # Structural Model ~
+            SevereHeartCond ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            LungDisease ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160M ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            DIQ010 ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160F ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160O ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160B ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160D ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160G ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160L ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+'
 ```
 
+```{r}
+#MOD2015 <- sem(model = EQN2015, data = scale(PFAs2015PCA))
+#MOD2015 <- sem(model = EQN2015, data = PFAs2015PCA, sample.nobs = 3317)
+#MOD2015 <- sem(model = EQN2015, sample.cov = cor(PFAs2015PCA, use = "pairwise.complete.obs"), sample.nobs = 3317)
+#MOD2015
+#parameterEstimates(MOD2015)
+```
+
+### 2011
+
+```{r}
+EQN2011 <- '
+            # Measurement Model (Factor Definition) =~
+            ## Predictors
+            PFAs =~ logLBXPFHS + logLBXPFNA + logLBXPFOS + logLBXPFOA
+            BodyMeasurements =~ BMXBMI + BMXWAIST
+            SexHormoneInt =~ LBDHDD + RIAGENDR
+            PhysicalActivity =~ PAQ650 + RIDAGEYR
+            
+            ## Responses
+            SevereHeartCondition =~ MCQ160E + MCQ160D + MCQ160C
+            
+            # Measurement Model (Covariance Specification) ~~
+            ## Predictors
+            SBP ~~ PhysicalActivity
+            SBP ~~ DBP
+            
+            ## Responses
+            MCQ160B ~~ SevereHeartCondition
+            MCQ160B ~~ MCQ010
+            
+            # Structural Model ~
+            ## Factors
+            SevereHeartCondition ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            ## Complex Dimensions
+            MCQ160B ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ010 ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            ## Lone Dimensions
+            MCQ160F ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ160M ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ160L ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            DIQ010 ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ160G ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ160K ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+'
+```
+
+```{r}
+#MOD2011 <- sem(model = EQN2011, data = scale(PFAs2011PCA))
+#MOD2011 <- sem(model = EQN2011, data = PFAs2011PCA, sample.nobs = 3112)
+#MOD2011 <- sem(model = EQN2011, sample.cov = cor(PFAs2011PCA, use = "pairwise.complete.obs"), sample.nobs = 3317)
+#MOD2011
+#parameterEstimates(MOD2011)
+
+```
 
 
 >>>>>>> 5ac0bc8572beaae8a9c4eaa56fa871a51a2c2a78

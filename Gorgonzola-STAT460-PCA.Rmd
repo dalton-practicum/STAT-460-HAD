@@ -1123,87 +1123,177 @@ dataPts2011
 
 ```
 
-## 4 something
+## 4 Equations
+
+### 2017
 
 ```{r}
 ## Creating Equations
 EQN2017 <- '
             # Measurement Model (Factor Definition)
-            PFAs =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA
-            BodyMeasurements =~ BMXBMI + BMXWAIST
-            HormoneSexInt =~ LBDHDD + RIAGENDR
-            BloodPressures =~ SBP + DBP
-            Fitness =~ PAQ650 + PAQ665
-            SevereHeartCond =~ MCQ160B + MCQ160E
-            LungDisease =~ MCQ010 + MCQ160K
-            
+            ## Predictors
+            PFAs =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA + logLBXBFOA
+            HormoneSexInt =~ RIAGENDR + LBDHDD + LBDLDL
+
+            ## Responses
+            SevereHeartCond =~ MCQ160E + MCQ160B + MCQ160C + MCQ160D
+            LungDisease =~ MCQ010 + MCQ160G + MCQ160K + MCQ160O
+            ThyroidLiverHealth =~ MCQ160M + MCQ160L
+
             # Measurement Model (Covariance Specification) 
-            RIDAGEYR ~~ Fitness
-            RIDAGEYR ~~ SMQ020
-            RIDAGEYR ~~ INDFMPIR
-            MCQ160C ~~ MCQ160D
-            MCQ160C ~~ SevereHeartCond
+            
             
             # Structural Model
-            SevereHeartCond ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            SevereHeartCond ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
             
-            MCQ160C ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            LungDisease ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
             
-            LungDisease ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            ThyroidLiverHealth ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
             
-            MCQ160O ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            MCQ160F ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
             
-            MCQ160L ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
-            
-            MCQ160M ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
-            
-            MCQ160F ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
-            
-            DIQ010 ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
-            
-            MCQ160G ~ PFAs + BodyMeasurements + LBDHDD + RIAGENDR + BloodPressures + Fitness + RIDAGEYR + INDFMPIR + LBDLDL + RIDRETH3 + logLBXBFOA
+            DIQ010 ~ PFAs + HormoneSexInt + BMXWAIST + RIDAGEYR + INDFMPIR + RIDRETH3 + SMQ020 + PAQ650 + PAQ665 + LBDLDL + BMXBMI
           '
 
+#semPaths(semPlotModel_lavaanModel(EQN2017))
+```
+
+```{r}
+#MOD2017 <- sem(model = EQN2017, data = scale(PFAs2017PCA))
 MOD2017 <- sem(model = EQN2017, data = PFAs2017PCA, sample.nobs = 3317)
+
+#MOD2017 <- sem(model = EQN2017, sample.cov = cor(PFAs2017PCA, use = "pairwise.complete.obs"), sample.nobs = 3317)
 
 MOD2017
 
 parameterEstimates(MOD2017)
 
+fitMeasures(MOD2017)
+
+SEMsummary2017 <- parameterEstimates(MOD2017)
+SEMfit2017 <- fitMeasures(MOD2017)
+
+fitness_testM <- c("nfi", "nnfi", "ifi", "cfi")
+
+SEMfit2017["rmsea"]
+SEMfit2017[fitness_testM]
+
+write.csv(SEMsummary2017, "SEMsummary2017.csv")
+
 ```
 
-
+### 2015
 
 ```{r}
 
 EQN2015 <- '
             # Measurement Model (Factor Definition) =~
+            ## Predictors
+            PFAs =~ logLBXPFHS + logLBXPFNA + logLBXMFOS + logLBXNFOA
+            BodyMeasurements =~ BMXBMI + BMXWAIST
+            PhysicalAttributes =~ PAQ650 + PAQ665
+            BloodPressures =~ DBP + SBP
+            
+            ## Responses
+            SevereHeartCond =~ MCQ160E + MCQ160C
+            LungDisease =~ MCQ010 + MCQ160K
             
             # Measurement Model (Covariance Specification) ~~
+            ## Predictors
+            LBDHDD ~~ BodyMeasurements
+            LBDHDD ~~ RIAGENDR
+            RIDAGEYR ~~ PhysicalAttributes
+            RIDAGEYR ~~ SMQ020
+            
+            ## Responses
+            MCQ160B ~~ MCQ160G
+            MCQ160B ~~ SevereHeartCond
+            MCQ160D ~~ MCQ160L
+            MCQ160D ~~ SevereHeartCond
             
             # Structural Model ~
-'
-
-EQN2013 <- '
-            # Measurement Model (Factor Definition) =~
+            SevereHeartCond ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
             
-            # Measurement Model (Covariance Specification) ~~
+            LungDisease ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
             
-            # Structural Model ~
-'
-
-EQN2011 <- '
-            # Measurement Model (Factor Definition) =~
+            MCQ160M ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
             
-            # Measurement Model (Covariance Specification) ~~
+            DIQ010 ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
             
-            # Structural Model ~
+            MCQ160F ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160O ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160B ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160D ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160G ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
+            
+            MCQ160L ~ PFAs + BodyMeasurements + BloodPressures + PhysicalAttributes + logLBXBFOA + LBDLDL + RIDRETH3 + INDFMPIR + LBDHDD + RIAGENDR + SMQ020 + RIDAGEYR
 '
 ```
 
+```{r}
+#MOD2015 <- sem(model = EQN2015, data = scale(PFAs2015PCA))
+#MOD2015 <- sem(model = EQN2015, data = PFAs2015PCA, sample.nobs = 3317)
+#MOD2015 <- sem(model = EQN2015, sample.cov = cor(PFAs2015PCA, use = "pairwise.complete.obs"), sample.nobs = 3317)
+#MOD2015
+#parameterEstimates(MOD2015)
+```
 
+### 2011
 
 ```{r}
+EQN2011 <- '
+            # Measurement Model (Factor Definition) =~
+            ## Predictors
+            PFAs =~ logLBXPFHS + logLBXPFNA + logLBXPFOS + logLBXPFOA
+            BodyMeasurements =~ BMXBMI + BMXWAIST
+            SexHormoneInt =~ LBDHDD + RIAGENDR
+            PhysicalActivity =~ PAQ650 + RIDAGEYR
+            
+            ## Responses
+            SevereHeartCondition =~ MCQ160E + MCQ160D + MCQ160C
+            
+            # Measurement Model (Covariance Specification) ~~
+            ## Predictors
+            SBP ~~ PhysicalActivity
+            SBP ~~ DBP
+            
+            ## Responses
+            MCQ160B ~~ SevereHeartCondition
+            MCQ160B ~~ MCQ010
+            
+            # Structural Model ~
+            ## Factors
+            SevereHeartCondition ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            ## Complex Dimensions
+            MCQ160B ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ010 ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            ## Lone Dimensions
+            MCQ160F ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ160M ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ160L ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            DIQ010 ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ160G ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+            
+            MCQ160K ~ PFAs + BodyMeasurements + SexHormoneInt + PhysicalActivity + PAQ665 + INDFMPIR + LBDLDL + SBP + DBP
+'
+```
 
+```{r}
+#MOD2011 <- sem(model = EQN2011, data = scale(PFAs2011PCA))
+#MOD2011 <- sem(model = EQN2011, data = PFAs2011PCA, sample.nobs = 3112)
+#MOD2011 <- sem(model = EQN2011, sample.cov = cor(PFAs2011PCA, use = "pairwise.complete.obs"), sample.nobs = 3317)
+#MOD2011
+#parameterEstimates(MOD2011)
 
 ```
